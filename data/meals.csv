@@ -1,0 +1,60 @@
+id,name,slots,diet,cuisine,country,default_qty,min_qty,max_qty,qty_step,unit,protein_per_unit,difficulty,prep_time_min,allergens
+b-moong-chilla,Moong Dal Chilla,breakfast,veg,indian,IN,2,1,4,1,piece,6,easy,20,
+b-besan-chilla,Besan Chilla with Paneer Stuffing,breakfast,veg,indian,IN,2,1,4,1,piece,8,easy,20,dairy
+b-paneer-bhurji,Paneer Bhurji,"breakfast,dinner",veg,indian,IN,1,0.5,2,0.5,bowl,18,easy,15,dairy
+b-poha-peanut,Poha with Peanuts and Curd,breakfast,veg,indian,IN,1,0.5,2,0.5,bowl,10,easy,15,"peanut,dairy"
+b-masala-oats,Masala Oats cooked in Milk,breakfast,veg,indian,IN,1,0.5,2,0.5,bowl,11,easy,10,dairy
+b-idli-sambar,Idli with Sambar,breakfast,veg,indian,IN,3,2,6,1,piece,3,medium,25,
+b-upma-peanut,Vegetable Upma with Peanuts,breakfast,veg,indian,IN,1,0.5,2,0.5,bowl,8,easy,20,peanut
+b-sprouts-salad,Moong Sprouts Salad,"breakfast,snack",veg,indian,IN,1,0.5,3,0.5,bowl,12,easy,10,
+b-dahi-seeds,Dahi Bowl with Chia and Pumpkin Seeds,"breakfast,snack",veg,indian,IN,1,0.5,2,0.5,bowl,12,easy,5,dairy
+b-paneer-paratha,Paneer Paratha with Curd,"breakfast,lunch",veg,indian,IN,2,1,3,1,piece,9,medium,25,"gluten,dairy"
+b-greek-yogurt,Greek Yogurt with Fruit and Seeds,"breakfast,snack",veg,western,US,1,0.5,2,0.5,bowl,17,easy,5,dairy
+b-pb-toast,Peanut Butter Toast,"breakfast,snack",veg,western,US,2,1,4,1,slice,6,easy,5,"gluten,peanut"
+b-overnight-oats,Overnight Oats with Chia and Milk,breakfast,veg,western,US,1,0.5,2,0.5,bowl,14,easy,10,dairy
+b-daliya,Vegetable Daliya,"breakfast,dinner",veg,indian,IN,1,0.5,2,0.5,bowl,9,easy,25,gluten
+b-eggs-bhurji,Eggs Bhurji,"breakfast,dinner",egg,indian,IN,3,2,6,1,piece,6,easy,10,egg
+b-masala-omelette,Masala Omelette,"breakfast,dinner",egg,indian,IN,3,2,6,1,piece,6,easy,10,egg
+b-boiled-eggs,Boiled Eggs with Chaat Masala,"breakfast,snack",egg,indian,IN,3,2,6,1,piece,6,easy,12,egg
+b-egg-paratha,Egg Paratha,"breakfast,lunch",egg,indian,IN,2,1,3,1,piece,9,medium,20,"egg,gluten"
+b-keema-toast,Chicken Keema on Toast,breakfast,non-veg,indian,IN,1,0.5,2,0.5,serving,25,medium,20,gluten
+l-rajma-chawal,Rajma Chawal,"lunch,dinner",veg,indian,IN,1,0.5,2,0.5,serving,18,medium,40,
+l-chole-rice,Chole with Rice,"lunch,dinner",veg,indian,IN,1,0.5,2,0.5,serving,17,medium,40,
+l-dal-tadka-roti,Dal Tadka with Roti,"lunch,dinner",veg,indian,IN,1,0.5,2,0.5,serving,16,medium,30,gluten
+l-paneer-tikka-bowl,Paneer Tikka Rice Bowl,"lunch,dinner",veg,indian,IN,1,0.5,2,0.5,serving,28,medium,30,dairy
+l-soya-chunk-curry,Soya Chunk Curry with Rice,"lunch,dinner",veg,indian,IN,1,0.5,2,0.5,serving,30,medium,30,soy
+l-tofu-bhurji-roti,Tofu Bhurji with Roti,"lunch,dinner",veg,indian,IN,1,0.5,2,0.5,serving,22,easy,20,"soy,gluten"
+l-kadhi-chawal,Kadhi Chawal,lunch,veg,indian,IN,1,0.5,2,0.5,serving,12,medium,35,dairy
+l-veg-pulao-raita,Vegetable Pulao with Raita,"lunch,dinner",veg,indian,IN,1,0.5,2,0.5,serving,10,medium,30,dairy
+l-quinoa-chickpea,Quinoa Chickpea Salad,lunch,veg,mediterranean,GR,1,0.5,2,0.5,bowl,15,easy,20,
+l-paneer-wrap,Paneer Tikka Wrap,"lunch,snack",veg,indian,IN,1,1,3,1,piece,20,easy,15,"gluten,dairy"
+l-dal-makhani-roti,Dal Makhani with Roti,"lunch,dinner",veg,indian,IN,1,0.5,2,0.5,serving,15,hard,50,"dairy,gluten"
+l-palak-paneer-roti,Palak Paneer with Roti,"lunch,dinner",veg,indian,IN,1,0.5,2,0.5,serving,20,medium,35,"dairy,gluten"
+l-sambar-rice,Sambar Rice,"lunch,dinner",veg,indian,IN,1,0.5,2,0.5,serving,12,medium,30,
+l-curd-rice,Curd Rice with Roasted Peanuts,lunch,veg,indian,IN,1,0.5,2,0.5,serving,11,easy,15,"dairy,peanut"
+l-egg-curry-rice,Egg Curry with Rice,"lunch,dinner",egg,indian,IN,1,0.5,2,0.5,serving,18,medium,30,egg
+l-egg-fried-rice,Egg Fried Rice,"lunch,dinner",egg,asian,CN,1,0.5,2,0.5,serving,16,easy,20,"egg,soy"
+l-chicken-curry-rice,Chicken Curry with Rice,"lunch,dinner",non-veg,indian,IN,1,0.5,2,0.5,serving,35,medium,40,
+l-chicken-biryani,Chicken Biryani,lunch,non-veg,indian,IN,1,0.5,2,0.5,serving,30,hard,60,dairy
+l-grilled-chicken-salad,Grilled Chicken Salad,"lunch,dinner",non-veg,western,US,1,0.5,2,0.5,bowl,32,easy,25,
+l-fish-curry-rice,Fish Curry with Rice,"lunch,dinner",non-veg,indian,IN,1,0.5,2,0.5,serving,28,medium,35,fish
+l-chicken-wrap,Chicken Tikka Wrap,"lunch,snack",non-veg,indian,IN,1,1,3,1,piece,26,easy,15,"gluten,dairy"
+l-keema-roti,Chicken Keema with Roti,"lunch,dinner",non-veg,indian,IN,1,0.5,2,0.5,serving,30,medium,35,gluten
+d-moong-khichdi,Moong Dal Khichdi,dinner,veg,indian,IN,1,0.5,2,0.5,bowl,14,easy,30,
+d-paneer-tikka,Grilled Paneer Tikka,"dinner,snack",veg,indian,IN,1,0.5,2,0.5,serving,30,medium,30,dairy
+d-veg-paneer-soup,Vegetable Soup with Paneer,dinner,veg,indian,IN,1,0.5,2,0.5,bowl,12,easy,20,dairy
+d-methi-thepla-curd,Methi Thepla with Curd,"dinner,breakfast",veg,indian,IN,2,1,4,1,piece,5,medium,25,"gluten,dairy"
+d-tandoori-chicken,Tandoori Chicken,dinner,non-veg,indian,IN,1,0.5,2,0.5,serving,40,medium,35,dairy
+d-grilled-fish-veg,Grilled Fish with Vegetables,dinner,non-veg,western,US,1,0.5,2,0.5,serving,34,medium,30,fish
+d-chicken-shorba,Chicken Shorba Soup,"dinner,snack",non-veg,indian,IN,1,0.5,2,0.5,bowl,15,easy,25,
+d-chicken-stirfry,Chicken Stir-fry with Rice,"dinner,lunch",non-veg,asian,CN,1,0.5,2,0.5,serving,33,easy,25,soy
+s-whey-shake,Whey Protein Shake with Milk,"snack,breakfast",veg,western,US,1,0.5,2,0.5,scoop,24,easy,5,dairy
+s-roasted-chana,Roasted Chana,snack,veg,indian,IN,1,0.5,2,0.5,cup,14,easy,5,
+s-peanut-chaat,Peanut Chaat,snack,veg,indian,IN,1,0.5,2,0.5,bowl,12,easy,10,peanut
+s-chaas-nuts,Masala Chaas with Mixed Nuts,snack,veg,indian,IN,1,0.5,2,0.5,serving,8,easy,5,"dairy,nuts"
+s-protein-bar,Protein Bar,snack,veg,western,US,1,1,2,1,piece,20,easy,2,"nuts,dairy"
+s-paneer-cubes,Spiced Paneer Cubes,snack,veg,indian,IN,100,50,200,50,g,0.18,easy,10,dairy
+s-makhana-peanut,Roasted Makhana with Peanuts,snack,veg,indian,IN,1,0.5,2,0.5,bowl,7,easy,10,peanut
+s-hummus-pita,Hummus with Pita,snack,veg,mediterranean,GR,1,0.5,2,0.5,serving,10,easy,10,"gluten,sesame"
+s-turmeric-milk,Turmeric Milk,snack,veg,indian,IN,1,1,2,1,cup,8,easy,5,dairy
+s-chicken-tikka-bites,Chicken Tikka Bites,snack,non-veg,indian,IN,1,0.5,2,0.5,serving,28,medium,25,dairy
