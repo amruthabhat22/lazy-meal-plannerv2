@@ -51,6 +51,7 @@ export interface CsvMealRecord {
   qty_step: number;
   unit: string;
   protein_per_unit: number;
+  kcal_per_unit: number | null;
   difficulty: string | null;
   prep_time_min: number | null;
   allergens: string;
@@ -69,6 +70,7 @@ const REQUIRED_COLUMNS = [
   "qty_step",
   "unit",
   "protein_per_unit",
+  "kcal_per_unit",
   "difficulty",
   "prep_time_min",
   "allergens",
@@ -106,6 +108,7 @@ export function parseMealsCsv(text: string): CsvMealRecord[] {
       qty_step: num("qty_step"),
       unit: get(row, "unit"),
       protein_per_unit: num("protein_per_unit"),
+      kcal_per_unit: get(row, "kcal_per_unit") ? num("kcal_per_unit") : null,
       difficulty: get(row, "difficulty") || null,
       prep_time_min: get(row, "prep_time_min") ? num("prep_time_min") : null,
       allergens: get(row, "allergens"),

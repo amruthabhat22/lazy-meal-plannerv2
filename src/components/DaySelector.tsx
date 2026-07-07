@@ -1,5 +1,5 @@
 import React from "react";
-import { Pressable, ScrollView, Text } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import { ALL_DAYS } from "@/engine/types";
 import type { Day } from "@/engine/types";
 
@@ -13,41 +13,48 @@ const LABELS: Record<Day, string> = {
   sun: "Sun",
 };
 
+/** Equal-width day columns with a goal indicator dot, per the design. */
 export function DaySelector({
   selected,
   onSelect,
+  goalMetByDay,
 }: {
   selected: Day;
   onSelect: (day: Day) => void;
+  goalMetByDay: Partial<Record<Day, boolean>>;
 }) {
   return (
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      style={{ flexGrow: 0 }}
-      contentContainerStyle={{
-        paddingHorizontal: 16,
-        gap: 8,
-        alignItems: "center",
-      }}
-    >
-      {ALL_DAYS.map((day) => (
-        <Pressable
-          key={day}
-          onPress={() => onSelect(day)}
-          className={`rounded-full px-4 py-2 ${
-            selected === day ? "bg-primary" : "bg-gray-100"
-          }`}
-        >
-          <Text
-            className={`font-semibold ${
-              selected === day ? "text-white" : "text-gray-700"
+    <View className="flex-row px-4 pt-3 pb-1 gap-1">
+      {ALL_DAYS.map((day) => {
+        const isSelected = selected === day;
+        const met = goalMetByDay[day];
+        return (
+          <Pressable
+            key={day}
+            onPress={() => onSelect(day)}
+            className={`flex-1 items-center gap-1.5 py-2 rounded-xl ${
+              isSelected ? "bg-primary" : ""
             }`}
           >
-            {LABELS[day]}
-          </Text>
-        </Pressable>
-      ))}
-    </ScrollView>
+            <Text
+              className={`text-[13px] font-semibold ${
+                isSelected ? "text-primary-foreground" : "text-muted-foreground"
+              }`}
+            >
+              {LABELS[day]}
+            </Text>
+            <View
+              className={`h-1.5 w-1.5 rounded-full ${
+                isSelected
+                  ? "bg-primary-foreground"
+                  : met
+                    ? "bg-success"
+                    : "bg-border"
+              }`}
+            />
+          </Pressable>
+        );
+      })}
+    </View>
   );
 }

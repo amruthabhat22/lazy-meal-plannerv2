@@ -14,6 +14,7 @@ export interface MealRow {
   qty_step: number;
   unit: string;
   protein_per_unit: number;
+  kcal_per_unit: number | null;
   difficulty: string | null;
   prep_time_min: number | null;
   allergens: string | null;
@@ -43,6 +44,7 @@ export function rowToMeal(row: MealRow): Meal {
     qty_step: row.qty_step,
     unit: row.unit as Unit,
     protein_per_unit: row.protein_per_unit,
+    kcal_per_unit: row.kcal_per_unit,
     difficulty: (row.difficulty as Difficulty | null) ?? null,
     prep_time_min: row.prep_time_min,
     allergens: splitList(row.allergens),
@@ -63,4 +65,33 @@ export async function getMealById(
     [id],
   );
   return row ? rowToMeal(row) : null;
+}
+
+export interface CustomMealInput {
+  name: string;
+  slot: Slot;
+  diet: Diet;
+  proteinPerUnit: number;
+  kcalPerUnit: number | null;
+}
+
+/**
+ * "Can't find it? Type a dish" — user-created meal, entered manually
+ * (fully offline; no nutrition estimation service). is_custom = 1 rows are
+ * never touched by catalog imports.
+ */
+export async function insertCustomMeal(
+  db: SQLiteDatabase,
+  id: string,
+  input: CustomMealInput,
+): Promise<Meal> {
+  await db.runAsync(
+    `INSERT INTO meals (
+       id, name, slots, diet, cuisine, country, default_qty, min_qty, max_qty,
+       qty_step, unit, protein_per_unit, kcal_per_unit, difficulty,
+       prep_time_min, allergens, is_custom, catalog_version
+     ) VALUES (?, ?, ?, ?, NULL, NULL, 1, 0.5, 3, 0.5, 'serving', ?, ?, NULL, NULL, '', 1, 0)`,
+    [id, input.name, input.slot, input.diet, input.proteinPerUnit, input.kcalPerUnit],
+  );
+  return (await getMealById(db, id))!;
 }

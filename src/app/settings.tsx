@@ -21,12 +21,27 @@ import { getMeta } from "@/db/schema";
 import { buildBackup, restoreBackup, validateBackup } from "@/db/backup";
 import { usePrefsStore } from "@/state/usePrefsStore";
 import { usePlanStore } from "@/state/usePlanStore";
+import { CUISINES } from "@/utils/cuisines";
 
 const DIETS: { value: Diet; label: string }[] = [
-  { value: "veg", label: "Veg" },
-  { value: "egg", label: "Egg" },
-  { value: "non-veg", label: "Non-veg" },
+  { value: "veg", label: "Vegetarian" },
+  { value: "egg", label: "Eggetarian" },
+  { value: "non-veg", label: "Non-Veg" },
 ];
+
+const MEALS: { value: 2 | 3 | 4; label: string }[] = [
+  { value: 2, label: "2 meals" },
+  { value: 3, label: "3 meals" },
+  { value: 4, label: "4 + snack" },
+];
+
+function SectionLabel({ children }: { children: string }) {
+  return (
+    <Text className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground mb-2 mt-4">
+      {children}
+    </Text>
+  );
+}
 
 export default function Settings() {
   const db = useSQLiteContext();
@@ -37,9 +52,12 @@ export default function Settings() {
   const regenerate = usePlanStore((s) => s.regenerate);
 
   const [diet, setDiet] = useState<Diet>(prefs?.diet ?? "veg");
-  const [goalText, setGoalText] = useState(String(prefs?.proteinGoal ?? 90));
-  const [mealsPerDay, setMealsPerDay] = useState<3 | 4>(
+  const [goalText, setGoalText] = useState(String(prefs?.proteinGoal ?? 120));
+  const [mealsPerDay, setMealsPerDay] = useState<2 | 3 | 4>(
     prefs?.mealsPerDay ?? 3,
+  );
+  const [cuisines, setCuisines] = useState<Set<string>>(
+    new Set(prefs?.cuisines ?? []),
   );
   const [catalogVersion, setCatalogVersion] = useState("–");
 
@@ -51,11 +69,25 @@ export default function Settings() {
 
   const goal = Number(goalText);
   const goalValid = Number.isFinite(goal) && goal >= 20 && goal <= 400;
+  const cuisinesEqual =
+    prefs !== null &&
+    cuisines.size === prefs.cuisines.length &&
+    prefs.cuisines.every((c) => cuisines.has(c));
   const dirty =
     prefs !== null &&
     (diet !== prefs.diet ||
       (goalValid && goal !== prefs.proteinGoal) ||
-      mealsPerDay !== prefs.mealsPerDay);
+      mealsPerDay !== prefs.mealsPerDay ||
+      !cuisinesEqual);
+
+  const toggleCuisine = (slug: string) => {
+    setCuisines((prev) => {
+      const next = new Set(prev);
+      if (next.has(slug)) next.delete(slug);
+      else next.add(slug);
+      return next;
+    });
+  };
 
   const save = async () => {
     if (!goalValid) {
@@ -66,35 +98,32 @@ export default function Settings() {
       diet,
       proteinGoal: goal,
       mealsPerDay,
+      cuisines: [...cuisines],
     });
     // Spec 5.6: editing regenerates nothing automatically; prompt instead.
-    Alert.alert(
-      "Settings saved",
-      "Regenerate this week with new settings?",
-      [
-        { text: "Keep current plan", style: "cancel" },
-        {
-          text: "Regenerate",
-          onPress: () => {
-            regenerate(db, saved).catch((e) => {
-              if (e instanceof CatalogTooSmallError) {
-                Alert.alert(
-                  "Not enough meals",
-                  "We couldn't fill every slot with these settings.",
-                );
-              }
-            });
-          },
+    Alert.alert("Settings saved", "Regenerate this week with new settings?", [
+      { text: "Keep current plan", style: "cancel" },
+      {
+        text: "Regenerate",
+        onPress: () => {
+          regenerate(db, saved).catch((e) => {
+            if (e instanceof CatalogTooSmallError) {
+              Alert.alert(
+                "Not enough meals",
+                "We couldn't fill every slot with these settings.",
+              );
+            }
+          });
         },
-      ],
-    );
+      },
+    ]);
   };
 
   const exportBackup = async () => {
     const backup = await buildBackup(db);
-    const path = `${FileSystem.cacheDirectory}lazy-meal-planner-backup-${
-      new Date().toISOString().slice(0, 10)
-    }.json`;
+    const path = `${FileSystem.cacheDirectory}lazy-meal-planner-backup-${new Date()
+      .toISOString()
+      .slice(0, 10)}.json`;
     await FileSystem.writeAsStringAsync(path, JSON.stringify(backup, null, 2));
     if (await Sharing.isAvailableAsync()) {
       await Sharing.shareAsync(path, { mimeType: "application/json" });
@@ -148,104 +177,127 @@ export default function Settings() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50">
-      <View className="flex-row items-center justify-between px-4 pt-2 pb-3">
+    <SafeAreaView className="flex-1 bg-background">
+      <View className="flex-row items-center justify-between px-5 pt-4 pb-2">
+        <Text className="text-2xl font-bold tracking-tight text-foreground">
+          Settings
+        </Text>
         <Pressable onPress={() => router.back()} hitSlop={8}>
-          <Text className="text-base text-primary font-semibold">‹ Back</Text>
+          <Text className="text-sm font-semibold text-primary">Done</Text>
         </Pressable>
-        <Text className="text-xl font-bold text-gray-900">Settings</Text>
-        <View style={{ width: 48 }} />
       </View>
 
       <ScrollView
         className="flex-1"
-        contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 48 }}
+        contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 48 }}
       >
-        <Text className="text-sm font-bold text-gray-500 uppercase mb-2 mt-2">
-          Diet
-        </Text>
-        <View className="flex-row gap-2 mb-4">
+        <SectionLabel>Diet</SectionLabel>
+        <View className="flex-row gap-2">
           {DIETS.map((d) => (
             <Pressable
               key={d.value}
               onPress={() => setDiet(d.value)}
-              className={`flex-1 rounded-xl border-2 p-3 items-center ${
-                diet === d.value
-                  ? "border-primary bg-green-50"
-                  : "border-gray-200 bg-white"
+              className={`flex-1 rounded-xl border-2 py-3 items-center bg-card ${
+                diet === d.value ? "border-primary" : "border-border"
               }`}
             >
-              <Text className="font-semibold text-gray-900">{d.label}</Text>
-            </Pressable>
-          ))}
-        </View>
-
-        <Text className="text-sm font-bold text-gray-500 uppercase mb-2">
-          Daily protein goal (g)
-        </Text>
-        <TextInput
-          className="rounded-xl border-2 border-gray-200 bg-white p-3 text-lg mb-4"
-          keyboardType="number-pad"
-          value={goalText}
-          onChangeText={setGoalText}
-        />
-
-        <Text className="text-sm font-bold text-gray-500 uppercase mb-2">
-          Meals per day
-        </Text>
-        <View className="flex-row gap-2 mb-6">
-          {([3, 4] as const).map((n) => (
-            <Pressable
-              key={n}
-              onPress={() => setMealsPerDay(n)}
-              className={`flex-1 rounded-xl border-2 p-3 items-center ${
-                mealsPerDay === n
-                  ? "border-primary bg-green-50"
-                  : "border-gray-200 bg-white"
-              }`}
-            >
-              <Text className="font-semibold text-gray-900">
-                {n === 3 ? "3 meals" : "4 (with snack)"}
+              <Text className="text-sm font-semibold text-foreground">
+                {d.label}
               </Text>
             </Pressable>
           ))}
         </View>
 
+        <SectionLabel>Daily protein goal (g)</SectionLabel>
+        <TextInput
+          className="rounded-xl border-2 border-border bg-card px-4 py-3 text-base text-foreground"
+          keyboardType="number-pad"
+          value={goalText}
+          onChangeText={setGoalText}
+        />
+
+        <SectionLabel>Meals per day</SectionLabel>
+        <View className="flex-row gap-2">
+          {MEALS.map((m) => (
+            <Pressable
+              key={m.value}
+              onPress={() => setMealsPerDay(m.value)}
+              className={`flex-1 rounded-xl border-2 py-3 items-center bg-card ${
+                mealsPerDay === m.value ? "border-primary" : "border-border"
+              }`}
+            >
+              <Text className="text-sm font-semibold text-foreground">
+                {m.label}
+              </Text>
+            </Pressable>
+          ))}
+        </View>
+
+        <SectionLabel>Cuisine preferences</SectionLabel>
+        <View className="flex-row flex-wrap gap-2">
+          {CUISINES.map((c) => {
+            const selected = cuisines.has(c.slug);
+            return (
+              <Pressable
+                key={c.slug}
+                onPress={() => toggleCuisine(c.slug)}
+                className={`rounded-full border px-3.5 py-2 ${
+                  selected ? "border-primary bg-primary" : "border-border bg-card"
+                }`}
+              >
+                <Text
+                  className={`text-[13px] font-medium ${
+                    selected ? "text-primary-foreground" : "text-foreground"
+                  }`}
+                >
+                  {c.label}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </View>
+
         <Pressable
           onPress={() => void save()}
           disabled={!dirty}
-          className={`rounded-2xl p-4 items-center mb-8 ${
-            dirty ? "bg-primary" : "bg-gray-200"
+          className={`h-12 rounded-xl items-center justify-center mt-6 ${
+            dirty ? "bg-primary" : "bg-secondary"
           }`}
         >
-          <Text className="text-white font-semibold text-base">
+          <Text
+            className={`text-sm font-semibold ${
+              dirty ? "text-primary-foreground" : "text-muted-foreground"
+            }`}
+          >
             Save changes
           </Text>
         </Pressable>
 
-        <Text className="text-sm font-bold text-gray-500 uppercase mb-2">
-          Backup
-        </Text>
+        <SectionLabel>Backup</SectionLabel>
         <Pressable
           onPress={() => void exportBackup()}
-          className="rounded-xl bg-white border border-gray-200 p-4 mb-2"
+          className="rounded-2xl border border-border bg-card p-4 mb-2"
         >
-          <Text className="font-semibold text-gray-900">Export backup</Text>
-          <Text className="text-sm text-muted mt-0.5">
+          <Text className="text-sm font-semibold text-foreground">
+            Export backup
+          </Text>
+          <Text className="text-xs text-muted-foreground mt-0.5">
             Share a JSON file with your plans and preferences
           </Text>
         </Pressable>
         <Pressable
           onPress={() => void importBackup()}
-          className="rounded-xl bg-white border border-gray-200 p-4 mb-8"
+          className="rounded-2xl border border-border bg-card p-4"
         >
-          <Text className="font-semibold text-gray-900">Import backup</Text>
-          <Text className="text-sm text-muted mt-0.5">
+          <Text className="text-sm font-semibold text-foreground">
+            Import backup
+          </Text>
+          <Text className="text-xs text-muted-foreground mt-0.5">
             Restore from a backup file (overwrites current data)
           </Text>
         </Pressable>
 
-        <Text className="text-center text-sm text-muted">
+        <Text className="text-center text-xs text-muted-foreground mt-8">
           App version {Constants.expoConfig?.version ?? "1.0.0"} · Catalog
           version {catalogVersion}
         </Text>

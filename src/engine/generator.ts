@@ -34,6 +34,8 @@ export interface WeekState {
   slots: Slot[];
   /** Every planned meal currently known for the week. */
   planned: PlannedMeal[];
+  /** Preferred cuisines (soft boost). Optional; empty = no preference. */
+  cuisinePrefs?: string[];
 }
 
 export interface Candidate {
@@ -128,6 +130,9 @@ export function getCandidates(
     slotsLeftIncludingThis,
     usedYesterday,
     weeklyCount,
+    cuisinePrefs: new Set(
+      (state.cuisinePrefs ?? []).map((c) => c.toLowerCase()),
+    ),
   };
   return pool
     .map((meal) => ({ meal, score: scoreMeal(meal, ctx, config, rng) }))
@@ -271,6 +276,7 @@ export function generateWeek(
     proteinGoal: input.proteinGoal,
     slots: input.slots,
     planned,
+    cuisinePrefs: input.cuisinePrefs,
   };
 
   for (const day of input.days) {

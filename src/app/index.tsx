@@ -11,13 +11,12 @@ import type { Day, Meal, Slot } from "@/engine/types";
 import { usePrefsStore, slotsForPrefs } from "@/state/usePrefsStore";
 import { usePlanStore } from "@/state/usePlanStore";
 import { DaySelector } from "@/components/DaySelector";
-import { ProteinBar } from "@/components/ProteinBar";
+import { StatCard } from "@/components/StatCard";
 import { MealCard } from "@/components/MealCard";
 import { SwapSheet } from "@/components/SwapSheet";
 import { MealInfoSheet } from "@/components/MealInfoSheet";
 
 function todayAsDay(): Day {
-  // getDay(): 0 = Sunday ... 6 = Saturday
   const map: Day[] = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
   return map[new Date().getDay()];
 }
@@ -30,6 +29,7 @@ export default function WeekPlan() {
   const regenerate = usePlanStore((s) => s.regenerate);
   const setQuantity = usePlanStore((s) => s.setQuantity);
   const swap = usePlanStore((s) => s.swap);
+  const swapToCustom = usePlanStore((s) => s.swapToCustom);
 
   const [selectedDay, setSelectedDay] = useState<Day>(todayAsDay());
   const [swapTarget, setSwapTarget] = useState<{ day: Day; slot: Slot } | null>(
@@ -46,6 +46,21 @@ export default function WeekPlan() {
     () => new Map(catalog.map((m) => [m.id, m])),
     [catalog],
   );
+
+  const goalMetByDay = useMemo(() => {
+    if (!prefs) return {};
+    const result: Partial<Record<Day, boolean>> = {};
+    for (const day of ALL_DAYS) {
+      const total = planMeals
+        .filter((pm) => pm.day === day)
+        .reduce((sum, pm) => {
+          const meal = mealById.get(pm.mealId);
+          return sum + (meal ? meal.protein_per_unit * pm.quantity : 0);
+        }, 0);
+      result[day] = total >= prefs.proteinGoal * 0.9;
+    }
+    return result;
+  }, [planMeals, mealById, prefs]);
 
   if (!prefs) return <Redirect href="/onboarding" />;
 
@@ -64,6 +79,10 @@ export default function WeekPlan() {
     (sum, { pm, meal }) => sum + meal.protein_per_unit * pm.quantity,
     0,
   );
+  const dayKcal = dayMeals.reduce(
+    (sum, { pm, meal }) => sum + (meal.kcal_per_unit ?? 0) * pm.quantity,
+    0,
+  );
 
   const swapCandidates = useMemo(() => {
     if (!swapTarget || !prefs) return [];
@@ -79,6 +98,7 @@ export default function WeekPlan() {
         proteinGoal: prefs.proteinGoal,
         slots: slotsForPrefs(prefs),
         planned: planMeals,
+        cuisinePrefs: prefs.cuisines,
       },
       { excludeMealId: current?.mealId },
     );
@@ -101,96 +121,124 @@ export default function WeekPlan() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50">
-      <View className="flex-row items-center justify-between px-4 pt-2 pb-3">
-        <Text className="text-2xl font-bold text-gray-900 flex-1" numberOfLines={1}>
-          Your Week
-        </Text>
-        <View className="flex-row gap-2">
+    <SafeAreaView className="flex-1 bg-background">
+      <View className="flex-row items-center justify-between px-5 pt-4 pb-2">
+        <View className="flex-1 min-w-0">
+          <Text className="text-2xl font-bold tracking-tight text-foreground">
+            Your week
+          </Text>
+          <Text className="text-[13px] text-muted-foreground mt-0.5">
+            {Math.round(prefs.proteinGoal)}g protein · {slots.length} meals a day
+          </Text>
+        </View>
+        <View className="flex-row items-center gap-2">
           <Pressable
             onPress={() => void runRegenerate([...ALL_DAYS])}
             hitSlop={6}
-            className="rounded-full bg-gray-100 px-3 py-2"
+            className="h-8 px-3 rounded-full border border-primary/40 bg-primary/5 items-center justify-center"
           >
-            <Text className="text-sm font-semibold text-gray-700">
-              ↻ Week
-            </Text>
+            <Text className="text-xs font-semibold text-primary">↻ Week</Text>
           </Pressable>
           <Link href="/grocery" asChild>
-            <Pressable hitSlop={6} className="rounded-full bg-gray-100 px-3 py-2">
-              <Text className="text-sm font-semibold text-gray-700">🛒</Text>
+            <Pressable
+              hitSlop={6}
+              className="h-8 w-8 rounded-full bg-secondary items-center justify-center"
+            >
+              <Text className="text-xs">🛒</Text>
             </Pressable>
           </Link>
           <Link href="/settings" asChild>
-            <Pressable hitSlop={6} className="rounded-full bg-gray-100 px-3 py-2">
-              <Text className="text-sm font-semibold text-gray-700">⚙️</Text>
+            <Pressable
+              hitSlop={6}
+              className="h-8 w-8 rounded-full bg-secondary items-center justify-center"
+            >
+              <Text className="text-xs">⚙️</Text>
             </Pressable>
           </Link>
         </View>
       </View>
 
-      <DaySelector selected={selectedDay} onSelect={setSelectedDay} />
-      <ProteinBar total={dayProtein} goal={prefs.proteinGoal} />
+      <DaySelector
+        selected={selectedDay}
+        onSelect={setSelectedDay}
+        goalMetByDay={goalMetByDay}
+      />
 
       <ScrollView
         className="flex-1"
-        contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 32 }}
+        contentContainerStyle={{ paddingBottom: 32 }}
       >
-        {dayMeals.map(({ pm, meal }) => (
-          <MealCard
-            key={pm.slot}
-            slot={pm.slot}
-            meal={meal}
-            quantity={pm.quantity}
-            onIncrease={() =>
-              setQuantity(
-                db,
-                pm.day,
-                pm.slot,
-                Math.min(meal.max_qty, pm.quantity + meal.qty_step),
-              )
-            }
-            onDecrease={() =>
-              setQuantity(
-                db,
-                pm.day,
-                pm.slot,
-                Math.max(meal.min_qty, pm.quantity - meal.qty_step),
-              )
-            }
-            onSwap={() => {
-              setSwapTarget({ day: pm.day, slot: pm.slot });
-              swapSheetRef.current?.present();
-            }}
-            onLongPress={() => {
-              setInfoTarget({ meal, quantity: pm.quantity });
-              infoSheetRef.current?.present();
-            }}
-          />
-        ))}
+        <StatCard protein={dayProtein} proteinGoal={prefs.proteinGoal} kcal={dayKcal} />
 
-        {dayMeals.length === 0 ? (
-          <View className="items-center mt-16">
-            <Text className="text-muted mb-4">No meals for this day yet.</Text>
-          </View>
-        ) : null}
+        <View className="px-4 pt-4">
+          {dayMeals.map(({ pm, meal }) => (
+            <MealCard
+              key={pm.slot}
+              slot={pm.slot}
+              meal={meal}
+              quantity={pm.quantity}
+              onIncrease={() =>
+                setQuantity(
+                  db,
+                  pm.day,
+                  pm.slot,
+                  Math.min(meal.max_qty, pm.quantity + meal.qty_step),
+                )
+              }
+              onDecrease={() =>
+                setQuantity(
+                  db,
+                  pm.day,
+                  pm.slot,
+                  Math.max(meal.min_qty, pm.quantity - meal.qty_step),
+                )
+              }
+              onSwap={() => {
+                setSwapTarget({ day: pm.day, slot: pm.slot });
+                swapSheetRef.current?.present();
+              }}
+              onLongPress={() => {
+                setInfoTarget({ meal, quantity: pm.quantity });
+                infoSheetRef.current?.present();
+              }}
+            />
+          ))}
 
-        <Pressable
-          onPress={() => void runRegenerate([selectedDay])}
-          className="rounded-2xl border border-gray-200 bg-white p-4 items-center"
-        >
-          <Text className="font-semibold text-gray-700">
-            ↻ Regenerate this day
-          </Text>
-        </Pressable>
+          {dayMeals.length === 0 ? (
+            <View className="items-center mt-16">
+              <Text className="text-muted-foreground mb-4">
+                No meals for this day yet.
+              </Text>
+            </View>
+          ) : null}
+
+          <Pressable
+            onPress={() => void runRegenerate([selectedDay])}
+            className="h-12 rounded-xl border border-dashed border-border bg-secondary/30 items-center justify-center mt-1"
+          >
+            <Text className="text-sm font-semibold text-foreground/80">
+              ↻ Regenerate this day
+            </Text>
+          </Pressable>
+        </View>
       </ScrollView>
 
       <SwapSheet
         ref={swapSheetRef}
         candidates={swapCandidates}
+        slot={swapTarget?.slot ?? "lunch"}
+        diet={prefs.diet}
         onPick={(meal) => {
           if (swapTarget) {
             swap(db, swapTarget.day, swapTarget.slot, meal);
+            void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          }
+          swapSheetRef.current?.dismiss();
+          setSwapTarget(null);
+        }}
+        onAddCustom={async (input) => {
+          if (swapTarget) {
+            await swapToCustom(db, swapTarget.day, swapTarget.slot, input);
             void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
           }
           swapSheetRef.current?.dismiss();

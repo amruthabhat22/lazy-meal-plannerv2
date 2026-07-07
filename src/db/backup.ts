@@ -13,6 +13,7 @@ export interface BackupV1 {
     diet: string;
     protein_goal: number;
     meals_per_day: number;
+    cuisines?: string[];
   } | null;
   week_plans: {
     id: string;
@@ -69,6 +70,7 @@ export async function buildBackup(db: SQLiteDatabase): Promise<BackupV1> {
           diet: prefs.diet,
           protein_goal: prefs.proteinGoal,
           meals_per_day: prefs.mealsPerDay,
+          cuisines: prefs.cuisines,
         }
       : null,
     week_plans: weekPlans,
@@ -169,10 +171,12 @@ export async function restoreBackup(
   });
 
   if (backup.preferences) {
+    const mpd = backup.preferences.meals_per_day;
     await savePreferences(db, {
       diet: backup.preferences.diet as "veg" | "egg" | "non-veg",
       proteinGoal: backup.preferences.protein_goal,
-      mealsPerDay: backup.preferences.meals_per_day === 4 ? 4 : 3,
+      mealsPerDay: mpd === 2 || mpd === 4 ? mpd : 3,
+      cuisines: backup.preferences.cuisines ?? [],
     });
   }
 

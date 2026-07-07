@@ -117,12 +117,16 @@ Rules that keep updates safe:
 
 ### 5.2 CSV columns
 
-`id,name,slots,diet,cuisine,country,default_qty,min_qty,max_qty,qty_step,unit,protein_per_unit,difficulty,prep_time_min,allergens`
+`id,name,slots,diet,cuisine,country,default_qty,min_qty,max_qty,qty_step,unit,protein_per_unit,kcal_per_unit,difficulty,prep_time_min,allergens`
 
 - `slots`: comma-separated, quoted — e.g. `"breakfast,dinner"`. Valid values:
   breakfast, lunch, dinner, snack.
 - `diet`: `veg` | `egg` | `non-veg`. Visibility is hierarchical: veg users see
   only veg; egg users see veg+egg; non-veg users see everything.
+- `cuisine`: slug matching `src/utils/cuisines.ts` (south-indian,
+  north-indian, american, chinese, mediterranean, …) — used for the soft
+  preference boost.
+- `kcal_per_unit`: calories per 1 unit, display-only (may be empty).
 - `unit`: g, ml, piece, bowl, serving, scoop, slice, cup.
 - `protein_per_unit`: grams of protein per **1 unit** (e.g. per piece, per
   bowl, per gram for `unit=g`).

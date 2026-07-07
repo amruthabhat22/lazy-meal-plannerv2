@@ -28,67 +28,95 @@ export function MealCard({
   onLongPress: () => void;
 }) {
   const protein = meal.protein_per_unit * quantity;
+  const kcal = meal.kcal_per_unit != null ? meal.kcal_per_unit * quantity : null;
   const canIncrease = quantity + meal.qty_step <= meal.max_qty + 1e-9;
   const canDecrease = quantity - meal.qty_step >= meal.min_qty - 1e-9;
 
   return (
     <Pressable
       onLongPress={onLongPress}
-      className="rounded-2xl bg-white border border-gray-200 p-4 mb-3"
+      className="rounded-2xl border border-border bg-card p-3 mb-2.5"
+      style={{
+        shadowColor: "#503c28",
+        shadowOpacity: 0.08,
+        shadowRadius: 9,
+        shadowOffset: { width: 0, height: 4 },
+        elevation: 2,
+      }}
     >
-      <View className="flex-row justify-between items-start">
-        <View className="flex-1 pr-3">
-          <Text className="text-xs font-semibold text-primary uppercase mb-1">
+      <View className="flex-row items-start justify-between gap-2">
+        <View className="flex-1 min-w-0">
+          <Text className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
             {SLOT_LABELS[slot]}
           </Text>
-          <Text className="text-lg font-semibold text-gray-900">
+          <Text className="text-[15px] font-semibold text-foreground leading-tight mt-0.5">
             {meal.name}
           </Text>
-          <Text className="text-sm text-muted mt-0.5">
-            {formatQty(quantity, meal.unit)} · {formatProtein(protein)} protein
+          <Text className="text-[13px] text-muted-foreground mt-0.5">
+            {formatQty(quantity, meal.unit)}
           </Text>
         </View>
         <Pressable
           onPress={onSwap}
-          hitSlop={8}
-          className="rounded-full bg-gray-100 px-3 py-2"
+          hitSlop={6}
+          className="h-9 px-3 rounded-full items-center justify-center bg-primary/10"
         >
-          <Text className="text-sm font-semibold text-gray-700">Swap</Text>
+          <Text className="text-sm font-semibold text-primary">Swap</Text>
         </Pressable>
       </View>
 
-      <View className="flex-row items-center mt-3">
-        <Pressable
-          onPress={onDecrease}
-          disabled={!canDecrease}
-          hitSlop={8}
-          className={`w-10 h-10 rounded-full items-center justify-center ${
-            canDecrease ? "bg-gray-100" : "bg-gray-50"
-          }`}
-        >
-          <Text
-            className={`text-xl font-bold ${canDecrease ? "text-gray-800" : "text-gray-300"}`}
+      <View className="mt-2 flex-row items-center justify-between gap-2">
+        <View className="flex-row flex-wrap items-center gap-1.5 flex-1">
+          <View className="rounded-full bg-secondary px-2 py-0.5">
+            <Text className="text-[11px] font-semibold text-foreground/80 tabular-nums">
+              {formatProtein(protein)} protein
+            </Text>
+          </View>
+          {kcal != null ? (
+            <View className="rounded-full bg-accent/60 px-2 py-0.5">
+              <Text className="text-[11px] font-semibold text-accent-foreground tabular-nums">
+                {Math.round(kcal)} kcal
+              </Text>
+            </View>
+          ) : null}
+        </View>
+        <View className="flex-row items-center gap-1">
+          <Pressable
+            onPress={onDecrease}
+            disabled={!canDecrease}
+            hitSlop={8}
+            className={`h-8 w-8 rounded-full items-center justify-center ${
+              canDecrease ? "bg-secondary" : "bg-secondary/40"
+            }`}
           >
-            −
+            <Text
+              className={`text-base font-bold ${
+                canDecrease ? "text-foreground" : "text-muted-foreground/40"
+              }`}
+            >
+              −
+            </Text>
+          </Pressable>
+          <Text className="w-9 text-center text-sm font-semibold text-foreground tabular-nums">
+            {quantity % 1 === 0 ? quantity : quantity.toFixed(1)}
           </Text>
-        </Pressable>
-        <Text className="mx-4 text-base font-medium text-gray-900 min-w-[80px] text-center">
-          {formatQty(quantity, meal.unit)}
-        </Text>
-        <Pressable
-          onPress={onIncrease}
-          disabled={!canIncrease}
-          hitSlop={8}
-          className={`w-10 h-10 rounded-full items-center justify-center ${
-            canIncrease ? "bg-gray-100" : "bg-gray-50"
-          }`}
-        >
-          <Text
-            className={`text-xl font-bold ${canIncrease ? "text-gray-800" : "text-gray-300"}`}
+          <Pressable
+            onPress={onIncrease}
+            disabled={!canIncrease}
+            hitSlop={8}
+            className={`h-8 w-8 rounded-full items-center justify-center ${
+              canIncrease ? "bg-secondary" : "bg-secondary/40"
+            }`}
           >
-            +
-          </Text>
-        </Pressable>
+            <Text
+              className={`text-base font-bold ${
+                canIncrease ? "text-foreground" : "text-muted-foreground/40"
+              }`}
+            >
+              +
+            </Text>
+          </Pressable>
+        </View>
       </View>
     </Pressable>
   );

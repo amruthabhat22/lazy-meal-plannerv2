@@ -9,7 +9,7 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import { parseMealsCsv } from "./csv";
 
-const CATALOG_VERSION = 1;
+const CATALOG_VERSION = 2;
 
 const root = path.resolve(__dirname, "..");
 const csvPath = path.join(root, "data", "meals.csv");

@@ -30,6 +30,7 @@ function makeMeal(overrides: Partial<Meal> = {}): Meal {
     qty_step: 0.5,
     unit: "serving",
     protein_per_unit: 20,
+    kcal_per_unit: 300,
     difficulty: "easy",
     prep_time_min: 15,
     allergens: [],
@@ -281,6 +282,61 @@ describe("single-day regeneration", () => {
       for (const c of Object.values(counts)) {
         expect(c).toBeLessThanOrEqual(DEFAULT_CONFIG.weeklyCap);
       }
+    }
+  });
+});
+
+describe("cuisine preference boost", () => {
+  it("prefers preferred-cuisine meals when protein fit is equal", () => {
+    // Two identical pools except cuisine; preference should dominate picks.
+    const preferred = Array.from({ length: 14 }, () =>
+      makeMeal({ cuisine: "south-indian" }),
+    );
+    const other = Array.from({ length: 14 }, () =>
+      makeMeal({ cuisine: "mexican" }),
+    );
+    const meals = [...preferred, ...other];
+    const preferredIds = new Set(preferred.map((m) => m.id));
+
+    let preferredPicks = 0;
+    let total = 0;
+    for (let seed = 0; seed < 50; seed++) {
+      const plan = generateWeek(
+        baseInput({ meals, cuisinePrefs: ["south-indian"], rngSeed: seed }),
+      );
+      for (const pm of plan) {
+        total++;
+        if (preferredIds.has(pm.mealId)) preferredPicks++;
+      }
+    }
+    // Soft boost, not a hard rule: clearly favored but not exclusive.
+    expect(preferredPicks / total).toBeGreaterThan(0.6);
+    expect(preferredPicks / total).toBeLessThan(1);
+  });
+
+  it("no preference set means no effect on determinism", () => {
+    const meals = makeCatalog();
+    const a = generateWeek(baseInput({ meals, cuisinePrefs: [] }));
+    const b = generateWeek(baseInput({ meals }));
+    expect(a).toEqual(b);
+  });
+});
+
+describe("2 meals per day", () => {
+  it("fills exactly lunch and dinner and repair scales portions up", () => {
+    const input = baseInput({
+      slots: ["lunch", "dinner"],
+      proteinGoal: 90,
+    });
+    const plan = generateWeek(input);
+    expect(plan).toHaveLength(14);
+    for (const pm of plan) {
+      expect(["lunch", "dinner"]).toContain(pm.slot);
+    }
+    for (const day of ALL_DAYS) {
+      const p = proteinOfDay(plan, day, input.meals);
+      expect(p).toBeGreaterThanOrEqual(90 * 0.9 - 1e-9);
+      expect(p).toBeLessThanOrEqual(90 * 1.1 + 1e-9);
     }
   });
 });

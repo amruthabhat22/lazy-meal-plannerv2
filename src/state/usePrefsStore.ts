@@ -8,9 +8,14 @@ import {
 import type { Slot } from "@/engine/types";
 
 export function slotsForPrefs(prefs: UserPreferences): Slot[] {
-  return prefs.mealsPerDay === 4
-    ? ["breakfast", "lunch", "dinner", "snack"]
-    : ["breakfast", "lunch", "dinner"];
+  switch (prefs.mealsPerDay) {
+    case 2:
+      return ["lunch", "dinner"];
+    case 4:
+      return ["breakfast", "lunch", "dinner", "snack"];
+    default:
+      return ["breakfast", "lunch", "dinner"];
+  }
 }
 
 interface PrefsState {

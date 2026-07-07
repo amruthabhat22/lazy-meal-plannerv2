@@ -6,7 +6,9 @@ export interface UserPreferences {
   id: string;
   diet: Diet;
   proteinGoal: number;
-  mealsPerDay: 3 | 4;
+  mealsPerDay: 2 | 3 | 4;
+  /** Preferred cuisines (soft scoring boost). Empty = no preference. */
+  cuisines: string[];
 }
 
 interface PrefsRow {
@@ -14,6 +16,11 @@ interface PrefsRow {
   diet: string;
   protein_goal: number;
   meals_per_day: number;
+  cuisines: string | null;
+}
+
+function normalizeMealsPerDay(n: number): 2 | 3 | 4 {
+  return n === 2 || n === 4 ? n : 3;
 }
 
 export async function getPreferences(
@@ -27,7 +34,11 @@ export async function getPreferences(
     id: row.id,
     diet: row.diet as Diet,
     proteinGoal: row.protein_goal,
-    mealsPerDay: row.meals_per_day === 4 ? 4 : 3,
+    mealsPerDay: normalizeMealsPerDay(row.meals_per_day),
+    cuisines: (row.cuisines ?? "")
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean),
   };
 }
 
@@ -37,17 +48,18 @@ export async function savePreferences(
 ): Promise<UserPreferences> {
   const existing = await getPreferences(db);
   const now = nowIso();
+  const cuisines = prefs.cuisines.join(",");
   if (existing) {
     await db.runAsync(
-      "UPDATE user_preferences SET diet = ?, protein_goal = ?, meals_per_day = ?, updated_at = ? WHERE id = ?",
-      [prefs.diet, prefs.proteinGoal, prefs.mealsPerDay, now, existing.id],
+      "UPDATE user_preferences SET diet = ?, protein_goal = ?, meals_per_day = ?, cuisines = ?, updated_at = ? WHERE id = ?",
+      [prefs.diet, prefs.proteinGoal, prefs.mealsPerDay, cuisines, now, existing.id],
     );
     return { ...prefs, id: existing.id };
   }
   const id = newId();
   await db.runAsync(
-    "INSERT INTO user_preferences (id, diet, protein_goal, meals_per_day, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)",
-    [id, prefs.diet, prefs.proteinGoal, prefs.mealsPerDay, now, now],
+    "INSERT INTO user_preferences (id, diet, protein_goal, meals_per_day, cuisines, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
+    [id, prefs.diet, prefs.proteinGoal, prefs.mealsPerDay, cuisines, now, now],
   );
   return { ...prefs, id };
 }

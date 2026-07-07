@@ -15,6 +15,7 @@ export interface CatalogMeal {
   qty_step: number;
   unit: string;
   protein_per_unit: number;
+  kcal_per_unit: number | null;
   difficulty: string | null;
   prep_time_min: number | null;
   allergens: string;
@@ -45,8 +46,9 @@ export async function importCatalogIfNewer(
         `INSERT INTO meals (
            id, name, slots, diet, cuisine, country,
            default_qty, min_qty, max_qty, qty_step, unit, protein_per_unit,
-           difficulty, prep_time_min, allergens, is_custom, catalog_version
-         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?)
+           kcal_per_unit, difficulty, prep_time_min, allergens, is_custom,
+           catalog_version
+         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?)
          ON CONFLICT(id) DO UPDATE SET
            name = excluded.name,
            slots = excluded.slots,
@@ -59,6 +61,7 @@ export async function importCatalogIfNewer(
            qty_step = excluded.qty_step,
            unit = excluded.unit,
            protein_per_unit = excluded.protein_per_unit,
+           kcal_per_unit = excluded.kcal_per_unit,
            difficulty = excluded.difficulty,
            prep_time_min = excluded.prep_time_min,
            allergens = excluded.allergens,
@@ -77,6 +80,7 @@ export async function importCatalogIfNewer(
           m.qty_step,
           m.unit,
           m.protein_per_unit,
+          m.kcal_per_unit,
           m.difficulty,
           m.prep_time_min,
           m.allergens,

@@ -26,9 +26,13 @@ network call anywhere** — all data is on-device SQLite, and the meal catalog
 ships bundled in the binary. Keep it that way; adding a network layer is a
 product decision, not a refactor.
 
-Built from a fixed spec (MVP). Explicitly out of scope: meal detail screens,
-custom meal creation, allergen/cuisine filtering, ingredient-level groceries,
-notifications, cloud sync.
+Built from a fixed spec (MVP), then extended with the Lovable visual design
+(warm terracotta/cream, tokens in `tailwind.config.js`) and four post-spec
+features: calories (display-only), cuisine preferences (soft scoring boost),
+a 2-meals-per-day option, and manual custom dishes from the swap sheet.
+Still out of scope: meal detail screens, allergen filtering, ingredient-level
+groceries, notifications, cloud sync, and any AI nutrition estimation (custom
+dishes are entered manually to stay offline).
 
 ## Stack (fixed decisions — do not substitute)
 
@@ -80,6 +84,9 @@ scripts/          build-catalog.ts (CSV→JSON, owns CATALOG_VERSION),
 - Selection = filter → score (proteinFit spreads remaining budget over
   remaining slots) → weighted-random among top 3. Randomness is intentional:
   regenerate must give a *different, comparably good* week each time.
+- Cuisine preference is a SOFT boost (`W_cuisine`), never a filter. Calories
+  (`kcal_per_unit`, nullable) are display-only — the generator must never
+  optimize for them. 2-meals-per-day = `['lunch','dinner']` slots.
 - Protein repair (per day, ±10% band): scale quantities by qty_step within
   min/max, at most one meal replacement, at most two passes, terminates
   always. Unreachable goals are displayed honestly (e.g. "38g / 150g"),

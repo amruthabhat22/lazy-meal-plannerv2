@@ -45,6 +45,9 @@ export default function Grocery() {
     void Haptics.selectionAsync();
   };
 
+  const checkedCount = items.filter((i) => i.isChecked).length;
+  const progress = items.length > 0 ? checkedCount / items.length : 0;
+
   const sections = useMemo(() => {
     const byCategory = new Map<string, GroceryItem[]>();
     for (const item of items) {
@@ -56,38 +59,64 @@ export default function Grocery() {
   }, [items]);
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50">
-      <View className="flex-row items-center justify-between px-4 pt-2 pb-3">
+    <SafeAreaView className="flex-1 bg-background">
+      <View className="flex-row items-center justify-between px-5 pt-4 pb-2">
+        <View className="flex-1 min-w-0">
+          <Text className="text-2xl font-bold tracking-tight text-foreground">
+            Grocery List
+          </Text>
+          <Text className="text-[13px] text-muted-foreground mt-0.5">
+            Auto-generated from your week
+          </Text>
+        </View>
         <Pressable onPress={() => router.back()} hitSlop={8}>
-          <Text className="text-base text-primary font-semibold">‹ Back</Text>
+          <Text className="text-sm font-semibold text-primary">Done</Text>
         </Pressable>
-        <Text className="text-xl font-bold text-gray-900">Grocery List</Text>
-        <View style={{ width: 48 }} />
       </View>
+
+      {items.length > 0 ? (
+        <View className="px-5 pb-2">
+          <View className="flex-row justify-between mb-1.5">
+            <Text className="text-xs text-muted-foreground">
+              {checkedCount} of {items.length} items checked off
+            </Text>
+            <Pressable onPress={() => void generate()} hitSlop={6}>
+              <Text className="text-xs font-semibold text-primary">Reset</Text>
+            </Pressable>
+          </View>
+          <View className="h-1.5 rounded-full bg-secondary overflow-hidden">
+            <View
+              className="h-1.5 rounded-full bg-success"
+              style={{ width: `${progress * 100}%` }}
+            />
+          </View>
+        </View>
+      ) : null}
 
       <ScrollView
         className="flex-1"
-        contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 32 }}
+        contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 32 }}
       >
-        <Pressable
-          onPress={() => void generate()}
-          className="rounded-2xl bg-primary p-4 items-center mb-4"
-        >
-          <Text className="text-white font-semibold text-base">
-            {items.length ? "Regenerate list" : "Generate list"}
-          </Text>
-        </Pressable>
-
         {items.length === 0 ? (
-          <Text className="text-center text-muted mt-8">
-            Generate a list from your active week plan.
-          </Text>
+          <>
+            <Pressable
+              onPress={() => void generate()}
+              className="h-12 rounded-xl bg-primary items-center justify-center mt-2"
+            >
+              <Text className="text-sm font-semibold text-primary-foreground">
+                Generate list
+              </Text>
+            </Pressable>
+            <Text className="text-center text-sm text-muted-foreground mt-6">
+              Your week's meals become a checklist here.
+            </Text>
+          </>
         ) : null}
 
         {sections.map(([category, list]) => {
           const isCollapsed = collapsed.has(category);
           return (
-            <View key={category} className="mb-3">
+            <View key={category} className="mb-3 mt-2">
               <Pressable
                 onPress={() =>
                   setCollapsed((prev) => {
@@ -99,23 +128,25 @@ export default function Grocery() {
                 }
                 className="flex-row justify-between items-center py-2"
               >
-                <Text className="text-sm font-bold text-gray-500 uppercase">
+                <Text className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
                   {category} ({list.length})
                 </Text>
-                <Text className="text-gray-400">{isCollapsed ? "▸" : "▾"}</Text>
+                <Text className="text-muted-foreground text-xs">
+                  {isCollapsed ? "▸" : "▾"}
+                </Text>
               </Pressable>
               {!isCollapsed &&
                 list.map((item) => (
                   <Pressable
                     key={item.id}
                     onPress={() => toggle(item)}
-                    className="flex-row items-center bg-white rounded-xl border border-gray-200 p-3 mb-2"
+                    className="flex-row items-center rounded-2xl border border-border bg-card p-3 mb-2"
                   >
                     <View
-                      className={`w-6 h-6 rounded-md border-2 mr-3 items-center justify-center ${
+                      className={`w-6 h-6 rounded-lg border-2 mr-3 items-center justify-center ${
                         item.isChecked
-                          ? "bg-primary border-primary"
-                          : "border-gray-300"
+                          ? "bg-success border-success"
+                          : "border-border"
                       }`}
                     >
                       {item.isChecked ? (
@@ -123,17 +154,19 @@ export default function Grocery() {
                       ) : null}
                     </View>
                     <Text
-                      className={`flex-1 text-base ${
+                      className={`flex-1 text-sm font-medium ${
                         item.isChecked
-                          ? "text-gray-400 line-through"
-                          : "text-gray-900"
+                          ? "text-muted-foreground line-through"
+                          : "text-foreground"
                       }`}
                     >
                       {item.name}
                     </Text>
-                    <Text className="text-sm text-muted">
-                      {formatNumber(item.amount)} {item.unit}
-                    </Text>
+                    <View className="rounded-full bg-secondary px-2 py-0.5">
+                      <Text className="text-[11px] font-semibold text-foreground/80 tabular-nums">
+                        {formatNumber(item.amount)} {item.unit}
+                      </Text>
+                    </View>
                   </Pressable>
                 ))}
             </View>

@@ -5,6 +5,8 @@ export interface ScoringContext {
   slotsLeftIncludingThis: number;
   usedYesterday: ReadonlySet<string>;
   weeklyCount: Readonly<Record<string, number>>;
+  /** Lower-cased preferred cuisines. Empty set = no preference. */
+  cuisinePrefs: ReadonlySet<string>;
 }
 
 export function defaultProtein(meal: Meal): number {
@@ -34,10 +36,13 @@ export function scoreMeal(
   const fit = proteinFit(meal, ctx.remainingBudget, ctx.slotsLeftIncludingThis);
   const consecPenalty = ctx.usedYesterday.has(meal.id) ? 1 : 0;
   const repeatCount = ctx.weeklyCount[meal.id] ?? 0;
+  const cuisineBonus =
+    meal.cuisine && ctx.cuisinePrefs.has(meal.cuisine.toLowerCase()) ? 1 : 0;
   return (
     config.W_protein * fit -
     config.W_consec * consecPenalty -
     config.W_repeat * repeatCount +
+    config.W_cuisine * cuisineBonus +
     rng() * config.jitter
   );
 }

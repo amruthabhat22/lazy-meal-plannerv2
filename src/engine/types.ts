@@ -28,6 +28,8 @@ export interface Meal {
   qty_step: number;
   unit: Unit;
   protein_per_unit: number;
+  /** Display-only; the generator never optimizes for calories. */
+  kcal_per_unit: number | null;
   difficulty: Difficulty | null;
   prep_time_min: number | null;
   allergens: string[];
@@ -47,6 +49,8 @@ export interface GeneratorInput {
   slots: Slot[];
   days: Day[];
   existingWeek?: PlannedMeal[];
+  /** Preferred cuisines (soft scoring boost only). Empty = no preference. */
+  cuisinePrefs?: string[];
   rngSeed?: number;
 }
 
@@ -54,6 +58,8 @@ export interface GeneratorConfig {
   W_protein: number;
   W_consec: number;
   W_repeat: number;
+  /** Soft bonus when a meal's cuisine is in the user's preferred set. */
+  W_cuisine: number;
   jitter: number;
   weeklyCap: number;
   repairBand: number; // ±fraction of goal, e.g. 0.1
@@ -64,6 +70,7 @@ export const DEFAULT_CONFIG: GeneratorConfig = {
   W_protein: 10,
   W_consec: 4,
   W_repeat: 2,
+  W_cuisine: 2,
   jitter: 1.5,
   weeklyCap: 2,
   repairBand: 0.1,

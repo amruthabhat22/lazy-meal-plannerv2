@@ -71,6 +71,11 @@ const MIGRATIONS: string[] = [
     value TEXT NOT NULL
   );
   `,
+  // v2: calories on meals (display-only), cuisine preferences on user_preferences.
+  `
+  ALTER TABLE meals ADD COLUMN kcal_per_unit REAL;
+  ALTER TABLE user_preferences ADD COLUMN cuisines TEXT NOT NULL DEFAULT '';
+  `,
 ];
 
 export async function getMeta(

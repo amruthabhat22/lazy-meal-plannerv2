@@ -3,7 +3,12 @@ import type { SQLiteDatabase } from "expo-sqlite";
 import { generateWeek } from "@/engine/generator";
 import { ALL_DAYS } from "@/engine/types";
 import type { Day, Meal, PlannedMeal, Slot } from "@/engine/types";
-import { getAllMeals } from "@/db/repos/mealsRepo";
+import {
+  getAllMeals,
+  insertCustomMeal,
+  type CustomMealInput,
+} from "@/db/repos/mealsRepo";
+import { newId } from "@/utils/ids";
 import {
   createPlan,
   deleteSlotsNotIn,
@@ -41,6 +46,13 @@ interface PlanState {
     slot: Slot,
     meal: Meal,
   ) => void;
+  /** Creates a manual custom meal and swaps it into the slot. */
+  swapToCustom: (
+    db: SQLiteDatabase,
+    day: Day,
+    slot: Slot,
+    input: CustomMealInput,
+  ) => Promise<void>;
 }
 
 export const usePlanStore = create<PlanState>((set, get) => ({
@@ -68,6 +80,7 @@ export const usePlanStore = create<PlanState>((set, get) => ({
       slots,
       days,
       existingWeek: isFullWeek ? undefined : planMeals,
+      cuisinePrefs: prefs.cuisines,
     });
 
     const plan =
@@ -104,5 +117,20 @@ export const usePlanStore = create<PlanState>((set, get) => ({
       ),
     });
     void swapMeal(db, plan.id, day, slot, meal.id, meal.default_qty);
+  },
+
+  swapToCustom: async (db, day, slot, input) => {
+    const { plan, planMeals, catalog } = get();
+    if (!plan) return;
+    const meal = await insertCustomMeal(db, newId(), input);
+    await swapMeal(db, plan.id, day, slot, meal.id, meal.default_qty);
+    set({
+      catalog: [...catalog, meal],
+      planMeals: planMeals.map((pm) =>
+        pm.day === day && pm.slot === slot
+          ? { ...pm, mealId: meal.id, quantity: meal.default_qty }
+          : pm,
+      ),
+    });
   },
 }));
