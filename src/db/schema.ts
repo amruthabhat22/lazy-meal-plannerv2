@@ -76,6 +76,23 @@ const MIGRATIONS: string[] = [
   ALTER TABLE meals ADD COLUMN kcal_per_unit REAL;
   ALTER TABLE user_preferences ADD COLUMN cuisines TEXT NOT NULL DEFAULT '';
   `,
+  // v3: multiple meals per slot — rebuild plan_meals without the
+  // UNIQUE(plan_id, day, slot) constraint (SQLite cannot drop constraints
+  // in place). Non-unique index kept for lookups.
+  `
+  CREATE TABLE plan_meals_v3 (
+    id TEXT PRIMARY KEY,
+    plan_id TEXT NOT NULL REFERENCES week_plans(id) ON DELETE CASCADE,
+    day TEXT NOT NULL,
+    slot TEXT NOT NULL,
+    meal_id TEXT NOT NULL REFERENCES meals(id),
+    quantity REAL NOT NULL
+  );
+  INSERT INTO plan_meals_v3 SELECT id, plan_id, day, slot, meal_id, quantity FROM plan_meals;
+  DROP TABLE plan_meals;
+  ALTER TABLE plan_meals_v3 RENAME TO plan_meals;
+  CREATE INDEX IF NOT EXISTS idx_plan_meals_slot ON plan_meals (plan_id, day, slot);
+  `,
 ];
 
 export async function getMeta(

@@ -2,7 +2,7 @@ import type { SQLiteDatabase } from "expo-sqlite";
 import type { Day, Slot } from "@/engine/types";
 import { newId, nowIso } from "@/utils/ids";
 import { getPreferences, savePreferences } from "./repos/preferencesRepo";
-import { getAllPlans, getPlanMeals } from "./repos/plansRepo";
+import { getAllPlans, getPlanRows } from "./repos/plansRepo";
 import type { MealRow } from "./repos/mealsRepo";
 
 /** Backup format, spec section 7. */
@@ -37,7 +37,7 @@ export async function buildBackup(db: SQLiteDatabase): Promise<BackupV1> {
   const plans = await getAllPlans(db);
   const weekPlans = [];
   for (const plan of plans) {
-    const meals = await getPlanMeals(db, plan.id);
+    const meals = await getPlanRows(db, plan.id);
     weekPlans.push({
       id: plan.id,
       name: plan.name,

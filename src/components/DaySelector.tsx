@@ -13,45 +13,74 @@ const LABELS: Record<Day, string> = {
   sun: "Sun",
 };
 
-/** Equal-width day columns with a goal indicator dot, per the design. */
+/** Dates (day of month) for the current Mon–Sun week. */
+export function currentWeekDates(): Record<Day, number> {
+  const now = new Date();
+  const monday = new Date(now);
+  const weekday = (now.getDay() + 6) % 7; // 0 = Monday
+  monday.setDate(now.getDate() - weekday);
+  const result = {} as Record<Day, number>;
+  ALL_DAYS.forEach((day, i) => {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    result[day] = d.getDate();
+  });
+  return result;
+}
+
+/** Day tabs: label, circular date, protein-status dot (design's day tabs). */
 export function DaySelector({
   selected,
   onSelect,
-  goalMetByDay,
+  proteinRatioByDay,
 }: {
   selected: Day;
   onSelect: (day: Day) => void;
-  goalMetByDay: Partial<Record<Day, boolean>>;
+  proteinRatioByDay: Partial<Record<Day, number>>;
 }) {
+  const dates = React.useMemo(currentWeekDates, []);
   return (
     <View className="flex-row px-4 pt-3 pb-1 gap-1">
       {ALL_DAYS.map((day) => {
-        const isSelected = selected === day;
-        const met = goalMetByDay[day];
+        const isActive = selected === day;
+        const ratio = proteinRatioByDay[day] ?? 0;
+        const dotClass =
+          ratio >= 0.95
+            ? "bg-success"
+            : ratio >= 0.75
+              ? "bg-warning"
+              : ratio > 0
+                ? "bg-muted-foreground/40"
+                : "bg-muted-foreground/20";
         return (
           <Pressable
             key={day}
             onPress={() => onSelect(day)}
-            className={`flex-1 items-center gap-1.5 py-2 rounded-xl ${
-              isSelected ? "bg-primary" : ""
-            }`}
+            className="flex-1 items-center gap-1.5 py-1"
           >
             <Text
-              className={`text-[13px] font-semibold ${
-                isSelected ? "text-primary-foreground" : "text-muted-foreground"
+              className={`text-[11px] font-semibold tracking-wide ${
+                isActive ? "text-foreground" : "text-muted-foreground"
               }`}
             >
               {LABELS[day]}
             </Text>
             <View
-              className={`h-1.5 w-1.5 rounded-full ${
-                isSelected
-                  ? "bg-primary-foreground"
-                  : met
-                    ? "bg-success"
-                    : "bg-border"
+              className={`h-10 w-10 rounded-full items-center justify-center border ${
+                isActive
+                  ? "bg-foreground border-foreground"
+                  : "bg-card border-border"
               }`}
-            />
+            >
+              <Text
+                className={`text-sm font-semibold tabular-nums ${
+                  isActive ? "text-background" : "text-foreground"
+                }`}
+              >
+                {dates[day]}
+              </Text>
+            </View>
+            <View className={`h-1.5 w-1.5 rounded-full ${dotClass}`} />
           </Pressable>
         );
       })}

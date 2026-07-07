@@ -1,5 +1,87 @@
 # Lazy Meal Planner — AI Agent Reference
 
+## ⚠️ HANDOFF: v2 design port IN PROGRESS (read this first)
+
+The app is mid-way through porting the **newer Lovable design** from
+https://github.com/amruthabhat22/lazy-meal-planner (public; clone it — it is
+the design source of truth, a React web app). Rules for the port: **skip
+everything auth-related**, match the design as closely as possible, **do NOT
+replace our meal catalog** (`data/meals.csv` — ours is better than the
+design's mocks). Custom dishes use MANUAL nutrition entry (user decision; the
+design fakes an AI estimate — do not add network calls).
+
+### Already DONE for the v2 port (committed or staged in working tree)
+
+- Migration 3 in `src/db/schema.ts`: plan_meals rebuilt WITHOUT
+  UNIQUE(plan_id,day,slot) → **multiple meals per (day, slot)**.
+- `src/db/repos/plansRepo.ts` rewritten: `PlanRow` (= PlannedMeal + id),
+  `getPlanRows`, `replaceDays`, `updateRowQuantity`, `removeRow`,
+  `replaceRow` (swap → 1..n meals), `appendRows`.
+- `src/state/usePlanStore.ts` rewritten around PlanRow + `MealPick`
+  (catalog | custom) with `swapRow`, `addMeals`, `removeMeal`,
+  `setRowQuantity`.
+- `src/utils/contacts.ts` (WhatsApp share contacts in app_meta JSON),
+  `src/utils/shareMessage.ts` (buildPlanMessage, WhatsApp formatting).
+- Tabs: `src/app/(tabs)/_layout.tsx` + `src/components/BottomNav.tsx`
+  (Week/Grocery/Profile, Feather icons). Screens moved to
+  `(tabs)/index.tsx`, `(tabs)/grocery.tsx`, `(tabs)/profile.tsx`.
+- Components rewritten to v2 design: `DaySelector` (label + circular date +
+  status dot; `currentWeekDates()`), `StatCard` (3xl values, protein
+  color-coded ≥95% success / ≥75% warning / else destructive), `FoodCard`
+  (replaces MealCard; stepper below min removes meal), `SwapSheet`
+  (multi-select checkboxes, mode "swap"|"add", inline custom-dish form,
+  footer CTA "Swap (n)"), `ShareSheet` (contacts + wa.me + native Share).
+- Week screen `(tabs)/index.tsx`: slot SECTIONS (Breakfast/Lunch/Snack/
+  Dinner order, per-slot protein·cal subtitle, "Add meal" pill, snack
+  marked optional), header "Your week 🍲" + regenerate + share buttons.
+- `@expo/vector-icons` installed (use `--legacy-peer-deps` for any install).
+
+### REMAINING work (in order)
+
+1. **Grocery screen** `(tabs)/grocery.tsx`: rebuild to v2 design — sticky
+   header w/ basket icon + Reset pill; progress card (done/total, %,
+   bar: success at 100% / warning ≥50% / primary, encouragement copy);
+   Select all row; category cards with count chips (success tint when
+   complete) + chevron collapse; sticky bottom CTA "Compare Apps and Order"
+   → **new OrderSheet** component (port `src/components/grocery/OrderSheet.tsx`
+   from the cloned design repo: Zepto/Blinkit/Instamart/BigBasket cards,
+   deterministic hash prices in ₹, "Best value" badge, opens app URLs via
+   Linking). Remove the old back/Done button (it's a tab now).
+2. **Profile screen** `(tabs)/profile.tsx`: retitle "Profile", remove the
+   Done button (tab now), keep ALL existing settings content (diet, goal,
+   meals/day incl. 2, cuisines, backup export/import, versions). Skip auth.
+3. **Onboarding** `(onboarding)/onboarding.tsx`: rebuild to 5 steps like the
+   design's OnboardingFlow: 1 diet (icon cards 🥬🥚🍗) · 2 protein (big
+   card, 6xl number, level label <90 Maintenance / <140 Active lifestyle /
+   else Muscle building, slider 60–200 step 5, tip pill) · 3 cuisines
+   (2-col grid cards w/ emoji icons + check circles; slugs in
+   `src/utils/cuisines.ts`) · 4 contacts (optional; add name+phone via
+   `src/utils/contacts.ts`) · 5 meals (2/3/4 icon cards 🌗🍽️✨ + PlanSummary
+   card) — header: back circle btn + "Lazy Meal Planner" + progress bar;
+   fixed bottom CTA "Continue" → "✨ Generate My Week" on last step.
+4. **Cleanup**: delete `src/components/MealCard.tsx` (replaced by FoodCard);
+   `pan-asian` slug in cuisines.ts should become `asian` (design's slug).
+5. **Verify**: `npm run typecheck` && `npm test` (19 tests must pass) &&
+   `npm run validate:catalog`; then run on Android emulator
+   (`npx expo start --android --clear` — ALWAYS --clear after config
+   changes) and screenshot week/swap/grocery/onboarding.
+6. Update the human docs (README/DEVELOPMENT) if behavior described there
+   changed, commit everything, and push (GitHub auth was never completed —
+   run `~/.local/bin/gh auth login --web`, user must enter the device code).
+
+### Design reference material
+
+- Clone https://github.com/amruthabhat22/lazy-meal-planner (React + Tailwind
+  v4 + shadcn). Key files: `src/routes/week.tsx`, `src/routes/grocery.tsx`,
+  `src/components/week/*`, `src/components/grocery/OrderSheet.tsx`,
+  `src/components/onboarding/*`, `src/styles.css` (oklch tokens ≈ our hex
+  tokens in `tailwind.config.js` — already matched, don't redo).
+- Our NativeWind theme (terracotta #a55a37 on cream #fdfaf4) is already in
+  `tailwind.config.js`. Hex constants #a55a37/#291f18/#6c6158/#fefbf8 appear
+  inline where RN needs literal colors (icons, sheet backgrounds).
+
+---
+
 Read this before touching any code. It is the single source of truth for how
 this project works, what its invariants are, and how to verify changes.
 Human-oriented docs: [README.md](README.md) (overview),

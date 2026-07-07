@@ -8,30 +8,36 @@ export interface WeekPlan {
   isActive: boolean;
 }
 
-interface PlanRow {
+/** One plan_meals row. Since v3 a (day, slot) can hold several rows. */
+export interface PlanRow extends PlannedMeal {
   id: string;
-  name: string;
-  is_active: number;
 }
 
-interface PlanMealRow {
+interface PlanRowRecord {
+  id: string;
   day: string;
   slot: string;
   meal_id: string;
   quantity: number;
 }
 
+interface PlanRecord {
+  id: string;
+  name: string;
+  is_active: number;
+}
+
 export async function getActivePlan(
   db: SQLiteDatabase,
 ): Promise<WeekPlan | null> {
-  const row = await db.getFirstAsync<PlanRow>(
+  const row = await db.getFirstAsync<PlanRecord>(
     "SELECT * FROM week_plans WHERE is_active = 1 LIMIT 1",
   );
   return row ? { id: row.id, name: row.name, isActive: true } : null;
 }
 
 export async function getAllPlans(db: SQLiteDatabase): Promise<WeekPlan[]> {
-  const rows = await db.getAllAsync<PlanRow>(
+  const rows = await db.getAllAsync<PlanRecord>(
     "SELECT * FROM week_plans ORDER BY created_at",
   );
   return rows.map((r) => ({
@@ -61,15 +67,16 @@ export async function createPlan(
   return { id, name, isActive: makeActive };
 }
 
-export async function getPlanMeals(
+export async function getPlanRows(
   db: SQLiteDatabase,
   planId: string,
-): Promise<PlannedMeal[]> {
-  const rows = await db.getAllAsync<PlanMealRow>(
-    "SELECT day, slot, meal_id, quantity FROM plan_meals WHERE plan_id = ?",
+): Promise<PlanRow[]> {
+  const rows = await db.getAllAsync<PlanRowRecord>(
+    "SELECT id, day, slot, meal_id, quantity FROM plan_meals WHERE plan_id = ?",
     [planId],
   );
   return rows.map((r) => ({
+    id: r.id,
     day: r.day as Day,
     slot: r.slot as Slot,
     mealId: r.meal_id,
@@ -77,54 +84,109 @@ export async function getPlanMeals(
   }));
 }
 
-/** Upsert a batch of slots. UNIQUE(plan_id, day, slot) makes swap an UPDATE. */
-export async function upsertPlanMeals(
+async function insertRow(
   db: SQLiteDatabase,
   planId: string,
+  pm: PlannedMeal,
+): Promise<PlanRow> {
+  const id = newId();
+  await db.runAsync(
+    "INSERT INTO plan_meals (id, plan_id, day, slot, meal_id, quantity) VALUES (?, ?, ?, ?, ?, ?)",
+    [id, planId, pm.day, pm.slot, pm.mealId, pm.quantity],
+  );
+  return { id, ...pm };
+}
+
+/** Regeneration: wipe the given days and insert the generated meals. */
+export async function replaceDays(
+  db: SQLiteDatabase,
+  planId: string,
+  days: Day[],
   meals: PlannedMeal[],
-): Promise<void> {
+): Promise<PlanRow[]> {
+  const inserted: PlanRow[] = [];
   await db.withTransactionAsync(async () => {
+    const placeholders = days.map(() => "?").join(",");
+    await db.runAsync(
+      `DELETE FROM plan_meals WHERE plan_id = ? AND day IN (${placeholders})`,
+      [planId, ...days],
+    );
     for (const pm of meals) {
-      await db.runAsync(
-        `INSERT INTO plan_meals (id, plan_id, day, slot, meal_id, quantity)
-         VALUES (?, ?, ?, ?, ?, ?)
-         ON CONFLICT(plan_id, day, slot)
-         DO UPDATE SET meal_id = excluded.meal_id, quantity = excluded.quantity`,
-        [newId(), planId, pm.day, pm.slot, pm.mealId, pm.quantity],
-      );
+      inserted.push(await insertRow(db, planId, pm));
     }
     await db.runAsync("UPDATE week_plans SET updated_at = ? WHERE id = ?", [
       nowIso(),
       planId,
     ]);
   });
+  return inserted;
 }
 
-export async function updateQuantity(
+export async function updateRowQuantity(
+  db: SQLiteDatabase,
+  rowId: string,
+  quantity: number,
+): Promise<void> {
+  await db.runAsync("UPDATE plan_meals SET quantity = ? WHERE id = ?", [
+    quantity,
+    rowId,
+  ]);
+}
+
+export async function removeRow(
+  db: SQLiteDatabase,
+  rowId: string,
+): Promise<void> {
+  await db.runAsync("DELETE FROM plan_meals WHERE id = ?", [rowId]);
+}
+
+/** Swap: replace one row with one-or-more meals in the same (day, slot). */
+export async function replaceRow(
+  db: SQLiteDatabase,
+  planId: string,
+  rowId: string,
+  day: Day,
+  slot: Slot,
+  meals: { mealId: string; quantity: number }[],
+): Promise<PlanRow[]> {
+  const inserted: PlanRow[] = [];
+  await db.withTransactionAsync(async () => {
+    await db.runAsync("DELETE FROM plan_meals WHERE id = ?", [rowId]);
+    for (const m of meals) {
+      inserted.push(
+        await insertRow(db, planId, {
+          day,
+          slot,
+          mealId: m.mealId,
+          quantity: m.quantity,
+        }),
+      );
+    }
+  });
+  return inserted;
+}
+
+export async function appendRows(
   db: SQLiteDatabase,
   planId: string,
   day: Day,
   slot: Slot,
-  quantity: number,
-): Promise<void> {
-  await db.runAsync(
-    "UPDATE plan_meals SET quantity = ? WHERE plan_id = ? AND day = ? AND slot = ?",
-    [quantity, planId, day, slot],
-  );
-}
-
-export async function swapMeal(
-  db: SQLiteDatabase,
-  planId: string,
-  day: Day,
-  slot: Slot,
-  mealId: string,
-  quantity: number,
-): Promise<void> {
-  await db.runAsync(
-    "UPDATE plan_meals SET meal_id = ?, quantity = ? WHERE plan_id = ? AND day = ? AND slot = ?",
-    [mealId, quantity, planId, day, slot],
-  );
+  meals: { mealId: string; quantity: number }[],
+): Promise<PlanRow[]> {
+  const inserted: PlanRow[] = [];
+  await db.withTransactionAsync(async () => {
+    for (const m of meals) {
+      inserted.push(
+        await insertRow(db, planId, {
+          day,
+          slot,
+          mealId: m.mealId,
+          quantity: m.quantity,
+        }),
+      );
+    }
+  });
+  return inserted;
 }
 
 /** Removes slots no longer used (e.g. snack after switching to 3 meals/day). */
