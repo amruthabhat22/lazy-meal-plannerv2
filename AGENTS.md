@@ -110,7 +110,7 @@ data is likely stale. Read the exact versioned docs at
 https://docs.expo.dev/versions/v57.0.0/ before writing Expo-related code.
 Notably: `expo-file-system` has a new class-based API (the old one lives at
 `expo-file-system/legacy`, which this project deliberately uses for document
-picking — see `src/app/settings.tsx`), and `expo-sqlite` is the modern async
+picking — see `src/app/(tabs)/profile.tsx`), and `expo-sqlite` is the modern async
 API (`SQLiteProvider` / `getAllAsync` / `runAsync`), never the legacy WebSQL
 one.
 
@@ -158,10 +158,21 @@ src/db/
                   dropped.
 src/state/        Zustand stores. Actions take the SQLite db handle as first
                   arg and persist immediately — the app has NO save button.
-src/app/          Expo Router screens: _layout (SQLiteProvider + migrate +
-                  catalog import + store bootstrap), index (week plan),
-                  (onboarding)/onboarding, grocery, settings.
-src/components/   MealCard, SwapSheet, MealInfoSheet, ProteinBar, DaySelector.
+                  usePlanStore works in PlanRow rows (id per meal, several
+                  per slot) and MealPick (catalog | custom) for swap/add.
+src/app/          Expo Router. _layout: SQLiteProvider + migrate + catalog
+                  import + store bootstrap. (tabs)/: index (week plan),
+                  grocery, profile — custom tab bar via BottomNav.
+                  (onboarding)/onboarding: 5-step flow (diet, protein
+                  slider, cuisines, WhatsApp contacts, meals + summary).
+src/components/   FoodCard (meal row; stepper below min removes it),
+                  SwapSheet (multi-select swap/add + manual custom dish),
+                  ShareSheet (WhatsApp contacts + wa.me + native Share),
+                  OrderSheet (delivery-app price comparison, estimates),
+                  StatCard, DaySelector, BottomNav, MealInfoSheet.
+src/utils/        contacts.ts (share contacts in app_meta JSON),
+                  shareMessage.ts (WhatsApp plan text), cuisines.ts,
+                  grocery.ts, format.ts, ids.ts.
 src/utils/format.ts  The ONLY place quantities/units are formatted for
                   display. Quantities in state/DB are always numeric
                   amount + unit string, never display strings.
@@ -205,7 +216,10 @@ scripts/          build-catalog.ts (CSV→JSON, owns CATALOG_VERSION),
   binding constraint. `validate-catalog` failing is a build blocker.
 - Schema changes: append a new SQL string to `MIGRATIONS` in
   `src/db/schema.ts`. Never edit or reorder shipped entries.
-- `UNIQUE(plan_id, day, slot)` makes swap an UPDATE, not delete+insert.
+- Since migration 3 a (day, slot) holds MULTIPLE plan_meals rows (each with
+  its own id). The generator still fills exactly one meal per slot; extra
+  rows come from the user via "Add meal". Swap replaces one row with 1..n
+  rows. All rule checks (H3/H4, protein totals) already count every row.
 
 ## Verification (run all three before claiming a change works)
 

@@ -178,7 +178,7 @@ The DB file is `lazy-meal-planner.db` in the app's documents directory.
 
 - **Reset everything (Expo Go, Android):** long-press Expo Go → App info →
   Clear storage. Or reinstall. Simulator equivalent on iOS: delete Expo Go.
-- **Easiest data inspection — use the backup:** Settings → Export backup
+- **Easiest data inspection — use the backup:** Profile tab → Export backup
   gives you all plans/preferences/groceries as readable JSON. Usually enough.
 - **Pulling the raw .db file:** store Expo Go is not debuggable, so
   `run-as host.exp.exponent` fails, and Play-Store emulator images refuse
@@ -202,7 +202,7 @@ The DB file is `lazy-meal-planner.db` in the app's documents directory.
 1. Launch the app, create a plan, note a meal.
 2. Edit that meal's protein in `data/meals.csv`, bump `CATALOG_VERSION`,
    `npm run build:catalog`, reload the app.
-3. Expect: new value visible, plan intact, Settings shows the new catalog
+3. Expect: new value visible, plan intact, the Profile tab shows the new catalog
    version. This is acceptance criterion #10.
 
 ---
@@ -210,8 +210,8 @@ The DB file is `lazy-meal-planner.db` in the app's documents directory.
 ## 7. Backups (user-facing export/import)
 
 - Format: JSON, `version: 1` — see `src/db/backup.ts` (`BackupV1`).
-- Export: Settings → Export backup → share sheet (file written to app cache).
-- Import: Settings → Import backup → picker → **explicit overwrite confirm**.
+- Export: Profile tab → Export backup → share sheet (file written to app cache).
+- Import: Profile tab → Import backup → picker → **explicit overwrite confirm**.
   Meal ids not present in the installed catalog are restored as stub
   "Unavailable meal" rows (`is_custom = 1`, 0 protein) so plans stay intact
   and the user can swap them out.
@@ -248,7 +248,8 @@ src/db/         schema.ts (migrations) · repos/ (all SQL) · catalogImport.ts �
 src/state/      Zustand stores; actions take the db handle and persist
                 immediately (there is no save button anywhere).
 src/app/        Expo Router screens. index = week plan.
-src/components/ MealCard, SwapSheet, MealInfoSheet, ProteinBar, DaySelector.
+src/components/ FoodCard, SwapSheet (multi-select), ShareSheet (WhatsApp),
+                OrderSheet, StatCard, DaySelector, BottomNav, MealInfoSheet.
 src/utils/      format.ts = the ONLY place quantities are formatted for display.
 scripts/        build-catalog.ts, validate-catalog.ts (run via tsx).
 data/meals.csv  Catalog source of truth.
