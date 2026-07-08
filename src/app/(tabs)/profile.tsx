@@ -178,13 +178,13 @@ export default function Settings() {
 
   return (
     <SafeAreaView className="flex-1 bg-background">
-      <View className="flex-row items-center justify-between px-5 pt-4 pb-2">
+      <View className="px-5 pt-4 pb-2">
         <Text className="text-2xl font-bold tracking-tight text-foreground">
-          Settings
+          Profile
         </Text>
-        <Pressable onPress={() => router.back()} hitSlop={8}>
-          <Text className="text-sm font-semibold text-primary">Done</Text>
-        </Pressable>
+        <Text className="text-[13px] text-muted-foreground mt-0.5">
+          Your plan settings and backups
+        </Text>
       </View>
 
       <ScrollView

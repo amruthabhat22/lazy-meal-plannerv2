@@ -1,6 +1,20 @@
 # Lazy Meal Planner — AI Agent Reference
 
-## ⚠️ HANDOFF: v2 design port IN PROGRESS (read this first)
+## v2 design port: COMPLETE (kept for context)
+
+All six steps below are DONE and verified on the Android emulator
+(multi-meal slots, multi-select swap/add sheet, WhatsApp share, bottom-nav
+tabs, grocery + OrderSheet, 5-step onboarding). Only outstanding item:
+**GitHub push** — remote repo auth was never completed
+(`~/.local/bin/gh auth login --web`, user enters device code, then create
+repo under the user's account and push `main`).
+
+Two intentional notes: BottomNav types a structural subset of
+BottomTabBarProps because expo-router vendors its own react-navigation
+types (do not add @react-navigation/* as direct deps); grocery reloads via
+`useFocusEffect` from expo-router.
+
+<details><summary>Original handoff (historical)</summary>
 
 The app is mid-way through porting the **newer Lovable design** from
 https://github.com/amruthabhat22/lazy-meal-planner (public; clone it — it is
@@ -79,6 +93,8 @@ design fakes an AI estimate — do not add network calls).
 - Our NativeWind theme (terracotta #a55a37 on cream #fdfaf4) is already in
   `tailwind.config.js`. Hex constants #a55a37/#291f18/#6c6158/#fefbf8 appear
   inline where RN needs literal colors (icons, sheet backgrounds).
+
+</details>
 
 ---
 

@@ -6,7 +6,7 @@ export const CUISINES: { slug: string; label: string }[] = [
   { slug: "american", label: "American" },
   { slug: "chinese", label: "Chinese" },
   { slug: "mediterranean", label: "Mediterranean" },
-  { slug: "pan-asian", label: "Pan-Asian" },
+  { slug: "asian", label: "Pan-Asian" },
   { slug: "tibetan", label: "Tibetan" },
   { slug: "mexican", label: "Mexican" },
   { slug: "italian", label: "Italian" },
