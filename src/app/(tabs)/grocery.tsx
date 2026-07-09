@@ -13,8 +13,9 @@ import {
   setChecked,
   type GroceryItem,
 } from "@/db/repos/groceryRepo";
-import { aggregateGroceries } from "@/utils/grocery";
-import { formatNumber } from "@/utils/format";
+import { getRecipesByMealIds } from "@/db/repos/mealsRepo";
+import { aggregateGroceries, CATEGORY_ORDER } from "@/utils/grocery";
+import { formatIngredientQty } from "@/utils/format";
 import { OrderSheet } from "@/components/OrderSheet";
 
 export default function GroceryScreen() {
@@ -26,19 +27,30 @@ export default function GroceryScreen() {
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
   const orderSheetRef = useRef<BottomSheetModal>(null);
 
-  useFocusEffect(
-    useCallback(() => {
-      if (plan) void getItems(db, plan.id).then(setItems);
-    }, [db, plan]),
-  );
-
-  const generate = async () => {
+  const generate = useCallback(async () => {
     if (!plan) return;
-    const aggregated = aggregateGroceries(planMeals, catalog);
+    const mealIds = [...new Set(planMeals.map((pm) => pm.mealId))];
+    const recipes = await getRecipesByMealIds(db, mealIds);
+    const aggregated = aggregateGroceries(planMeals, catalog, recipes);
     await replaceItems(db, plan.id, aggregated);
     setItems(await getItems(db, plan.id));
     void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-  };
+  }, [db, plan, planMeals, catalog]);
+
+  // Auto-generate on first visit so the list always reflects the week.
+  useFocusEffect(
+    useCallback(() => {
+      if (!plan) return;
+      void (async () => {
+        const existing = await getItems(db, plan.id);
+        if (existing.length === 0 && planMeals.length > 0) {
+          await generate();
+        } else {
+          setItems(existing);
+        }
+      })();
+    }, [db, plan, planMeals, generate]),
+  );
 
   const toggle = (item: GroceryItem) => {
     setItems((prev) =>
@@ -69,7 +81,11 @@ export default function GroceryScreen() {
       list.push(item);
       byCategory.set(item.category, list);
     }
-    return [...byCategory.entries()];
+    return [...byCategory.entries()].sort(
+      (a, b) =>
+        CATEGORY_ORDER.indexOf(a[0] as (typeof CATEGORY_ORDER)[number]) -
+        CATEGORY_ORDER.indexOf(b[0] as (typeof CATEGORY_ORDER)[number]),
+    );
   }, [items]);
 
   return (
@@ -273,7 +289,7 @@ export default function GroceryScreen() {
                               {item.name}
                             </Text>
                             <Text className="text-xs text-muted-foreground tabular-nums">
-                              {formatNumber(item.amount)} {item.unit}
+                              {formatIngredientQty(item.amount, item.unit)}
                             </Text>
                           </Pressable>
                         ))

@@ -1,9 +1,10 @@
 import { ALL_DAYS } from "@/engine/types";
-import type { Meal, Slot } from "@/engine/types";
+import type { Day, Meal, Slot } from "@/engine/types";
+import type { MealRecipe } from "@/db/repos/mealsRepo";
 import type { PlanRow } from "@/db/repos/plansRepo";
-import { formatQty } from "@/utils/format";
+import { formatIngredientQty, formatQty } from "@/utils/format";
 
-const DAY_LONG: Record<string, string> = {
+export const DAY_LONG: Record<Day, string> = {
   mon: "Monday",
   tue: "Tuesday",
   wed: "Wednesday",
@@ -13,14 +14,15 @@ const DAY_LONG: Record<string, string> = {
   sun: "Sunday",
 };
 
-const SLOT_LABEL: Record<Slot, string> = {
+export const SLOT_LABEL: Record<Slot, string> = {
   breakfast: "Breakfast",
   lunch: "Lunch",
   snack: "Snack",
   dinner: "Dinner",
 };
 
-/** WhatsApp-formatted weekly plan text (design's buildPlanMessage). */
+/** WhatsApp-formatted weekly plan text. Ends with a nudge that recipes for
+ * any meal can be requested — the sender shares them from the same sheet. */
 export function buildPlanMessage(
   planMeals: PlanRow[],
   catalog: Meal[],
@@ -54,6 +56,66 @@ export function buildPlanMessage(
     }
     lines.push("");
   }
-  lines.push("Sent via Lazy Meal Planner");
+  lines.push(
+    "💬 Want the recipe for any of these meals? Just reply with the meal name and I'll send it over.",
+  );
+  lines.push("");
+  lines.push("Sent via EezyPlate");
+  return lines.join("\n");
+}
+
+/** Where in the week a meal appears, e.g. "Monday dinner, Thursday lunch". */
+export function mealOccurrences(
+  mealId: string,
+  planMeals: PlanRow[],
+): string {
+  const spots: string[] = [];
+  for (const day of ALL_DAYS) {
+    for (const pm of planMeals) {
+      if (pm.mealId === mealId && pm.day === day) {
+        spots.push(`${DAY_LONG[day]} ${SLOT_LABEL[pm.slot].toLowerCase()}`);
+      }
+    }
+  }
+  return spots.join(", ");
+}
+
+/** WhatsApp-formatted single-meal recipe: when it's planned, how easy it
+ * is to cook, prep time, ingredients, and steps. */
+export function buildRecipeMessage(
+  meal: Meal,
+  recipe: MealRecipe | null,
+  planMeals: PlanRow[],
+): string {
+  const lines: string[] = [`👩‍🍳 *${meal.name}*`, ""];
+
+  const when = mealOccurrences(meal.id, planMeals);
+  if (when) lines.push(`🗓 On the plan: ${when}`);
+  if (meal.prep_time_min != null) lines.push(`⏱ Prep time: ${meal.prep_time_min} min`);
+  if (meal.difficulty) {
+    const label =
+      meal.difficulty.charAt(0).toUpperCase() + meal.difficulty.slice(1);
+    lines.push(`🔥 Ease of cooking: ${label}`);
+  }
+  lines.push(
+    `💪 ${Math.round(meal.protein_per_unit * meal.default_qty)}g protein` +
+      (meal.kcal_per_unit != null
+        ? ` · ${Math.round(meal.kcal_per_unit * meal.default_qty)} cal`
+        : "") +
+      ` per ${formatQty(meal.default_qty, meal.unit)}`,
+  );
+
+  if (recipe) {
+    lines.push("", "*Ingredients*");
+    for (const ing of recipe.ingredients) {
+      lines.push(`• ${formatIngredientQty(ing.amount, ing.unit)} ${ing.name}`);
+    }
+    lines.push("", "*Steps*");
+    recipe.steps.forEach((step, i) => {
+      lines.push(`${i + 1}. ${step}`);
+    });
+  }
+
+  lines.push("", "Sent via EezyPlate");
   return lines.join("\n");
 }

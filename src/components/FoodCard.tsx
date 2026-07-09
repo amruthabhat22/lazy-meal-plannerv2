@@ -5,21 +5,22 @@ import type { Meal } from "@/engine/types";
 import { formatNumber, formatQty } from "@/utils/format";
 
 /** Meal card inside a slot section (design's FoodCard). Dropping the
- * quantity below min removes the meal from the slot. */
+ * quantity below min removes the meal from the slot. The book icon and a
+ * long-press both open the recipe sheet. */
 export function FoodCard({
   meal,
   quantity,
   onQtyChange,
   onSwap,
   onRemove,
-  onLongPress,
+  onOpenRecipe,
 }: {
   meal: Meal;
   quantity: number;
   onQtyChange: (next: number) => void;
   onSwap: () => void;
   onRemove: () => void;
-  onLongPress: () => void;
+  onOpenRecipe: () => void;
 }) {
   const protein = Math.round(meal.protein_per_unit * quantity);
   const kcal =
@@ -28,7 +29,8 @@ export function FoodCard({
 
   return (
     <Pressable
-      onLongPress={onLongPress}
+      onLongPress={onOpenRecipe}
+      delayLongPress={500}
       className="rounded-2xl border border-border bg-card p-3 mb-2.5"
       style={{
         shadowColor: "#503c28",
@@ -40,9 +42,22 @@ export function FoodCard({
     >
       <View className="flex-row items-start justify-between gap-2">
         <View className="flex-1 min-w-0">
-          <Text className="text-[15px] font-semibold text-foreground leading-tight">
-            {meal.name}
-          </Text>
+          <View className="flex-row items-center gap-1.5">
+            <Text
+              className="text-[15px] font-semibold text-foreground leading-tight shrink"
+              numberOfLines={2}
+            >
+              {meal.name}
+            </Text>
+            <Pressable
+              onPress={onOpenRecipe}
+              hitSlop={8}
+              accessibilityLabel={`View recipe for ${meal.name}`}
+              className="h-6 w-6 rounded-full bg-primary/10 items-center justify-center"
+            >
+              <Feather name="book-open" size={12} color="#a55a37" />
+            </Pressable>
+          </View>
           <Text className="text-[13px] text-muted-foreground mt-0.5">
             {formatQty(quantity, meal.unit)}
           </Text>

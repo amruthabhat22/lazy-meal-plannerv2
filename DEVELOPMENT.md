@@ -94,11 +94,22 @@ Run `typecheck` + `test` + `validate:catalog` before every commit.
 ## 5. The meal catalog (bundled "database" content)
 
 The catalog is the only data that ships with the app. Source of truth is
-**`data/meals.csv`** — never edit `assets/meals.json` by hand.
+**`data/meals.csv`** (nutrition, slots, quantities) plus
+**`data/recipes.json`** (per-meal ingredients + cooking steps) — never edit
+`assets/meals.json` by hand.
+
+Every meal id in the CSV **must** have an entry in `data/recipes.json`
+(`{ ingredients: [{name, amount, unit, category}], steps: [...] }`;
+`category` must be one of Protein / Vegetables / Fruits / Dairy /
+Grains & Carbs / Pantry Items). The build fails on missing or orphaned
+recipes. Recipes power both the in-app recipe sheet and the ingredient-level
+grocery list, so keep ingredient names consistent across meals — the grocery
+aggregator merges by (name, unit).
 
 ### 5.1 Updating meals
 
-1. Edit `data/meals.csv` (add rows, fix protein values, rename, etc.).
+1. Edit `data/meals.csv` and/or `data/recipes.json` (add rows, fix protein
+   values, adjust ingredients, etc.).
 2. Bump `CATALOG_VERSION` in `scripts/build-catalog.ts` (+1).
 3. Rebuild and validate:
    ```sh

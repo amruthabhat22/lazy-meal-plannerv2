@@ -12,6 +12,8 @@ export interface BackupV1 {
   preferences: {
     diet: string;
     protein_goal: number;
+    /** Optional for backwards compatibility with pre-calorie backups. */
+    calorie_goal?: number;
     meals_per_day: number;
     cuisines?: string[];
   } | null;
@@ -69,6 +71,7 @@ export async function buildBackup(db: SQLiteDatabase): Promise<BackupV1> {
       ? {
           diet: prefs.diet,
           protein_goal: prefs.proteinGoal,
+          calorie_goal: prefs.calorieGoal,
           meals_per_day: prefs.mealsPerDay,
           cuisines: prefs.cuisines,
         }
@@ -175,6 +178,7 @@ export async function restoreBackup(
     await savePreferences(db, {
       diet: backup.preferences.diet as "veg" | "egg" | "non-veg",
       proteinGoal: backup.preferences.protein_goal,
+      calorieGoal: backup.preferences.calorie_goal ?? 2000,
       mealsPerDay: mpd === 2 || mpd === 4 ? mpd : 3,
       cuisines: backup.preferences.cuisines ?? [],
     });

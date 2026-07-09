@@ -93,6 +93,14 @@ const MIGRATIONS: string[] = [
   ALTER TABLE plan_meals_v3 RENAME TO plan_meals;
   CREATE INDEX IF NOT EXISTS idx_plan_meals_slot ON plan_meals (plan_id, day, slot);
   `,
+  // v4: calorie goal (display/tracking only — the generator never optimizes
+  // for calories) and per-meal recipes (structured ingredients power the
+  // ingredient-level grocery list; steps power the recipe sheet).
+  `
+  ALTER TABLE user_preferences ADD COLUMN calorie_goal INTEGER NOT NULL DEFAULT 2000;
+  ALTER TABLE meals ADD COLUMN ingredients_json TEXT;
+  ALTER TABLE meals ADD COLUMN steps_json TEXT;
+  `,
 ];
 
 export async function getMeta(

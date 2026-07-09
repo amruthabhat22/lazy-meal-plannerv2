@@ -1,4 +1,50 @@
-# Lazy Meal Planner — AI Agent Reference
+# EezyPlate (Lazy Meal Planner) — AI Agent Reference
+
+## v3 "EezyPlate" update: COMPLETE
+
+Ported the July 2026 design from https://eezyplate.lovable.app (design
+source extracted from its published JS chunks — the old design repo went
+private). What changed:
+
+- **Rebrand**: display name "EezyPlate" (app.json name; slug/scheme/DB
+  filename deliberately unchanged — project identity + installed user data).
+- **Recipes**: `data/recipes.json` = ingredients (structured amount/unit +
+  grocery category) + steps for all 59 meals, keyed by meal id.
+  `build-catalog.ts` merges them into `assets/meals.json`
+  (`ingredients_json`/`steps_json`) and fails on missing/orphaned/invalid
+  recipes. Migration 4 added the meal columns; `mealsRepo` exposes
+  `getRecipeByMealId`/`getRecipesByMealIds`.
+- **RecipeSheet** (replaces MealInfoSheet): prep-time/difficulty/protein/cal
+  chips, ingredient list scaled to planned quantity, numbered steps. Opened
+  from FoodCard's book icon or 500ms long-press.
+- **Calorie tracking**: `calorie_goal` on user_preferences (migration 4,
+  default 2000), calories slider beside protein in onboarding step 2 ("Your
+  daily goals", 1200–3500 step 50, Cutting/Maintain/Bulking) and Profile.
+  StatCard shows Calories vs goal color-coded (0.9–1.1 success, 0.7–1.25
+  warning, else destructive). Calories remain display-only in the engine.
+- **Grocery is ingredient-level now**: `aggregateGroceries(planMeals,
+  catalog, recipes)` sums recipe ingredients scaled by planned quantity
+  (qty/default_qty), grouped into the design's categories (Protein /
+  Vegetables / Fruits / Dairy / Grains & Carbs / Pantry Items); custom
+  dishes without recipes land under "Other". Auto-generates on first focus.
+- **Sheet chrome**: `src/components/sheetChrome.tsx` — every bottom sheet
+  gets the design's black/80 tinted backdrop, rounded-t card background,
+  and handle style. Backdrop press dismisses.
+- **Share revamp**: ShareSheet sends the plan as WhatsApp text (with a
+  "reply with a meal name for its recipe" line), as a days×slots table
+  IMAGE (`PlanTableImage` rendered off-screen, captured with
+  react-native-view-shot, shared via expo-sharing), and can send any
+  planned meal's full recipe (search field in the sheet; wa.me to selected
+  contacts, native share fallback).
+- **Profile**: goal sliders + "Save and regenerate plan" CTA (regenerates
+  immediately on save per the design; calorie/cuisine-only edits skip the
+  regenerate). This supersedes the old spec-5.6 "ask before regenerating"
+  prompt.
+- New dep: `react-native-view-shot` (bundled in Expo Go).
+
+Not ported on purpose: the design's landing/auth pages (app is offline,
+no auth) and its fake hash-based "Estimate nutrition" for custom dishes
+(manual entry stays — honest numbers).
 
 ## v2 design port: COMPLETE (kept for context)
 
@@ -125,12 +171,13 @@ ships bundled in the binary. Keep it that way; adding a network layer is a
 product decision, not a refactor.
 
 Built from a fixed spec (MVP), then extended with the Lovable visual design
-(warm terracotta/cream, tokens in `tailwind.config.js`) and four post-spec
-features: calories (display-only), cuisine preferences (soft scoring boost),
-a 2-meals-per-day option, and manual custom dishes from the swap sheet.
-Still out of scope: meal detail screens, allergen filtering, ingredient-level
-groceries, notifications, cloud sync, and any AI nutrition estimation (custom
-dishes are entered manually to stay offline).
+(warm terracotta/cream, tokens in `tailwind.config.js`) and post-spec
+features: calorie goals + tracking (display-only, never generator input),
+cuisine preferences (soft scoring boost), a 2-meals-per-day option, manual
+custom dishes from the swap sheet, per-meal recipes (bundled, offline), an
+ingredient-level grocery list, and image/recipe WhatsApp sharing.
+Still out of scope: allergen filtering, notifications, cloud sync, and any
+AI nutrition estimation (custom dishes are entered manually to stay offline).
 
 ## Stack (fixed decisions — do not substitute)
 
@@ -165,21 +212,32 @@ src/app/          Expo Router. _layout: SQLiteProvider + migrate + catalog
                   grocery, profile — custom tab bar via BottomNav.
                   (onboarding)/onboarding: 5-step flow (diet, protein
                   slider, cuisines, WhatsApp contacts, meals + summary).
-src/components/   FoodCard (meal row; stepper below min removes it),
+src/components/   FoodCard (meal row; book icon/long-press opens recipe;
+                  stepper below min removes it), RecipeSheet (ingredients
+                  scaled to planned qty + steps + prep/difficulty chips),
                   SwapSheet (multi-select swap/add + manual custom dish),
-                  ShareSheet (WhatsApp contacts + wa.me + native Share),
-                  OrderSheet (delivery-app price comparison, estimates),
-                  StatCard, DaySelector, BottomNav, MealInfoSheet.
+                  ShareSheet (contacts + wa.me text + plan-image share +
+                  per-meal recipe share), PlanTableImage (off-screen
+                  days×slots table captured by view-shot), OrderSheet
+                  (delivery-app price comparison, estimates), sheetChrome
+                  (shared tinted backdrop/background/handle for ALL sheets),
+                  GoalSliderCard (+ level-label helpers), StatCard,
+                  DaySelector, BottomNav.
 src/utils/        contacts.ts (share contacts in app_meta JSON),
-                  shareMessage.ts (WhatsApp plan text), cuisines.ts,
-                  grocery.ts, format.ts, ids.ts.
+                  shareMessage.ts (WhatsApp plan + recipe text), cuisines.ts,
+                  grocery.ts (ingredient aggregation), format.ts, ids.ts.
 src/utils/format.ts  The ONLY place quantities/units are formatted for
-                  display. Quantities in state/DB are always numeric
-                  amount + unit string, never display strings.
+                  display (incl. formatIngredientQty: g→kg, ml→L, plurals).
+                  Quantities in state/DB are always numeric amount + unit
+                  string, never display strings.
 data/meals.csv    Catalog source of truth (~60 meals, mostly Indian).
+data/recipes.json Recipes source of truth: per meal id, structured
+                  ingredients (name/amount/unit/category) + steps. Every
+                  meal MUST have one; the build fails otherwise.
 assets/meals.json GENERATED by scripts/build-catalog.ts — never hand-edit.
-scripts/          build-catalog.ts (CSV→JSON, owns CATALOG_VERSION),
-                  validate-catalog.ts (content floor), csv.ts (parser).
+scripts/          build-catalog.ts (CSV+recipes→JSON, owns CATALOG_VERSION,
+                  validates recipe coverage), validate-catalog.ts (content
+                  floor), csv.ts (parser).
 ```
 
 ## Engine invariants (violating these = wrong, even if tests pass)
@@ -206,11 +264,14 @@ scripts/          build-catalog.ts (CSV→JSON, owns CATALOG_VERSION),
 
 ## Data invariants
 
-- Meal ids are permanent and referenced by plans. Never change or delete a
-  shipped meal id; fix the row in `data/meals.csv` instead.
-- Catalog update flow: edit CSV → bump `CATALOG_VERSION` in
-  `scripts/build-catalog.ts` → `npm run build:catalog` →
-  `npm run validate:catalog`. On launch the app upserts by id iff the bundled
+- Meal ids are permanent and referenced by plans (and by
+  `data/recipes.json`). Never change or delete a shipped meal id; fix the
+  row in `data/meals.csv` instead.
+- Catalog update flow: edit CSV and/or `data/recipes.json` → bump
+  `CATALOG_VERSION` in `scripts/build-catalog.ts` → `npm run build:catalog`
+  → `npm run validate:catalog`. Adding a meal REQUIRES adding its recipe
+  (build fails without it; recipe ingredient categories must be one of the
+  six grocery categories). On launch the app upserts by id iff the bundled
   version is newer; rows with `is_custom = 1` are never touched.
 - Content floor: every (diet × slot) pool needs ≥ 10 meals; veg is always the
   binding constraint. `validate-catalog` failing is a build blocker.

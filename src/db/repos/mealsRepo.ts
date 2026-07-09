@@ -20,6 +20,86 @@ export interface MealRow {
   allergens: string | null;
   is_custom: number;
   catalog_version: number;
+  ingredients_json: string | null;
+  steps_json: string | null;
+}
+
+/** Grocery categories, matching the design's six sections. */
+export type IngredientCategory =
+  | "Protein"
+  | "Vegetables"
+  | "Fruits"
+  | "Dairy"
+  | "Grains & Carbs"
+  | "Pantry Items";
+
+/** One structured recipe ingredient, scaled to the meal's default_qty. */
+export interface RecipeIngredient {
+  name: string;
+  amount: number;
+  unit: string;
+  category: IngredientCategory;
+}
+
+export interface MealRecipe {
+  mealId: string;
+  ingredients: RecipeIngredient[];
+  steps: string[];
+}
+
+function parseRecipe(row: {
+  id: string;
+  ingredients_json: string | null;
+  steps_json: string | null;
+}): MealRecipe | null {
+  if (!row.ingredients_json || !row.steps_json) return null;
+  try {
+    return {
+      mealId: row.id,
+      ingredients: JSON.parse(row.ingredients_json) as RecipeIngredient[],
+      steps: JSON.parse(row.steps_json) as string[],
+    };
+  } catch {
+    return null;
+  }
+}
+
+/** Recipe (ingredients + steps) for one meal; null for custom dishes. */
+export async function getRecipeByMealId(
+  db: SQLiteDatabase,
+  mealId: string,
+): Promise<MealRecipe | null> {
+  const row = await db.getFirstAsync<{
+    id: string;
+    ingredients_json: string | null;
+    steps_json: string | null;
+  }>("SELECT id, ingredients_json, steps_json FROM meals WHERE id = ?", [
+    mealId,
+  ]);
+  return row ? parseRecipe(row) : null;
+}
+
+/** Recipes for many meals at once (grocery aggregation). */
+export async function getRecipesByMealIds(
+  db: SQLiteDatabase,
+  mealIds: string[],
+): Promise<Map<string, MealRecipe>> {
+  const result = new Map<string, MealRecipe>();
+  if (mealIds.length === 0) return result;
+  const placeholders = mealIds.map(() => "?").join(",");
+  const rows = await db.getAllAsync<{
+    id: string;
+    ingredients_json: string | null;
+    steps_json: string | null;
+  }>(
+    `SELECT id, ingredients_json, steps_json FROM meals WHERE id IN (${placeholders})`,
+    mealIds,
+  );
+  for (const row of rows) {
+    const recipe = parseRecipe(row);
+    if (recipe) result.set(row.id, recipe);
+  }
+  return result;
 }
 
 function splitList(value: string | null): string[] {

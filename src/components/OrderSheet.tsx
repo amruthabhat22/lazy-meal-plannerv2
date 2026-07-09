@@ -3,6 +3,11 @@ import { Linking, Pressable, Text, View } from "react-native";
 import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { Feather } from "@expo/vector-icons";
 import type { GroceryItem } from "@/db/repos/groceryRepo";
+import {
+  renderSheetBackdrop,
+  sheetBackgroundStyle,
+  sheetHandleStyle,
+} from "@/components/sheetChrome";
 
 interface AppInfo {
   id: string;
@@ -57,10 +62,11 @@ export const OrderSheet = forwardRef<
   return (
     <BottomSheetModal
       ref={ref}
-      snapPoints={["80%"]}
+      snapPoints={["90%"]}
       enableDynamicSizing={false}
-      backgroundStyle={{ backgroundColor: "#fffdfa" }}
-      handleIndicatorStyle={{ backgroundColor: "#e3ddd5" }}
+      backdropComponent={renderSheetBackdrop}
+      backgroundStyle={sheetBackgroundStyle}
+      handleIndicatorStyle={sheetHandleStyle}
     >
       <BottomSheetScrollView
         contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 32 }}

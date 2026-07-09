@@ -1,12 +1,14 @@
 import type { SQLiteDatabase } from "expo-sqlite";
 import { newId, nowIso } from "@/utils/ids";
 
+/** Design's grocery sections; "Other" holds custom dishes without recipes. */
 export type GroceryCategory =
   | "Protein"
-  | "Grains"
   | "Vegetables"
+  | "Fruits"
   | "Dairy"
-  | "Pantry"
+  | "Grains & Carbs"
+  | "Pantry Items"
   | "Other";
 
 export interface GroceryItem {

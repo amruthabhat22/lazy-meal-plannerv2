@@ -8,7 +8,6 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Slider from "@react-native-community/slider";
 import { router } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
 import { Feather } from "@expo/vector-icons";
@@ -17,6 +16,11 @@ import { CatalogTooSmallError } from "@/engine/types";
 import { usePrefsStore } from "@/state/usePrefsStore";
 import { usePlanStore } from "@/state/usePlanStore";
 import { CUISINES } from "@/utils/cuisines";
+import {
+  GoalSliderCard,
+  calorieLevelLabel,
+  proteinLevelLabel,
+} from "@/components/GoalSliderCard";
 import {
   addContact,
   formatPhone,
@@ -30,7 +34,7 @@ const TOTAL_STEPS = 5;
 
 const STEP_META = [
   { title: "What's your diet?", subtitle: "We'll tailor every meal to suit you." },
-  { title: "Your protein goal", subtitle: "How much protein do you want each day?" },
+  { title: "Your daily goals", subtitle: "Set your protein and calorie targets." },
   { title: "Cuisine preferences", subtitle: "Optional — pick the flavors you love." },
   {
     title: "Share Weekly Plan",
@@ -81,6 +85,46 @@ const DIET_ICON: Record<Diet, string> = {
 
 const inputStyle =
   "rounded-xl bg-muted px-3.5 py-2.5 text-[15px] text-foreground";
+
+/** "Step N of 5 · NN%" header + segmented progress (current segment wide). */
+function StepProgress({
+  current,
+  total,
+}: {
+  current: number;
+  total: number;
+}) {
+  return (
+    <View>
+      <View className="flex-row items-center justify-between mb-2.5">
+        <Text className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+          Step {current} of {total}
+        </Text>
+        <Text className="text-xs font-medium text-muted-foreground">
+          {Math.round((current / total) * 100)}%
+        </Text>
+      </View>
+      <View className="flex-row items-center gap-2">
+        {Array.from({ length: total }, (_, i) => {
+          const n = i + 1;
+          return (
+            <View
+              key={n}
+              className={`h-1.5 rounded-full ${
+                n === current
+                  ? "bg-primary"
+                  : n < current
+                    ? "bg-primary/70"
+                    : "bg-secondary"
+              }`}
+              style={{ flex: n === current ? 3 : 1 }}
+            />
+          );
+        })}
+      </View>
+    </View>
+  );
+}
 
 function SelectableCard({
   icon,
@@ -152,6 +196,7 @@ export default function Onboarding() {
   const [step, setStep] = useState(1);
   const [diet, setDiet] = useState<Diet | null>(null);
   const [goal, setGoal] = useState(100);
+  const [calories, setCalories] = useState(2000);
   const [cuisines, setCuisines] = useState<Set<string>>(new Set());
   const [meals, setMeals] = useState<2 | 3 | 4 | null>(null);
   const [busy, setBusy] = useState(false);
@@ -204,6 +249,7 @@ export default function Onboarding() {
       const prefs = await savePrefs(db, {
         diet,
         proteinGoal: goal,
+        calorieGoal: calories,
         mealsPerDay: meals,
         cuisines: [...cuisines],
       });
@@ -231,8 +277,8 @@ export default function Onboarding() {
     setStep((s) => s + 1);
   };
 
-  const goalLabel =
-    goal < 90 ? "Maintenance" : goal < 140 ? "Active lifestyle" : "Muscle building";
+  const goalLabel = proteinLevelLabel(goal);
+  const calorieLabel = calorieLevelLabel(calories);
 
   return (
     <SafeAreaView className="flex-1 bg-background">
@@ -249,20 +295,11 @@ export default function Onboarding() {
             <Feather name="arrow-left" size={15} color="#291f18" />
           </Pressable>
           <Text className="text-sm font-semibold tracking-tight text-foreground">
-            Lazy Meal Planner
+            EezyPlate
           </Text>
           <View className="h-10 w-10" />
         </View>
-        <View className="flex-row gap-1.5">
-          {Array.from({ length: TOTAL_STEPS }, (_, i) => (
-            <View
-              key={i}
-              className={`h-1 flex-1 rounded-full ${
-                i < step ? "bg-primary" : "bg-secondary"
-              }`}
-            />
-          ))}
-        </View>
+        <StepProgress current={step} total={TOTAL_STEPS} />
       </View>
 
       <ScrollView
@@ -292,40 +329,27 @@ export default function Onboarding() {
 
         {step === 2 && (
           <>
-            <View className="rounded-3xl bg-card border border-border p-6 items-center">
-              <Text className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
-                Daily protein goal
-              </Text>
-              <View className="mt-3 flex-row items-baseline gap-1">
-                <Text className="text-6xl font-semibold text-foreground tabular-nums tracking-tight">
-                  {goal}
-                </Text>
-                <Text className="text-2xl font-medium text-muted-foreground">
-                  g
-                </Text>
-              </View>
-              <Text className="mt-2 text-sm text-muted-foreground">
-                {goalLabel}
-              </Text>
-              <Slider
-                style={{ width: "100%", height: 40, marginTop: 24 }}
-                minimumValue={60}
-                maximumValue={200}
-                step={5}
-                value={goal}
-                onValueChange={setGoal}
-                minimumTrackTintColor="#a55a37"
-                maximumTrackTintColor="#e3ddd5"
-                thumbTintColor="#a55a37"
+            <GoalSliderCard
+              label="Protein"
+              levelLabel={goalLabel}
+              value={goal}
+              unitLabel="g / day"
+              min={60}
+              max={200}
+              step={5}
+              onChange={setGoal}
+            />
+            <View className="mt-4">
+              <GoalSliderCard
+                label="Calories"
+                levelLabel={calorieLabel}
+                value={calories}
+                unitLabel="kcal / day"
+                min={1200}
+                max={3500}
+                step={50}
+                onChange={setCalories}
               />
-              <View className="flex-row justify-between w-full mt-2">
-                <Text className="text-xs text-muted-foreground font-medium">
-                  60g
-                </Text>
-                <Text className="text-xs text-muted-foreground font-medium">
-                  200g
-                </Text>
-              </View>
             </View>
             <View className="flex-row items-center gap-2.5 rounded-full bg-accent/60 border border-accent px-4 py-2.5 mt-4">
               <Text>💡</Text>
@@ -487,6 +511,7 @@ export default function Onboarding() {
                   }
                 />
                 <Row label="Protein" value={`${goal}g / day`} />
+                <Row label="Calories" value={`${calories} kcal / day`} />
                 <Row label="Meals" value={`${meals} per day`} />
               </View>
             ) : null}

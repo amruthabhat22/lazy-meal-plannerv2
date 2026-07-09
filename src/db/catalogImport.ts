@@ -19,6 +19,10 @@ export interface CatalogMeal {
   difficulty: string | null;
   prep_time_min: number | null;
   allergens: string;
+  /** JSON array of {name, amount, unit, category} — see mealsRepo.RecipeIngredient. */
+  ingredients_json: string | null;
+  /** JSON array of instruction strings. */
+  steps_json: string | null;
 }
 
 export interface CatalogBundle {
@@ -46,9 +50,9 @@ export async function importCatalogIfNewer(
         `INSERT INTO meals (
            id, name, slots, diet, cuisine, country,
            default_qty, min_qty, max_qty, qty_step, unit, protein_per_unit,
-           kcal_per_unit, difficulty, prep_time_min, allergens, is_custom,
-           catalog_version
-         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?)
+           kcal_per_unit, difficulty, prep_time_min, allergens,
+           ingredients_json, steps_json, is_custom, catalog_version
+         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?)
          ON CONFLICT(id) DO UPDATE SET
            name = excluded.name,
            slots = excluded.slots,
@@ -65,6 +69,8 @@ export async function importCatalogIfNewer(
            difficulty = excluded.difficulty,
            prep_time_min = excluded.prep_time_min,
            allergens = excluded.allergens,
+           ingredients_json = excluded.ingredients_json,
+           steps_json = excluded.steps_json,
            catalog_version = excluded.catalog_version
          WHERE meals.is_custom = 0`,
         [
@@ -84,6 +90,8 @@ export async function importCatalogIfNewer(
           m.difficulty,
           m.prep_time_min,
           m.allergens,
+          m.ingredients_json,
+          m.steps_json,
           bundle.catalog_version,
         ],
       );

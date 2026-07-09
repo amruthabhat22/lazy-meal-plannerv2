@@ -6,10 +6,13 @@ import { useSQLiteContext } from "expo-sqlite";
 import * as Haptics from "expo-haptics";
 import { Feather } from "@expo/vector-icons";
 import type { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { captureRef } from "react-native-view-shot";
+import * as Sharing from "expo-sharing";
 import { getCandidates } from "@/engine/generator";
 import { ALL_DAYS, CatalogTooSmallError } from "@/engine/types";
 import type { Day, Meal, Slot } from "@/engine/types";
 import type { PlanRow } from "@/db/repos/plansRepo";
+import { getRecipeByMealId, type MealRecipe } from "@/db/repos/mealsRepo";
 import { usePrefsStore, slotsForPrefs } from "@/state/usePrefsStore";
 import { usePlanStore, type MealPick } from "@/state/usePlanStore";
 import { DaySelector } from "@/components/DaySelector";
@@ -17,8 +20,8 @@ import { StatCard } from "@/components/StatCard";
 import { FoodCard } from "@/components/FoodCard";
 import { SwapSheet } from "@/components/SwapSheet";
 import { ShareSheet } from "@/components/ShareSheet";
-import { MealInfoSheet } from "@/components/MealInfoSheet";
-import { buildPlanMessage } from "@/utils/shareMessage";
+import { RecipeSheet } from "@/components/RecipeSheet";
+import { PlanTableImage } from "@/components/PlanTableImage";
 
 const SLOT_LABELS: Record<Slot, string> = {
   breakfast: "Breakfast",
@@ -61,13 +64,15 @@ export default function WeekPlanScreen() {
 
   const [selectedDay, setSelectedDay] = useState<Day>(todayAsDay());
   const [target, setTarget] = useState<SheetTarget | null>(null);
-  const [infoTarget, setInfoTarget] = useState<{
+  const [recipeTarget, setRecipeTarget] = useState<{
     meal: Meal;
     quantity: number;
+    recipe: MealRecipe | null;
   } | null>(null);
   const swapSheetRef = useRef<BottomSheetModal>(null);
   const shareSheetRef = useRef<BottomSheetModal>(null);
-  const infoSheetRef = useRef<BottomSheetModal>(null);
+  const recipeSheetRef = useRef<BottomSheetModal>(null);
+  const planImageRef = useRef<View>(null);
 
   const mealById = useMemo(
     () => new Map(catalog.map((m) => [m.id, m])),
@@ -159,6 +164,28 @@ export default function WeekPlanScreen() {
     setTarget(null);
   };
 
+  const openRecipe = async (meal: Meal, quantity: number) => {
+    const recipe = await getRecipeByMealId(db, meal.id);
+    setRecipeTarget({ meal, quantity, recipe });
+    recipeSheetRef.current?.present();
+  };
+
+  const shareAsImage = async () => {
+    const uri = await captureRef(planImageRef, {
+      format: "png",
+      quality: 1,
+      result: "tmpfile",
+    });
+    if (await Sharing.isAvailableAsync()) {
+      await Sharing.shareAsync(uri, {
+        mimeType: "image/png",
+        dialogTitle: "Share weekly plan",
+      });
+    } else {
+      Alert.alert("Sharing unavailable", "This device can't share files.");
+    }
+  };
+
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
       {/* Header */}
@@ -208,6 +235,7 @@ export default function WeekPlanScreen() {
             protein={dayProtein}
             proteinGoal={prefs.proteinGoal}
             kcal={dayKcal}
+            kcalGoal={prefs.calorieGoal}
           />
         </View>
 
@@ -273,10 +301,7 @@ export default function WeekPlanScreen() {
                       swapSheetRef.current?.present();
                     }}
                     onRemove={() => removeMeal(db, pm.id)}
-                    onLongPress={() => {
-                      setInfoTarget({ meal, quantity: pm.quantity });
-                      infoSheetRef.current?.present();
-                    }}
+                    onOpenRecipe={() => void openRecipe(meal, pm.quantity)}
                   />
                 ))}
               </View>
@@ -307,13 +332,31 @@ export default function WeekPlanScreen() {
       />
       <ShareSheet
         ref={shareSheetRef}
-        message={buildPlanMessage(planMeals, catalog, slots)}
+        planMeals={planMeals}
+        catalog={catalog}
+        slots={slots}
+        onShareImage={shareAsImage}
       />
-      <MealInfoSheet
-        ref={infoSheetRef}
-        meal={infoTarget?.meal ?? null}
-        quantity={infoTarget?.quantity ?? 1}
+      <RecipeSheet
+        ref={recipeSheetRef}
+        meal={recipeTarget?.meal ?? null}
+        quantity={recipeTarget?.quantity ?? 1}
+        recipe={recipeTarget?.recipe ?? null}
       />
+
+      {/* Off-screen render target for the shareable plan-table image. */}
+      <View
+        style={{ position: "absolute", left: -2000, top: 0, opacity: 0 }}
+        pointerEvents="none"
+      >
+        <PlanTableImage
+          ref={planImageRef}
+          planMeals={planMeals}
+          catalog={catalog}
+          slots={slots}
+          proteinGoal={prefs.proteinGoal}
+        />
+      </View>
     </SafeAreaView>
   );
 }

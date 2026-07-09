@@ -1,5 +1,5 @@
 {
-  "catalog_version": 2,
+  "catalog_version": 3,
   "meals": [
     {
       "id": "b-moong-chilla",
@@ -17,7 +17,9 @@
       "kcal_per_unit": 90,
       "difficulty": "easy",
       "prep_time_min": 20,
-      "allergens": ""
+      "allergens": "",
+      "ingredients_json": "[{\"name\":\"Moong dal\",\"amount\":100,\"unit\":\"g\",\"category\":\"Protein\"},{\"name\":\"Onion\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Green chilli\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Ginger\",\"amount\":10,\"unit\":\"g\",\"category\":\"Vegetables\"},{\"name\":\"Cooking oil\",\"amount\":2,\"unit\":\"tsp\",\"category\":\"Pantry Items\"},{\"name\":\"Coriander leaves\",\"amount\":10,\"unit\":\"g\",\"category\":\"Vegetables\"}]",
+      "steps_json": "[\"Soak moong dal for 2–3 hours, then grind with ginger and green chilli into a smooth batter.\",\"Stir in chopped onion, coriander, and salt.\",\"Spread a ladle of batter on a hot oiled tawa and cook 2 minutes per side until golden.\",\"Serve hot with green chutney.\"]"
     },
     {
       "id": "b-besan-chilla",
@@ -35,7 +37,9 @@
       "kcal_per_unit": 140,
       "difficulty": "easy",
       "prep_time_min": 20,
-      "allergens": "dairy"
+      "allergens": "dairy",
+      "ingredients_json": "[{\"name\":\"Besan\",\"amount\":80,\"unit\":\"g\",\"category\":\"Protein\"},{\"name\":\"Paneer\",\"amount\":60,\"unit\":\"g\",\"category\":\"Dairy\"},{\"name\":\"Onion\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Green chilli\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Cooking oil\",\"amount\":2,\"unit\":\"tsp\",\"category\":\"Pantry Items\"},{\"name\":\"Turmeric powder\",\"amount\":0.5,\"unit\":\"tsp\",\"category\":\"Pantry Items\"}]",
+      "steps_json": "[\"Whisk besan with turmeric, salt, and water into a lump-free pouring batter.\",\"Crumble paneer with chopped onion and chilli for the stuffing.\",\"Cook a thin chilla on an oiled tawa, spoon the paneer stuffing on top, and fold.\",\"Cook another minute until the stuffing warms through, then serve.\"]"
     },
     {
       "id": "b-paneer-bhurji",
@@ -53,7 +57,9 @@
       "kcal_per_unit": 280,
       "difficulty": "easy",
       "prep_time_min": 15,
-      "allergens": "dairy"
+      "allergens": "dairy",
+      "ingredients_json": "[{\"name\":\"Paneer\",\"amount\":150,\"unit\":\"g\",\"category\":\"Dairy\"},{\"name\":\"Onion\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Tomato\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Green chilli\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Cooking oil\",\"amount\":1,\"unit\":\"tbsp\",\"category\":\"Pantry Items\"},{\"name\":\"Turmeric powder\",\"amount\":0.5,\"unit\":\"tsp\",\"category\":\"Pantry Items\"},{\"name\":\"Coriander leaves\",\"amount\":10,\"unit\":\"g\",\"category\":\"Vegetables\"}]",
+      "steps_json": "[\"Sauté chopped onion and green chilli in oil until translucent.\",\"Add tomato and turmeric; cook until soft.\",\"Crumble in the paneer, season with salt, and toss 2–3 minutes.\",\"Finish with fresh coriander and serve hot.\"]"
     },
     {
       "id": "b-poha-peanut",
@@ -71,7 +77,9 @@
       "kcal_per_unit": 320,
       "difficulty": "easy",
       "prep_time_min": 15,
-      "allergens": "peanut,dairy"
+      "allergens": "peanut,dairy",
+      "ingredients_json": "[{\"name\":\"Poha\",\"amount\":60,\"unit\":\"g\",\"category\":\"Grains & Carbs\"},{\"name\":\"Peanuts\",\"amount\":30,\"unit\":\"g\",\"category\":\"Pantry Items\"},{\"name\":\"Curd\",\"amount\":100,\"unit\":\"g\",\"category\":\"Dairy\"},{\"name\":\"Onion\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Curry leaves\",\"amount\":1,\"unit\":\"sprig\",\"category\":\"Vegetables\"},{\"name\":\"Mustard seeds\",\"amount\":0.5,\"unit\":\"tsp\",\"category\":\"Pantry Items\"},{\"name\":\"Cooking oil\",\"amount\":2,\"unit\":\"tsp\",\"category\":\"Pantry Items\"}]",
+      "steps_json": "[\"Rinse poha in a colander and let it soften while you prep.\",\"Temper mustard seeds, curry leaves, and peanuts in hot oil; add onion and sauté.\",\"Fold in the poha with turmeric and salt; steam 2 minutes on low.\",\"Serve with a bowl of fresh curd on the side.\"]"
     },
     {
       "id": "b-masala-oats",
@@ -89,7 +97,9 @@
       "kcal_per_unit": 260,
       "difficulty": "easy",
       "prep_time_min": 10,
-      "allergens": "dairy"
+      "allergens": "dairy",
+      "ingredients_json": "[{\"name\":\"Rolled oats\",\"amount\":50,\"unit\":\"g\",\"category\":\"Grains & Carbs\"},{\"name\":\"Milk\",\"amount\":250,\"unit\":\"ml\",\"category\":\"Dairy\"},{\"name\":\"Mixed vegetables\",\"amount\":100,\"unit\":\"g\",\"category\":\"Vegetables\"},{\"name\":\"Green chilli\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Cumin seeds\",\"amount\":0.5,\"unit\":\"tsp\",\"category\":\"Pantry Items\"},{\"name\":\"Cooking oil\",\"amount\":1,\"unit\":\"tsp\",\"category\":\"Pantry Items\"}]",
+      "steps_json": "[\"Temper cumin and green chilli in oil, then sauté the mixed vegetables 2 minutes.\",\"Add oats and toast for a minute.\",\"Pour in milk, season with salt, and simmer 4–5 minutes until creamy.\",\"Rest 1 minute and serve warm.\"]"
     },
     {
       "id": "b-idli-sambar",
@@ -107,7 +117,9 @@
       "kcal_per_unit": 70,
       "difficulty": "medium",
       "prep_time_min": 25,
-      "allergens": ""
+      "allergens": "",
+      "ingredients_json": "[{\"name\":\"Idli batter\",\"amount\":250,\"unit\":\"g\",\"category\":\"Grains & Carbs\"},{\"name\":\"Toor dal\",\"amount\":50,\"unit\":\"g\",\"category\":\"Protein\"},{\"name\":\"Mixed vegetables\",\"amount\":100,\"unit\":\"g\",\"category\":\"Vegetables\"},{\"name\":\"Sambar powder\",\"amount\":2,\"unit\":\"tsp\",\"category\":\"Pantry Items\"},{\"name\":\"Tamarind\",\"amount\":10,\"unit\":\"g\",\"category\":\"Pantry Items\"},{\"name\":\"Curry leaves\",\"amount\":1,\"unit\":\"sprig\",\"category\":\"Vegetables\"}]",
+      "steps_json": "[\"Steam ladles of idli batter in a greased idli stand for 10–12 minutes.\",\"Pressure-cook toor dal until soft; mash.\",\"Simmer dal with vegetables, tamarind water, and sambar powder for 10 minutes.\",\"Temper with curry leaves and serve the idlis dunked in hot sambar.\"]"
     },
     {
       "id": "b-upma-peanut",
@@ -125,7 +137,9 @@
       "kcal_per_unit": 300,
       "difficulty": "easy",
       "prep_time_min": 20,
-      "allergens": "peanut"
+      "allergens": "peanut",
+      "ingredients_json": "[{\"name\":\"Rava (sooji)\",\"amount\":60,\"unit\":\"g\",\"category\":\"Grains & Carbs\"},{\"name\":\"Peanuts\",\"amount\":25,\"unit\":\"g\",\"category\":\"Pantry Items\"},{\"name\":\"Mixed vegetables\",\"amount\":100,\"unit\":\"g\",\"category\":\"Vegetables\"},{\"name\":\"Onion\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Mustard seeds\",\"amount\":0.5,\"unit\":\"tsp\",\"category\":\"Pantry Items\"},{\"name\":\"Curry leaves\",\"amount\":1,\"unit\":\"sprig\",\"category\":\"Vegetables\"},{\"name\":\"Cooking oil\",\"amount\":2,\"unit\":\"tsp\",\"category\":\"Pantry Items\"}]",
+      "steps_json": "[\"Dry-roast the rava until fragrant and set aside.\",\"Temper mustard seeds, curry leaves, and peanuts in oil; sauté onion and vegetables.\",\"Add 2 cups hot water and salt; stream in the rava while stirring.\",\"Cover and steam 2 minutes, fluff, and serve.\"]"
     },
     {
       "id": "b-sprouts-salad",
@@ -143,7 +157,9 @@
       "kcal_per_unit": 180,
       "difficulty": "easy",
       "prep_time_min": 10,
-      "allergens": ""
+      "allergens": "",
+      "ingredients_json": "[{\"name\":\"Moong sprouts\",\"amount\":150,\"unit\":\"g\",\"category\":\"Protein\"},{\"name\":\"Onion\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Tomato\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Lemon\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Fruits\"},{\"name\":\"Chaat masala\",\"amount\":1,\"unit\":\"tsp\",\"category\":\"Pantry Items\"},{\"name\":\"Coriander leaves\",\"amount\":10,\"unit\":\"g\",\"category\":\"Vegetables\"}]",
+      "steps_json": "[\"Steam or blanch the sprouts 3–4 minutes so they stay crunchy.\",\"Toss with chopped onion, tomato, and coriander.\",\"Squeeze over lemon juice and sprinkle chaat masala.\",\"Serve immediately.\"]"
     },
     {
       "id": "b-dahi-seeds",
@@ -161,7 +177,9 @@
       "kcal_per_unit": 200,
       "difficulty": "easy",
       "prep_time_min": 5,
-      "allergens": "dairy"
+      "allergens": "dairy",
+      "ingredients_json": "[{\"name\":\"Curd\",\"amount\":200,\"unit\":\"g\",\"category\":\"Dairy\"},{\"name\":\"Chia seeds\",\"amount\":1,\"unit\":\"tbsp\",\"category\":\"Pantry Items\"},{\"name\":\"Pumpkin seeds\",\"amount\":1,\"unit\":\"tbsp\",\"category\":\"Pantry Items\"},{\"name\":\"Honey\",\"amount\":1,\"unit\":\"tsp\",\"category\":\"Pantry Items\"},{\"name\":\"Seasonal fruit\",\"amount\":80,\"unit\":\"g\",\"category\":\"Fruits\"}]",
+      "steps_json": "[\"Whisk the curd until smooth and spoon into a bowl.\",\"Top with chia seeds, pumpkin seeds, and chopped fruit.\",\"Drizzle honey over and serve chilled.\"]"
     },
     {
       "id": "b-paneer-paratha",
@@ -179,7 +197,9 @@
       "kcal_per_unit": 260,
       "difficulty": "medium",
       "prep_time_min": 25,
-      "allergens": "gluten,dairy"
+      "allergens": "gluten,dairy",
+      "ingredients_json": "[{\"name\":\"Whole wheat atta\",\"amount\":100,\"unit\":\"g\",\"category\":\"Grains & Carbs\"},{\"name\":\"Paneer\",\"amount\":80,\"unit\":\"g\",\"category\":\"Dairy\"},{\"name\":\"Curd\",\"amount\":100,\"unit\":\"g\",\"category\":\"Dairy\"},{\"name\":\"Green chilli\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Ghee\",\"amount\":2,\"unit\":\"tsp\",\"category\":\"Dairy\"},{\"name\":\"Coriander leaves\",\"amount\":10,\"unit\":\"g\",\"category\":\"Vegetables\"}]",
+      "steps_json": "[\"Knead a soft dough with atta, a pinch of salt, and water; rest 15 minutes.\",\"Mix crumbled paneer with chilli, coriander, and salt for the stuffing.\",\"Stuff, roll, and roast the parathas on a tawa with ghee until golden-flecked.\",\"Serve hot with curd.\"]"
     },
     {
       "id": "b-greek-yogurt",
@@ -197,7 +217,9 @@
       "kcal_per_unit": 220,
       "difficulty": "easy",
       "prep_time_min": 5,
-      "allergens": "dairy"
+      "allergens": "dairy",
+      "ingredients_json": "[{\"name\":\"Greek yogurt\",\"amount\":170,\"unit\":\"g\",\"category\":\"Dairy\"},{\"name\":\"Mixed berries\",\"amount\":80,\"unit\":\"g\",\"category\":\"Fruits\"},{\"name\":\"Mixed seeds\",\"amount\":1,\"unit\":\"tbsp\",\"category\":\"Pantry Items\"},{\"name\":\"Honey\",\"amount\":1,\"unit\":\"tsp\",\"category\":\"Pantry Items\"}]",
+      "steps_json": "[\"Spoon the Greek yogurt into a bowl.\",\"Top with berries and a scattering of seeds.\",\"Finish with a drizzle of honey and serve.\"]"
     },
     {
       "id": "b-pb-toast",
@@ -215,7 +237,9 @@
       "kcal_per_unit": 190,
       "difficulty": "easy",
       "prep_time_min": 5,
-      "allergens": "gluten,peanut"
+      "allergens": "gluten,peanut",
+      "ingredients_json": "[{\"name\":\"Whole-wheat bread\",\"amount\":2,\"unit\":\"slice\",\"category\":\"Grains & Carbs\"},{\"name\":\"Peanut butter\",\"amount\":2,\"unit\":\"tbsp\",\"category\":\"Pantry Items\"},{\"name\":\"Banana\",\"amount\":0.5,\"unit\":\"piece\",\"category\":\"Fruits\"}]",
+      "steps_json": "[\"Toast the bread slices until crisp.\",\"Spread peanut butter generously on each slice.\",\"Top with banana coins and serve.\"]"
     },
     {
       "id": "b-overnight-oats",
@@ -233,7 +257,9 @@
       "kcal_per_unit": 320,
       "difficulty": "easy",
       "prep_time_min": 10,
-      "allergens": "dairy"
+      "allergens": "dairy",
+      "ingredients_json": "[{\"name\":\"Rolled oats\",\"amount\":50,\"unit\":\"g\",\"category\":\"Grains & Carbs\"},{\"name\":\"Milk\",\"amount\":200,\"unit\":\"ml\",\"category\":\"Dairy\"},{\"name\":\"Chia seeds\",\"amount\":1,\"unit\":\"tbsp\",\"category\":\"Pantry Items\"},{\"name\":\"Honey\",\"amount\":1,\"unit\":\"tsp\",\"category\":\"Pantry Items\"},{\"name\":\"Seasonal fruit\",\"amount\":80,\"unit\":\"g\",\"category\":\"Fruits\"}]",
+      "steps_json": "[\"Stir oats, chia, milk, and honey together in a jar.\",\"Refrigerate overnight (or at least 4 hours).\",\"Top with chopped fruit and eat chilled.\"]"
     },
     {
       "id": "b-daliya",
@@ -251,7 +277,9 @@
       "kcal_per_unit": 220,
       "difficulty": "easy",
       "prep_time_min": 25,
-      "allergens": "gluten"
+      "allergens": "gluten",
+      "ingredients_json": "[{\"name\":\"Broken wheat (daliya)\",\"amount\":60,\"unit\":\"g\",\"category\":\"Grains & Carbs\"},{\"name\":\"Mixed vegetables\",\"amount\":120,\"unit\":\"g\",\"category\":\"Vegetables\"},{\"name\":\"Onion\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Cumin seeds\",\"amount\":0.5,\"unit\":\"tsp\",\"category\":\"Pantry Items\"},{\"name\":\"Cooking oil\",\"amount\":2,\"unit\":\"tsp\",\"category\":\"Pantry Items\"}]",
+      "steps_json": "[\"Dry-roast the daliya until nutty and set aside.\",\"Temper cumin in oil; sauté onion and vegetables 3 minutes.\",\"Add daliya, 2 cups water, and salt; pressure-cook 2 whistles.\",\"Fluff and serve warm.\"]"
     },
     {
       "id": "b-eggs-bhurji",
@@ -269,7 +297,9 @@
       "kcal_per_unit": 90,
       "difficulty": "easy",
       "prep_time_min": 10,
-      "allergens": "egg"
+      "allergens": "egg",
+      "ingredients_json": "[{\"name\":\"Eggs\",\"amount\":3,\"unit\":\"piece\",\"category\":\"Protein\"},{\"name\":\"Onion\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Tomato\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Green chilli\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Cooking oil\",\"amount\":1,\"unit\":\"tbsp\",\"category\":\"Pantry Items\"},{\"name\":\"Turmeric powder\",\"amount\":0.25,\"unit\":\"tsp\",\"category\":\"Pantry Items\"}]",
+      "steps_json": "[\"Sauté onion and green chilli in oil until soft.\",\"Add tomato and turmeric; cook 2 minutes.\",\"Pour in beaten eggs and scramble on medium heat until just set.\",\"Season and serve hot.\"]"
     },
     {
       "id": "b-masala-omelette",
@@ -287,7 +317,9 @@
       "kcal_per_unit": 95,
       "difficulty": "easy",
       "prep_time_min": 10,
-      "allergens": "egg"
+      "allergens": "egg",
+      "ingredients_json": "[{\"name\":\"Eggs\",\"amount\":3,\"unit\":\"piece\",\"category\":\"Protein\"},{\"name\":\"Onion\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Green chilli\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Coriander leaves\",\"amount\":10,\"unit\":\"g\",\"category\":\"Vegetables\"},{\"name\":\"Cooking oil\",\"amount\":2,\"unit\":\"tsp\",\"category\":\"Pantry Items\"}]",
+      "steps_json": "[\"Whisk eggs with chopped onion, chilli, coriander, and salt.\",\"Pour into a hot oiled pan and swirl to spread.\",\"Cook 2 minutes, flip, and cook 1 minute more.\",\"Fold and serve hot.\"]"
     },
     {
       "id": "b-boiled-eggs",
@@ -305,7 +337,9 @@
       "kcal_per_unit": 78,
       "difficulty": "easy",
       "prep_time_min": 12,
-      "allergens": "egg"
+      "allergens": "egg",
+      "ingredients_json": "[{\"name\":\"Eggs\",\"amount\":3,\"unit\":\"piece\",\"category\":\"Protein\"},{\"name\":\"Chaat masala\",\"amount\":0.5,\"unit\":\"tsp\",\"category\":\"Pantry Items\"}]",
+      "steps_json": "[\"Boil the eggs 8–9 minutes for firm yolks.\",\"Cool in cold water, then peel and halve.\",\"Sprinkle with chaat masala and serve.\"]"
     },
     {
       "id": "b-egg-paratha",
@@ -323,7 +357,9 @@
       "kcal_per_unit": 240,
       "difficulty": "medium",
       "prep_time_min": 20,
-      "allergens": "egg,gluten"
+      "allergens": "egg,gluten",
+      "ingredients_json": "[{\"name\":\"Whole wheat atta\",\"amount\":100,\"unit\":\"g\",\"category\":\"Grains & Carbs\"},{\"name\":\"Eggs\",\"amount\":2,\"unit\":\"piece\",\"category\":\"Protein\"},{\"name\":\"Onion\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Green chilli\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Cooking oil\",\"amount\":1,\"unit\":\"tbsp\",\"category\":\"Pantry Items\"}]",
+      "steps_json": "[\"Knead a soft atta dough and roll out parathas.\",\"Half-cook each paratha on the tawa.\",\"Pour beaten egg with onion and chilli over, flip, and cook until the egg sets.\",\"Serve hot with ketchup or chutney.\"]"
     },
     {
       "id": "b-keema-toast",
@@ -341,7 +377,9 @@
       "kcal_per_unit": 350,
       "difficulty": "medium",
       "prep_time_min": 20,
-      "allergens": "gluten"
+      "allergens": "gluten",
+      "ingredients_json": "[{\"name\":\"Chicken keema\",\"amount\":100,\"unit\":\"g\",\"category\":\"Protein\"},{\"name\":\"Whole-wheat bread\",\"amount\":2,\"unit\":\"slice\",\"category\":\"Grains & Carbs\"},{\"name\":\"Onion\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Ginger-garlic paste\",\"amount\":1,\"unit\":\"tsp\",\"category\":\"Pantry Items\"},{\"name\":\"Garam masala\",\"amount\":0.5,\"unit\":\"tsp\",\"category\":\"Pantry Items\"},{\"name\":\"Cooking oil\",\"amount\":1,\"unit\":\"tbsp\",\"category\":\"Pantry Items\"}]",
+      "steps_json": "[\"Sauté onion and ginger-garlic paste in oil until golden.\",\"Add keema and garam masala; cook 8–10 minutes until dry and browned.\",\"Toast the bread and pile the keema on top.\",\"Serve hot.\"]"
     },
     {
       "id": "l-rajma-chawal",
@@ -359,7 +397,9 @@
       "kcal_per_unit": 420,
       "difficulty": "medium",
       "prep_time_min": 40,
-      "allergens": ""
+      "allergens": "",
+      "ingredients_json": "[{\"name\":\"Rajma\",\"amount\":80,\"unit\":\"g\",\"category\":\"Protein\"},{\"name\":\"Rice\",\"amount\":80,\"unit\":\"g\",\"category\":\"Grains & Carbs\"},{\"name\":\"Onion\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Tomato\",\"amount\":2,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Ginger-garlic paste\",\"amount\":1,\"unit\":\"tsp\",\"category\":\"Pantry Items\"},{\"name\":\"Garam masala\",\"amount\":1,\"unit\":\"tsp\",\"category\":\"Pantry Items\"},{\"name\":\"Cooking oil\",\"amount\":1,\"unit\":\"tbsp\",\"category\":\"Pantry Items\"}]",
+      "steps_json": "[\"Soak rajma overnight and pressure-cook until tender.\",\"Cook an onion-tomato masala with ginger-garlic and spices.\",\"Simmer the rajma in the masala 15 minutes until creamy.\",\"Serve over steamed rice.\"]"
     },
     {
       "id": "l-chole-rice",
@@ -377,7 +417,9 @@
       "kcal_per_unit": 450,
       "difficulty": "medium",
       "prep_time_min": 40,
-      "allergens": ""
+      "allergens": "",
+      "ingredients_json": "[{\"name\":\"Kabuli chana\",\"amount\":80,\"unit\":\"g\",\"category\":\"Protein\"},{\"name\":\"Rice\",\"amount\":80,\"unit\":\"g\",\"category\":\"Grains & Carbs\"},{\"name\":\"Onion\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Tomato\",\"amount\":2,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Chole masala\",\"amount\":2,\"unit\":\"tsp\",\"category\":\"Pantry Items\"},{\"name\":\"Cooking oil\",\"amount\":1,\"unit\":\"tbsp\",\"category\":\"Pantry Items\"}]",
+      "steps_json": "[\"Soak chana overnight and pressure-cook until soft.\",\"Fry onion until deep golden; add tomato and chole masala.\",\"Add the chana with a splash of cooking water and simmer 15 minutes.\",\"Serve hot with steamed rice.\"]"
     },
     {
       "id": "l-dal-tadka-roti",
@@ -395,7 +437,9 @@
       "kcal_per_unit": 400,
       "difficulty": "medium",
       "prep_time_min": 30,
-      "allergens": "gluten"
+      "allergens": "gluten",
+      "ingredients_json": "[{\"name\":\"Toor dal\",\"amount\":70,\"unit\":\"g\",\"category\":\"Protein\"},{\"name\":\"Whole wheat atta\",\"amount\":60,\"unit\":\"g\",\"category\":\"Grains & Carbs\"},{\"name\":\"Tomato\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Garlic\",\"amount\":3,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Cumin seeds\",\"amount\":0.5,\"unit\":\"tsp\",\"category\":\"Pantry Items\"},{\"name\":\"Ghee\",\"amount\":2,\"unit\":\"tsp\",\"category\":\"Dairy\"}]",
+      "steps_json": "[\"Pressure-cook toor dal with turmeric until soft; whisk smooth.\",\"Make rotis from the atta dough on a hot tawa.\",\"Temper cumin, garlic, and chilli in ghee; pour over the dal.\",\"Simmer 2 minutes and serve with the rotis.\"]"
     },
     {
       "id": "l-paneer-tikka-bowl",
@@ -413,7 +457,9 @@
       "kcal_per_unit": 520,
       "difficulty": "medium",
       "prep_time_min": 30,
-      "allergens": "dairy"
+      "allergens": "dairy",
+      "ingredients_json": "[{\"name\":\"Paneer\",\"amount\":150,\"unit\":\"g\",\"category\":\"Dairy\"},{\"name\":\"Rice\",\"amount\":80,\"unit\":\"g\",\"category\":\"Grains & Carbs\"},{\"name\":\"Curd\",\"amount\":50,\"unit\":\"g\",\"category\":\"Dairy\"},{\"name\":\"Bell pepper\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Tikka masala\",\"amount\":2,\"unit\":\"tsp\",\"category\":\"Pantry Items\"},{\"name\":\"Cooking oil\",\"amount\":1,\"unit\":\"tbsp\",\"category\":\"Pantry Items\"}]",
+      "steps_json": "[\"Marinate paneer cubes and pepper chunks in curd, tikka masala, and salt for 15 minutes.\",\"Pan-sear on high heat until charred at the edges.\",\"Steam the rice while the paneer cooks.\",\"Assemble the bowl: rice base, tikka on top, extra curd if you like.\"]"
     },
     {
       "id": "l-soya-chunk-curry",
@@ -431,7 +477,9 @@
       "kcal_per_unit": 430,
       "difficulty": "medium",
       "prep_time_min": 30,
-      "allergens": "soy"
+      "allergens": "soy",
+      "ingredients_json": "[{\"name\":\"Soya chunks\",\"amount\":60,\"unit\":\"g\",\"category\":\"Protein\"},{\"name\":\"Rice\",\"amount\":80,\"unit\":\"g\",\"category\":\"Grains & Carbs\"},{\"name\":\"Onion\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Tomato\",\"amount\":2,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Ginger-garlic paste\",\"amount\":1,\"unit\":\"tsp\",\"category\":\"Pantry Items\"},{\"name\":\"Garam masala\",\"amount\":1,\"unit\":\"tsp\",\"category\":\"Pantry Items\"},{\"name\":\"Cooking oil\",\"amount\":1,\"unit\":\"tbsp\",\"category\":\"Pantry Items\"}]",
+      "steps_json": "[\"Soak soya chunks in hot salted water 10 minutes; squeeze dry.\",\"Cook an onion-tomato masala with ginger-garlic and garam masala.\",\"Add the chunks and a cup of water; simmer 10 minutes.\",\"Serve hot over steamed rice.\"]"
     },
     {
       "id": "l-tofu-bhurji-roti",
@@ -449,7 +497,9 @@
       "kcal_per_unit": 380,
       "difficulty": "easy",
       "prep_time_min": 20,
-      "allergens": "soy,gluten"
+      "allergens": "soy,gluten",
+      "ingredients_json": "[{\"name\":\"Firm tofu\",\"amount\":150,\"unit\":\"g\",\"category\":\"Protein\"},{\"name\":\"Whole wheat atta\",\"amount\":60,\"unit\":\"g\",\"category\":\"Grains & Carbs\"},{\"name\":\"Onion\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Tomato\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Turmeric powder\",\"amount\":0.5,\"unit\":\"tsp\",\"category\":\"Pantry Items\"},{\"name\":\"Cooking oil\",\"amount\":1,\"unit\":\"tbsp\",\"category\":\"Pantry Items\"}]",
+      "steps_json": "[\"Sauté onion in oil, then add tomato and turmeric.\",\"Crumble in the tofu and cook 3–4 minutes, seasoning with salt.\",\"Make fresh rotis from the atta dough.\",\"Serve the bhurji wrapped in or alongside the rotis.\"]"
     },
     {
       "id": "l-kadhi-chawal",
@@ -467,7 +517,9 @@
       "kcal_per_unit": 380,
       "difficulty": "medium",
       "prep_time_min": 35,
-      "allergens": "dairy"
+      "allergens": "dairy",
+      "ingredients_json": "[{\"name\":\"Curd\",\"amount\":200,\"unit\":\"g\",\"category\":\"Dairy\"},{\"name\":\"Besan\",\"amount\":40,\"unit\":\"g\",\"category\":\"Protein\"},{\"name\":\"Rice\",\"amount\":80,\"unit\":\"g\",\"category\":\"Grains & Carbs\"},{\"name\":\"Curry leaves\",\"amount\":1,\"unit\":\"sprig\",\"category\":\"Vegetables\"},{\"name\":\"Mustard seeds\",\"amount\":0.5,\"unit\":\"tsp\",\"category\":\"Pantry Items\"},{\"name\":\"Ghee\",\"amount\":2,\"unit\":\"tsp\",\"category\":\"Dairy\"}]",
+      "steps_json": "[\"Whisk curd with besan, turmeric, and 2 cups water until smooth.\",\"Simmer on low 15–20 minutes, stirring so it doesn't split.\",\"Temper mustard seeds and curry leaves in ghee; pour over the kadhi.\",\"Serve hot over steamed rice.\"]"
     },
     {
       "id": "l-veg-pulao-raita",
@@ -485,7 +537,9 @@
       "kcal_per_unit": 400,
       "difficulty": "medium",
       "prep_time_min": 30,
-      "allergens": "dairy"
+      "allergens": "dairy",
+      "ingredients_json": "[{\"name\":\"Rice\",\"amount\":80,\"unit\":\"g\",\"category\":\"Grains & Carbs\"},{\"name\":\"Mixed vegetables\",\"amount\":150,\"unit\":\"g\",\"category\":\"Vegetables\"},{\"name\":\"Curd\",\"amount\":150,\"unit\":\"g\",\"category\":\"Dairy\"},{\"name\":\"Onion\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Whole garam masala\",\"amount\":1,\"unit\":\"tsp\",\"category\":\"Pantry Items\"},{\"name\":\"Ghee\",\"amount\":1,\"unit\":\"tbsp\",\"category\":\"Dairy\"}]",
+      "steps_json": "[\"Bloom whole spices in ghee; sauté onion until golden.\",\"Add vegetables and soaked rice; toss 2 minutes.\",\"Add 1.5 cups water and salt; cook covered until the rice is done.\",\"Whisk curd with salt and roasted cumin for raita; serve together.\"]"
     },
     {
       "id": "l-quinoa-chickpea",
@@ -503,7 +557,9 @@
       "kcal_per_unit": 350,
       "difficulty": "easy",
       "prep_time_min": 20,
-      "allergens": ""
+      "allergens": "",
+      "ingredients_json": "[{\"name\":\"Quinoa\",\"amount\":70,\"unit\":\"g\",\"category\":\"Grains & Carbs\"},{\"name\":\"Chickpeas (boiled)\",\"amount\":100,\"unit\":\"g\",\"category\":\"Protein\"},{\"name\":\"Cucumber\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Cherry tomatoes\",\"amount\":80,\"unit\":\"g\",\"category\":\"Vegetables\"},{\"name\":\"Olive oil\",\"amount\":1,\"unit\":\"tbsp\",\"category\":\"Pantry Items\"},{\"name\":\"Lemon\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Fruits\"}]",
+      "steps_json": "[\"Rinse quinoa and simmer in 1.5x water for 15 minutes; fluff and cool.\",\"Toss with chickpeas, diced cucumber, and halved tomatoes.\",\"Dress with olive oil, lemon juice, salt, and pepper.\",\"Serve at room temperature or chilled.\"]"
     },
     {
       "id": "l-paneer-wrap",
@@ -521,7 +577,9 @@
       "kcal_per_unit": 380,
       "difficulty": "easy",
       "prep_time_min": 15,
-      "allergens": "gluten,dairy"
+      "allergens": "gluten,dairy",
+      "ingredients_json": "[{\"name\":\"Tortilla wraps\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Grains & Carbs\"},{\"name\":\"Paneer\",\"amount\":100,\"unit\":\"g\",\"category\":\"Dairy\"},{\"name\":\"Onion\",\"amount\":0.5,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Bell pepper\",\"amount\":0.5,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Mint chutney\",\"amount\":1,\"unit\":\"tbsp\",\"category\":\"Pantry Items\"},{\"name\":\"Tikka masala\",\"amount\":1,\"unit\":\"tsp\",\"category\":\"Pantry Items\"}]",
+      "steps_json": "[\"Toss paneer strips with tikka masala and pan-sear until charred.\",\"Warm the tortilla on the same pan.\",\"Spread mint chutney, layer paneer, onion, and pepper.\",\"Roll tightly, halve, and serve.\"]"
     },
     {
       "id": "l-dal-makhani-roti",
@@ -539,7 +597,9 @@
       "kcal_per_unit": 520,
       "difficulty": "hard",
       "prep_time_min": 50,
-      "allergens": "dairy,gluten"
+      "allergens": "dairy,gluten",
+      "ingredients_json": "[{\"name\":\"Urad dal (whole)\",\"amount\":70,\"unit\":\"g\",\"category\":\"Protein\"},{\"name\":\"Rajma\",\"amount\":20,\"unit\":\"g\",\"category\":\"Protein\"},{\"name\":\"Whole wheat atta\",\"amount\":60,\"unit\":\"g\",\"category\":\"Grains & Carbs\"},{\"name\":\"Butter\",\"amount\":20,\"unit\":\"g\",\"category\":\"Dairy\"},{\"name\":\"Fresh cream\",\"amount\":30,\"unit\":\"ml\",\"category\":\"Dairy\"},{\"name\":\"Tomato\",\"amount\":2,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Ginger-garlic paste\",\"amount\":1,\"unit\":\"tsp\",\"category\":\"Pantry Items\"}]",
+      "steps_json": "[\"Soak urad dal and rajma overnight; pressure-cook until very soft.\",\"Cook tomato purée with ginger-garlic and butter, then add the dal.\",\"Simmer on low 30–40 minutes, mashing gently for creaminess.\",\"Finish with cream and serve with fresh rotis.\"]"
     },
     {
       "id": "l-palak-paneer-roti",
@@ -557,7 +617,9 @@
       "kcal_per_unit": 450,
       "difficulty": "medium",
       "prep_time_min": 35,
-      "allergens": "dairy,gluten"
+      "allergens": "dairy,gluten",
+      "ingredients_json": "[{\"name\":\"Spinach (palak)\",\"amount\":200,\"unit\":\"g\",\"category\":\"Vegetables\"},{\"name\":\"Paneer\",\"amount\":120,\"unit\":\"g\",\"category\":\"Dairy\"},{\"name\":\"Whole wheat atta\",\"amount\":60,\"unit\":\"g\",\"category\":\"Grains & Carbs\"},{\"name\":\"Onion\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Ginger-garlic paste\",\"amount\":1,\"unit\":\"tsp\",\"category\":\"Pantry Items\"},{\"name\":\"Fresh cream\",\"amount\":20,\"unit\":\"ml\",\"category\":\"Dairy\"},{\"name\":\"Cooking oil\",\"amount\":1,\"unit\":\"tbsp\",\"category\":\"Pantry Items\"}]",
+      "steps_json": "[\"Blanch spinach 2 minutes, cool, and blend to a smooth purée.\",\"Sauté onion and ginger-garlic; add the purée and simmer 5 minutes.\",\"Slide in paneer cubes and a swirl of cream; warm through.\",\"Serve with hot rotis.\"]"
     },
     {
       "id": "l-sambar-rice",
@@ -575,7 +637,9 @@
       "kcal_per_unit": 350,
       "difficulty": "medium",
       "prep_time_min": 30,
-      "allergens": ""
+      "allergens": "",
+      "ingredients_json": "[{\"name\":\"Toor dal\",\"amount\":60,\"unit\":\"g\",\"category\":\"Protein\"},{\"name\":\"Rice\",\"amount\":80,\"unit\":\"g\",\"category\":\"Grains & Carbs\"},{\"name\":\"Mixed vegetables\",\"amount\":150,\"unit\":\"g\",\"category\":\"Vegetables\"},{\"name\":\"Sambar powder\",\"amount\":2,\"unit\":\"tsp\",\"category\":\"Pantry Items\"},{\"name\":\"Tamarind\",\"amount\":10,\"unit\":\"g\",\"category\":\"Pantry Items\"},{\"name\":\"Curry leaves\",\"amount\":1,\"unit\":\"sprig\",\"category\":\"Vegetables\"}]",
+      "steps_json": "[\"Pressure-cook dal and rice (separately or stacked) until soft.\",\"Simmer vegetables with tamarind water and sambar powder 10 minutes.\",\"Add the mashed dal and simmer 5 more minutes; temper with curry leaves.\",\"Mix generously into the rice and serve hot.\"]"
     },
     {
       "id": "l-curd-rice",
@@ -593,7 +657,9 @@
       "kcal_per_unit": 320,
       "difficulty": "easy",
       "prep_time_min": 15,
-      "allergens": "dairy,peanut"
+      "allergens": "dairy,peanut",
+      "ingredients_json": "[{\"name\":\"Rice\",\"amount\":80,\"unit\":\"g\",\"category\":\"Grains & Carbs\"},{\"name\":\"Curd\",\"amount\":200,\"unit\":\"g\",\"category\":\"Dairy\"},{\"name\":\"Peanuts\",\"amount\":20,\"unit\":\"g\",\"category\":\"Pantry Items\"},{\"name\":\"Curry leaves\",\"amount\":1,\"unit\":\"sprig\",\"category\":\"Vegetables\"},{\"name\":\"Mustard seeds\",\"amount\":0.5,\"unit\":\"tsp\",\"category\":\"Pantry Items\"},{\"name\":\"Cooking oil\",\"amount\":2,\"unit\":\"tsp\",\"category\":\"Pantry Items\"}]",
+      "steps_json": "[\"Cook the rice soft and let it cool slightly.\",\"Mix in whisked curd and salt.\",\"Temper mustard seeds, curry leaves, and peanuts in oil; fold through.\",\"Serve at room temperature.\"]"
     },
     {
       "id": "l-egg-curry-rice",
@@ -611,7 +677,9 @@
       "kcal_per_unit": 420,
       "difficulty": "medium",
       "prep_time_min": 30,
-      "allergens": "egg"
+      "allergens": "egg",
+      "ingredients_json": "[{\"name\":\"Eggs\",\"amount\":2,\"unit\":\"piece\",\"category\":\"Protein\"},{\"name\":\"Rice\",\"amount\":80,\"unit\":\"g\",\"category\":\"Grains & Carbs\"},{\"name\":\"Onion\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Tomato\",\"amount\":2,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Ginger-garlic paste\",\"amount\":1,\"unit\":\"tsp\",\"category\":\"Pantry Items\"},{\"name\":\"Garam masala\",\"amount\":1,\"unit\":\"tsp\",\"category\":\"Pantry Items\"},{\"name\":\"Cooking oil\",\"amount\":1,\"unit\":\"tbsp\",\"category\":\"Pantry Items\"}]",
+      "steps_json": "[\"Boil, peel, and halve the eggs.\",\"Cook an onion-tomato gravy with ginger-garlic and spices.\",\"Slip the eggs into the gravy and simmer 5 minutes.\",\"Serve over steamed rice.\"]"
     },
     {
       "id": "l-egg-fried-rice",
@@ -629,7 +697,9 @@
       "kcal_per_unit": 450,
       "difficulty": "easy",
       "prep_time_min": 20,
-      "allergens": "egg,soy"
+      "allergens": "egg,soy",
+      "ingredients_json": "[{\"name\":\"Eggs\",\"amount\":2,\"unit\":\"piece\",\"category\":\"Protein\"},{\"name\":\"Rice\",\"amount\":100,\"unit\":\"g\",\"category\":\"Grains & Carbs\"},{\"name\":\"Spring onion\",\"amount\":2,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Mixed vegetables\",\"amount\":100,\"unit\":\"g\",\"category\":\"Vegetables\"},{\"name\":\"Soy sauce\",\"amount\":1,\"unit\":\"tbsp\",\"category\":\"Pantry Items\"},{\"name\":\"Cooking oil\",\"amount\":1,\"unit\":\"tbsp\",\"category\":\"Pantry Items\"}]",
+      "steps_json": "[\"Cook the rice ahead and cool it (day-old rice is best).\",\"Scramble the eggs in a hot wok and set aside.\",\"Stir-fry vegetables on high, add rice and soy sauce, and toss.\",\"Fold in the eggs and spring onion; serve immediately.\"]"
     },
     {
       "id": "l-chicken-curry-rice",
@@ -647,7 +717,9 @@
       "kcal_per_unit": 520,
       "difficulty": "medium",
       "prep_time_min": 40,
-      "allergens": ""
+      "allergens": "",
+      "ingredients_json": "[{\"name\":\"Chicken (curry cut)\",\"amount\":150,\"unit\":\"g\",\"category\":\"Protein\"},{\"name\":\"Rice\",\"amount\":80,\"unit\":\"g\",\"category\":\"Grains & Carbs\"},{\"name\":\"Onion\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Tomato\",\"amount\":2,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Ginger-garlic paste\",\"amount\":2,\"unit\":\"tsp\",\"category\":\"Pantry Items\"},{\"name\":\"Garam masala\",\"amount\":1,\"unit\":\"tsp\",\"category\":\"Pantry Items\"},{\"name\":\"Cooking oil\",\"amount\":1,\"unit\":\"tbsp\",\"category\":\"Pantry Items\"}]",
+      "steps_json": "[\"Brown onion in oil; add ginger-garlic and tomato and cook to a masala.\",\"Add chicken and spices; sear 5 minutes.\",\"Add a cup of water and simmer 20 minutes until tender.\",\"Serve hot with steamed rice.\"]"
     },
     {
       "id": "l-chicken-biryani",
@@ -665,7 +737,9 @@
       "kcal_per_unit": 600,
       "difficulty": "hard",
       "prep_time_min": 60,
-      "allergens": "dairy"
+      "allergens": "dairy",
+      "ingredients_json": "[{\"name\":\"Chicken (curry cut)\",\"amount\":150,\"unit\":\"g\",\"category\":\"Protein\"},{\"name\":\"Basmati rice\",\"amount\":100,\"unit\":\"g\",\"category\":\"Grains & Carbs\"},{\"name\":\"Curd\",\"amount\":50,\"unit\":\"g\",\"category\":\"Dairy\"},{\"name\":\"Onion\",\"amount\":2,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Biryani masala\",\"amount\":2,\"unit\":\"tsp\",\"category\":\"Pantry Items\"},{\"name\":\"Mint leaves\",\"amount\":10,\"unit\":\"g\",\"category\":\"Vegetables\"},{\"name\":\"Ghee\",\"amount\":1,\"unit\":\"tbsp\",\"category\":\"Dairy\"}]",
+      "steps_json": "[\"Marinate chicken in curd and biryani masala for 30 minutes.\",\"Fry sliced onions in ghee until deep golden; par-boil the rice.\",\"Layer chicken, rice, mint, and fried onions; seal and cook on dum 25 minutes.\",\"Rest 10 minutes before opening; serve with raita.\"]"
     },
     {
       "id": "l-grilled-chicken-salad",
@@ -683,7 +757,9 @@
       "kcal_per_unit": 380,
       "difficulty": "easy",
       "prep_time_min": 25,
-      "allergens": ""
+      "allergens": "",
+      "ingredients_json": "[{\"name\":\"Chicken breast\",\"amount\":150,\"unit\":\"g\",\"category\":\"Protein\"},{\"name\":\"Salad greens\",\"amount\":100,\"unit\":\"g\",\"category\":\"Vegetables\"},{\"name\":\"Cherry tomatoes\",\"amount\":80,\"unit\":\"g\",\"category\":\"Vegetables\"},{\"name\":\"Cucumber\",\"amount\":0.5,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Olive oil\",\"amount\":1,\"unit\":\"tbsp\",\"category\":\"Pantry Items\"},{\"name\":\"Lemon\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Fruits\"}]",
+      "steps_json": "[\"Season the chicken with salt, pepper, and oregano.\",\"Grill 4–5 minutes per side; rest, then slice.\",\"Toss greens, tomatoes, and cucumber with olive oil and lemon.\",\"Top with the sliced chicken and serve.\"]"
     },
     {
       "id": "l-fish-curry-rice",
@@ -701,7 +777,9 @@
       "kcal_per_unit": 450,
       "difficulty": "medium",
       "prep_time_min": 35,
-      "allergens": "fish"
+      "allergens": "fish",
+      "ingredients_json": "[{\"name\":\"Fish fillet\",\"amount\":150,\"unit\":\"g\",\"category\":\"Protein\"},{\"name\":\"Rice\",\"amount\":80,\"unit\":\"g\",\"category\":\"Grains & Carbs\"},{\"name\":\"Grated coconut\",\"amount\":30,\"unit\":\"g\",\"category\":\"Pantry Items\"},{\"name\":\"Tamarind\",\"amount\":10,\"unit\":\"g\",\"category\":\"Pantry Items\"},{\"name\":\"Curry leaves\",\"amount\":1,\"unit\":\"sprig\",\"category\":\"Vegetables\"},{\"name\":\"Onion\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Cooking oil\",\"amount\":1,\"unit\":\"tbsp\",\"category\":\"Pantry Items\"}]",
+      "steps_json": "[\"Grind coconut with chilli and turmeric into a smooth paste.\",\"Sauté onion and curry leaves; add the paste and tamarind water.\",\"Simmer 5 minutes, then slide in the fish and poach 6–8 minutes.\",\"Serve the curry over steamed rice.\"]"
     },
     {
       "id": "l-chicken-wrap",
@@ -719,7 +797,9 @@
       "kcal_per_unit": 420,
       "difficulty": "easy",
       "prep_time_min": 15,
-      "allergens": "gluten,dairy"
+      "allergens": "gluten,dairy",
+      "ingredients_json": "[{\"name\":\"Tortilla wraps\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Grains & Carbs\"},{\"name\":\"Chicken breast\",\"amount\":120,\"unit\":\"g\",\"category\":\"Protein\"},{\"name\":\"Curd\",\"amount\":30,\"unit\":\"g\",\"category\":\"Dairy\"},{\"name\":\"Onion\",\"amount\":0.5,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Bell pepper\",\"amount\":0.5,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Tikka masala\",\"amount\":1,\"unit\":\"tsp\",\"category\":\"Pantry Items\"}]",
+      "steps_json": "[\"Marinate chicken strips in curd and tikka masala 15 minutes.\",\"Pan-sear on high until charred and cooked through.\",\"Warm the tortilla; layer chicken, onion, and pepper.\",\"Roll tightly, halve, and serve.\"]"
     },
     {
       "id": "l-keema-roti",
@@ -737,7 +817,9 @@
       "kcal_per_unit": 480,
       "difficulty": "medium",
       "prep_time_min": 35,
-      "allergens": "gluten"
+      "allergens": "gluten",
+      "ingredients_json": "[{\"name\":\"Chicken keema\",\"amount\":150,\"unit\":\"g\",\"category\":\"Protein\"},{\"name\":\"Whole wheat atta\",\"amount\":60,\"unit\":\"g\",\"category\":\"Grains & Carbs\"},{\"name\":\"Green peas\",\"amount\":50,\"unit\":\"g\",\"category\":\"Vegetables\"},{\"name\":\"Onion\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Tomato\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Garam masala\",\"amount\":1,\"unit\":\"tsp\",\"category\":\"Pantry Items\"},{\"name\":\"Cooking oil\",\"amount\":1,\"unit\":\"tbsp\",\"category\":\"Pantry Items\"}]",
+      "steps_json": "[\"Sauté onion in oil until golden; add tomato and spices.\",\"Add keema and cook 10 minutes, breaking up lumps.\",\"Stir in peas and simmer 5 minutes.\",\"Serve hot with fresh rotis.\"]"
     },
     {
       "id": "d-moong-khichdi",
@@ -755,7 +837,9 @@
       "kcal_per_unit": 320,
       "difficulty": "easy",
       "prep_time_min": 30,
-      "allergens": ""
+      "allergens": "",
+      "ingredients_json": "[{\"name\":\"Moong dal\",\"amount\":50,\"unit\":\"g\",\"category\":\"Protein\"},{\"name\":\"Rice\",\"amount\":50,\"unit\":\"g\",\"category\":\"Grains & Carbs\"},{\"name\":\"Mixed vegetables\",\"amount\":100,\"unit\":\"g\",\"category\":\"Vegetables\"},{\"name\":\"Cumin seeds\",\"amount\":0.5,\"unit\":\"tsp\",\"category\":\"Pantry Items\"},{\"name\":\"Ghee\",\"amount\":2,\"unit\":\"tsp\",\"category\":\"Dairy\"}]",
+      "steps_json": "[\"Rinse dal and rice together.\",\"Temper cumin in ghee; add vegetables and toss.\",\"Add dal, rice, 3 cups water, turmeric, and salt; pressure-cook 3 whistles.\",\"Serve hot with a spoon of ghee on top.\"]"
     },
     {
       "id": "d-paneer-tikka",
@@ -773,7 +857,9 @@
       "kcal_per_unit": 320,
       "difficulty": "medium",
       "prep_time_min": 30,
-      "allergens": "dairy"
+      "allergens": "dairy",
+      "ingredients_json": "[{\"name\":\"Paneer\",\"amount\":150,\"unit\":\"g\",\"category\":\"Dairy\"},{\"name\":\"Curd\",\"amount\":50,\"unit\":\"g\",\"category\":\"Dairy\"},{\"name\":\"Bell pepper\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Onion\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Tikka masala\",\"amount\":2,\"unit\":\"tsp\",\"category\":\"Pantry Items\"},{\"name\":\"Cooking oil\",\"amount\":1,\"unit\":\"tbsp\",\"category\":\"Pantry Items\"},{\"name\":\"Lemon\",\"amount\":0.5,\"unit\":\"piece\",\"category\":\"Fruits\"}]",
+      "steps_json": "[\"Marinate paneer, pepper, and onion chunks in curd, tikka masala, and salt for 15 minutes.\",\"Thread onto skewers or spread on a hot oiled pan.\",\"Char 3–4 minutes per side.\",\"Squeeze lemon over and serve hot.\"]"
     },
     {
       "id": "d-veg-paneer-soup",
@@ -791,7 +877,9 @@
       "kcal_per_unit": 180,
       "difficulty": "easy",
       "prep_time_min": 20,
-      "allergens": "dairy"
+      "allergens": "dairy",
+      "ingredients_json": "[{\"name\":\"Paneer\",\"amount\":80,\"unit\":\"g\",\"category\":\"Dairy\"},{\"name\":\"Mixed vegetables\",\"amount\":150,\"unit\":\"g\",\"category\":\"Vegetables\"},{\"name\":\"Garlic\",\"amount\":3,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Black pepper\",\"amount\":0.5,\"unit\":\"tsp\",\"category\":\"Pantry Items\"},{\"name\":\"Cooking oil\",\"amount\":2,\"unit\":\"tsp\",\"category\":\"Pantry Items\"}]",
+      "steps_json": "[\"Sauté garlic in oil; add vegetables and toss 2 minutes.\",\"Add 2 cups water or stock and simmer 10 minutes.\",\"Add paneer cubes; season with salt and pepper.\",\"Simmer 2 more minutes and serve steaming.\"]"
     },
     {
       "id": "d-methi-thepla-curd",
@@ -809,7 +897,9 @@
       "kcal_per_unit": 120,
       "difficulty": "medium",
       "prep_time_min": 25,
-      "allergens": "gluten,dairy"
+      "allergens": "gluten,dairy",
+      "ingredients_json": "[{\"name\":\"Whole wheat atta\",\"amount\":100,\"unit\":\"g\",\"category\":\"Grains & Carbs\"},{\"name\":\"Fenugreek leaves (methi)\",\"amount\":50,\"unit\":\"g\",\"category\":\"Vegetables\"},{\"name\":\"Curd\",\"amount\":150,\"unit\":\"g\",\"category\":\"Dairy\"},{\"name\":\"Turmeric powder\",\"amount\":0.5,\"unit\":\"tsp\",\"category\":\"Pantry Items\"},{\"name\":\"Cooking oil\",\"amount\":1,\"unit\":\"tbsp\",\"category\":\"Pantry Items\"}]",
+      "steps_json": "[\"Knead atta with chopped methi, turmeric, salt, a spoon of curd, and water.\",\"Rest the dough 15 minutes, then roll thin theplas.\",\"Roast on a tawa with a little oil until spotted golden.\",\"Serve with the remaining curd.\"]"
     },
     {
       "id": "d-tandoori-chicken",
@@ -827,7 +917,9 @@
       "kcal_per_unit": 380,
       "difficulty": "medium",
       "prep_time_min": 35,
-      "allergens": "dairy"
+      "allergens": "dairy",
+      "ingredients_json": "[{\"name\":\"Chicken (curry cut)\",\"amount\":200,\"unit\":\"g\",\"category\":\"Protein\"},{\"name\":\"Curd\",\"amount\":60,\"unit\":\"g\",\"category\":\"Dairy\"},{\"name\":\"Tandoori masala\",\"amount\":2,\"unit\":\"tsp\",\"category\":\"Pantry Items\"},{\"name\":\"Ginger-garlic paste\",\"amount\":2,\"unit\":\"tsp\",\"category\":\"Pantry Items\"},{\"name\":\"Lemon\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Fruits\"},{\"name\":\"Cooking oil\",\"amount\":1,\"unit\":\"tbsp\",\"category\":\"Pantry Items\"}]",
+      "steps_json": "[\"Slash the chicken pieces and marinate in curd, tandoori masala, ginger-garlic, and lemon for 30+ minutes.\",\"Roast in a hot oven or air fryer at 200°C for 20–25 minutes, turning once.\",\"Baste with oil for the last 5 minutes for a char.\",\"Serve with lemon wedges and sliced onion.\"]"
     },
     {
       "id": "d-grilled-fish-veg",
@@ -845,7 +937,9 @@
       "kcal_per_unit": 350,
       "difficulty": "medium",
       "prep_time_min": 30,
-      "allergens": "fish"
+      "allergens": "fish",
+      "ingredients_json": "[{\"name\":\"Fish fillet\",\"amount\":180,\"unit\":\"g\",\"category\":\"Protein\"},{\"name\":\"Mixed vegetables\",\"amount\":150,\"unit\":\"g\",\"category\":\"Vegetables\"},{\"name\":\"Olive oil\",\"amount\":1,\"unit\":\"tbsp\",\"category\":\"Pantry Items\"},{\"name\":\"Lemon\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Fruits\"},{\"name\":\"Black pepper\",\"amount\":0.5,\"unit\":\"tsp\",\"category\":\"Pantry Items\"}]",
+      "steps_json": "[\"Pat the fish dry; rub with olive oil, salt, pepper, and lemon zest.\",\"Grill 3–4 minutes per side until it flakes.\",\"Sauté or grill the vegetables in the same pan.\",\"Plate with a squeeze of lemon.\"]"
     },
     {
       "id": "d-chicken-shorba",
@@ -863,7 +957,9 @@
       "kcal_per_unit": 150,
       "difficulty": "easy",
       "prep_time_min": 25,
-      "allergens": ""
+      "allergens": "",
+      "ingredients_json": "[{\"name\":\"Chicken (curry cut)\",\"amount\":100,\"unit\":\"g\",\"category\":\"Protein\"},{\"name\":\"Onion\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Ginger-garlic paste\",\"amount\":1,\"unit\":\"tsp\",\"category\":\"Pantry Items\"},{\"name\":\"Black pepper\",\"amount\":0.5,\"unit\":\"tsp\",\"category\":\"Pantry Items\"},{\"name\":\"Coriander leaves\",\"amount\":10,\"unit\":\"g\",\"category\":\"Vegetables\"},{\"name\":\"Cooking oil\",\"amount\":2,\"unit\":\"tsp\",\"category\":\"Pantry Items\"}]",
+      "steps_json": "[\"Sauté onion and ginger-garlic in oil until fragrant.\",\"Add chicken and 3 cups water; simmer 20 minutes.\",\"Shred the chicken back into the broth; season with pepper and salt.\",\"Finish with coriander and serve hot.\"]"
     },
     {
       "id": "d-chicken-stirfry",
@@ -881,7 +977,9 @@
       "kcal_per_unit": 480,
       "difficulty": "easy",
       "prep_time_min": 25,
-      "allergens": "soy"
+      "allergens": "soy",
+      "ingredients_json": "[{\"name\":\"Chicken breast\",\"amount\":150,\"unit\":\"g\",\"category\":\"Protein\"},{\"name\":\"Rice\",\"amount\":80,\"unit\":\"g\",\"category\":\"Grains & Carbs\"},{\"name\":\"Bell pepper\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Broccoli\",\"amount\":100,\"unit\":\"g\",\"category\":\"Vegetables\"},{\"name\":\"Soy sauce\",\"amount\":1,\"unit\":\"tbsp\",\"category\":\"Pantry Items\"},{\"name\":\"Garlic\",\"amount\":3,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Cooking oil\",\"amount\":1,\"unit\":\"tbsp\",\"category\":\"Pantry Items\"}]",
+      "steps_json": "[\"Steam the rice while you prep.\",\"Sear chicken strips in a hot wok; set aside.\",\"Stir-fry garlic, pepper, and broccoli 3 minutes; return the chicken with soy sauce.\",\"Toss on high heat 1 minute and serve over rice.\"]"
     },
     {
       "id": "s-whey-shake",
@@ -899,7 +997,9 @@
       "kcal_per_unit": 180,
       "difficulty": "easy",
       "prep_time_min": 5,
-      "allergens": "dairy"
+      "allergens": "dairy",
+      "ingredients_json": "[{\"name\":\"Whey protein\",\"amount\":1,\"unit\":\"scoop\",\"category\":\"Pantry Items\"},{\"name\":\"Milk\",\"amount\":250,\"unit\":\"ml\",\"category\":\"Dairy\"},{\"name\":\"Banana\",\"amount\":0.5,\"unit\":\"piece\",\"category\":\"Fruits\"}]",
+      "steps_json": "[\"Add milk, whey, and banana to a blender or shaker.\",\"Blend or shake 20–30 seconds until smooth.\",\"Drink immediately.\"]"
     },
     {
       "id": "s-roasted-chana",
@@ -917,7 +1017,9 @@
       "kcal_per_unit": 180,
       "difficulty": "easy",
       "prep_time_min": 5,
-      "allergens": ""
+      "allergens": "",
+      "ingredients_json": "[{\"name\":\"Roasted chana\",\"amount\":50,\"unit\":\"g\",\"category\":\"Pantry Items\"},{\"name\":\"Chaat masala\",\"amount\":0.5,\"unit\":\"tsp\",\"category\":\"Pantry Items\"}]",
+      "steps_json": "[\"Warm the roasted chana in a dry pan for a minute (optional).\",\"Toss with chaat masala and snack away.\"]"
     },
     {
       "id": "s-peanut-chaat",
@@ -935,7 +1037,9 @@
       "kcal_per_unit": 250,
       "difficulty": "easy",
       "prep_time_min": 10,
-      "allergens": "peanut"
+      "allergens": "peanut",
+      "ingredients_json": "[{\"name\":\"Peanuts\",\"amount\":50,\"unit\":\"g\",\"category\":\"Pantry Items\"},{\"name\":\"Onion\",\"amount\":0.5,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Tomato\",\"amount\":0.5,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Lemon\",\"amount\":0.5,\"unit\":\"piece\",\"category\":\"Fruits\"},{\"name\":\"Chaat masala\",\"amount\":0.5,\"unit\":\"tsp\",\"category\":\"Pantry Items\"},{\"name\":\"Coriander leaves\",\"amount\":10,\"unit\":\"g\",\"category\":\"Vegetables\"}]",
+      "steps_json": "[\"Roast the peanuts in a dry pan until crunchy.\",\"Toss with chopped onion, tomato, and coriander.\",\"Season with chaat masala and lemon juice; serve fresh.\"]"
     },
     {
       "id": "s-chaas-nuts",
@@ -953,7 +1057,9 @@
       "kcal_per_unit": 150,
       "difficulty": "easy",
       "prep_time_min": 5,
-      "allergens": "dairy,nuts"
+      "allergens": "dairy,nuts",
+      "ingredients_json": "[{\"name\":\"Curd\",\"amount\":150,\"unit\":\"g\",\"category\":\"Dairy\"},{\"name\":\"Mixed nuts\",\"amount\":30,\"unit\":\"g\",\"category\":\"Pantry Items\"},{\"name\":\"Roasted cumin powder\",\"amount\":0.5,\"unit\":\"tsp\",\"category\":\"Pantry Items\"}]",
+      "steps_json": "[\"Blend curd with a cup of cold water, salt, and roasted cumin.\",\"Pour into a glass over ice if you like.\",\"Serve with a handful of mixed nuts on the side.\"]"
     },
     {
       "id": "s-protein-bar",
@@ -971,7 +1077,9 @@
       "kcal_per_unit": 220,
       "difficulty": "easy",
       "prep_time_min": 2,
-      "allergens": "nuts,dairy"
+      "allergens": "nuts,dairy",
+      "ingredients_json": "[{\"name\":\"Protein bar\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Pantry Items\"}]",
+      "steps_json": "[\"Unwrap.\",\"Enjoy between meals — no cooking required.\"]"
     },
     {
       "id": "s-paneer-cubes",
@@ -989,7 +1097,9 @@
       "kcal_per_unit": 2.9,
       "difficulty": "easy",
       "prep_time_min": 10,
-      "allergens": "dairy"
+      "allergens": "dairy",
+      "ingredients_json": "[{\"name\":\"Paneer\",\"amount\":100,\"unit\":\"g\",\"category\":\"Dairy\"},{\"name\":\"Chaat masala\",\"amount\":0.5,\"unit\":\"tsp\",\"category\":\"Pantry Items\"},{\"name\":\"Cooking oil\",\"amount\":1,\"unit\":\"tsp\",\"category\":\"Pantry Items\"}]",
+      "steps_json": "[\"Cube the paneer.\",\"Sear in a lightly oiled pan 2 minutes per side (or eat fresh).\",\"Dust with chaat masala and serve.\"]"
     },
     {
       "id": "s-makhana-peanut",
@@ -1007,7 +1117,9 @@
       "kcal_per_unit": 180,
       "difficulty": "easy",
       "prep_time_min": 10,
-      "allergens": "peanut"
+      "allergens": "peanut",
+      "ingredients_json": "[{\"name\":\"Makhana (fox nuts)\",\"amount\":30,\"unit\":\"g\",\"category\":\"Pantry Items\"},{\"name\":\"Peanuts\",\"amount\":20,\"unit\":\"g\",\"category\":\"Pantry Items\"},{\"name\":\"Ghee\",\"amount\":1,\"unit\":\"tsp\",\"category\":\"Dairy\"},{\"name\":\"Black pepper\",\"amount\":0.25,\"unit\":\"tsp\",\"category\":\"Pantry Items\"}]",
+      "steps_json": "[\"Roast makhana in ghee on low heat until crisp, 6–8 minutes.\",\"Add peanuts for the last 2 minutes.\",\"Season with salt and pepper; cool before serving.\"]"
     },
     {
       "id": "s-hummus-pita",
@@ -1025,7 +1137,9 @@
       "kcal_per_unit": 280,
       "difficulty": "easy",
       "prep_time_min": 10,
-      "allergens": "gluten,sesame"
+      "allergens": "gluten,sesame",
+      "ingredients_json": "[{\"name\":\"Chickpeas (boiled)\",\"amount\":80,\"unit\":\"g\",\"category\":\"Protein\"},{\"name\":\"Pita bread\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Grains & Carbs\"},{\"name\":\"Tahini\",\"amount\":1,\"unit\":\"tbsp\",\"category\":\"Pantry Items\"},{\"name\":\"Olive oil\",\"amount\":1,\"unit\":\"tbsp\",\"category\":\"Pantry Items\"},{\"name\":\"Garlic\",\"amount\":1,\"unit\":\"piece\",\"category\":\"Vegetables\"},{\"name\":\"Lemon\",\"amount\":0.5,\"unit\":\"piece\",\"category\":\"Fruits\"}]",
+      "steps_json": "[\"Blend chickpeas with tahini, garlic, lemon juice, and a splash of cold water until silky.\",\"Season with salt; drizzle olive oil on top.\",\"Warm the pita, cut into wedges, and scoop.\"]"
     },
     {
       "id": "s-turmeric-milk",
@@ -1043,7 +1157,9 @@
       "kcal_per_unit": 120,
       "difficulty": "easy",
       "prep_time_min": 5,
-      "allergens": "dairy"
+      "allergens": "dairy",
+      "ingredients_json": "[{\"name\":\"Milk\",\"amount\":250,\"unit\":\"ml\",\"category\":\"Dairy\"},{\"name\":\"Turmeric powder\",\"amount\":0.5,\"unit\":\"tsp\",\"category\":\"Pantry Items\"},{\"name\":\"Honey\",\"amount\":1,\"unit\":\"tsp\",\"category\":\"Pantry Items\"}]",
+      "steps_json": "[\"Warm the milk gently with turmeric, whisking.\",\"Simmer 2 minutes; don't boil over.\",\"Sweeten with honey off the heat and sip warm.\"]"
     },
     {
       "id": "s-chicken-tikka-bites",
@@ -1061,7 +1177,9 @@
       "kcal_per_unit": 220,
       "difficulty": "medium",
       "prep_time_min": 25,
-      "allergens": "dairy"
+      "allergens": "dairy",
+      "ingredients_json": "[{\"name\":\"Chicken breast\",\"amount\":120,\"unit\":\"g\",\"category\":\"Protein\"},{\"name\":\"Curd\",\"amount\":40,\"unit\":\"g\",\"category\":\"Dairy\"},{\"name\":\"Tikka masala\",\"amount\":1,\"unit\":\"tsp\",\"category\":\"Pantry Items\"},{\"name\":\"Lemon\",\"amount\":0.5,\"unit\":\"piece\",\"category\":\"Fruits\"},{\"name\":\"Cooking oil\",\"amount\":2,\"unit\":\"tsp\",\"category\":\"Pantry Items\"}]",
+      "steps_json": "[\"Marinate bite-size chicken pieces in curd and tikka masala 15 minutes.\",\"Sear in a hot oiled pan until charred and cooked through, 8–10 minutes.\",\"Squeeze lemon over and serve with toothpicks.\"]"
     }
   ]
 }

@@ -6,6 +6,11 @@ import {
   BottomSheetTextInput,
 } from "@gorhom/bottom-sheet";
 import { Feather } from "@expo/vector-icons";
+import {
+  renderSheetBackdrop,
+  sheetBackgroundStyle,
+  sheetHandleStyle,
+} from "@/components/sheetChrome";
 import type { Candidate } from "@/engine/generator";
 import type { Diet, Slot } from "@/engine/types";
 import type { CustomMealInput } from "@/db/repos/mealsRepo";
@@ -149,8 +154,9 @@ export const SwapSheet = forwardRef<
       snapPoints={["85%"]}
       enableDynamicSizing={false}
       onDismiss={reset}
-      backgroundStyle={{ backgroundColor: "#fffdfa" }}
-      handleIndicatorStyle={{ backgroundColor: "#e3ddd5" }}
+      backdropComponent={renderSheetBackdrop}
+      backgroundStyle={sheetBackgroundStyle}
+      handleIndicatorStyle={sheetHandleStyle}
     >
       <View className="px-5 pb-2">
         <Text className="text-base font-bold text-foreground">{title}</Text>

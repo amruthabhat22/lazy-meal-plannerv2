@@ -1,14 +1,8 @@
 import React, { useEffect, useState } from "react";
-import {
-  Alert,
-  Pressable,
-  ScrollView,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
+import { Alert, Pressable, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
+import { Feather } from "@expo/vector-icons";
 import { useSQLiteContext } from "expo-sqlite";
 import Constants from "expo-constants";
 // Legacy FS API: handles content:// URIs from the document picker reliably.
@@ -22,6 +16,11 @@ import { buildBackup, restoreBackup, validateBackup } from "@/db/backup";
 import { usePrefsStore } from "@/state/usePrefsStore";
 import { usePlanStore } from "@/state/usePlanStore";
 import { CUISINES } from "@/utils/cuisines";
+import {
+  GoalSliderCard,
+  calorieLevelLabel,
+  proteinLevelLabel,
+} from "@/components/GoalSliderCard";
 
 const DIETS: { value: Diet; label: string }[] = [
   { value: "veg", label: "Vegetarian" },
@@ -52,7 +51,8 @@ export default function Settings() {
   const regenerate = usePlanStore((s) => s.regenerate);
 
   const [diet, setDiet] = useState<Diet>(prefs?.diet ?? "veg");
-  const [goalText, setGoalText] = useState(String(prefs?.proteinGoal ?? 120));
+  const [goal, setGoal] = useState(prefs?.proteinGoal ?? 120);
+  const [calories, setCalories] = useState(prefs?.calorieGoal ?? 2000);
   const [mealsPerDay, setMealsPerDay] = useState<2 | 3 | 4>(
     prefs?.mealsPerDay ?? 3,
   );
@@ -67,8 +67,6 @@ export default function Settings() {
     );
   }, [db]);
 
-  const goal = Number(goalText);
-  const goalValid = Number.isFinite(goal) && goal >= 20 && goal <= 400;
   const cuisinesEqual =
     prefs !== null &&
     cuisines.size === prefs.cuisines.length &&
@@ -76,7 +74,8 @@ export default function Settings() {
   const dirty =
     prefs !== null &&
     (diet !== prefs.diet ||
-      (goalValid && goal !== prefs.proteinGoal) ||
+      goal !== prefs.proteinGoal ||
+      calories !== prefs.calorieGoal ||
       mealsPerDay !== prefs.mealsPerDay ||
       !cuisinesEqual);
 
@@ -89,39 +88,41 @@ export default function Settings() {
     });
   };
 
+  // Design: one explicit "Save and regenerate plan" action. Only calorie-
+  // or cuisine-only edits skip the regenerate (nothing to re-plan).
   const save = async () => {
-    if (!goalValid) {
-      Alert.alert("Invalid goal", "Enter a protein goal between 20 and 400g.");
-      return;
-    }
+    const needsRegenerate =
+      prefs !== null &&
+      (diet !== prefs.diet ||
+        goal !== prefs.proteinGoal ||
+        mealsPerDay !== prefs.mealsPerDay ||
+        !cuisinesEqual);
     const saved = await savePrefs(db, {
       diet,
       proteinGoal: goal,
+      calorieGoal: calories,
       mealsPerDay,
       cuisines: [...cuisines],
     });
-    // Spec 5.6: editing regenerates nothing automatically; prompt instead.
-    Alert.alert("Settings saved", "Regenerate this week with new settings?", [
-      { text: "Keep current plan", style: "cancel" },
-      {
-        text: "Regenerate",
-        onPress: () => {
-          regenerate(db, saved).catch((e) => {
-            if (e instanceof CatalogTooSmallError) {
-              Alert.alert(
-                "Not enough meals",
-                "We couldn't fill every slot with these settings.",
-              );
-            }
-          });
-        },
-      },
-    ]);
+    if (!needsRegenerate) return;
+    try {
+      await regenerate(db, saved);
+      router.replace("/");
+    } catch (e) {
+      if (e instanceof CatalogTooSmallError) {
+        Alert.alert(
+          "Not enough meals",
+          "Settings were saved, but we couldn't fill every slot with them. Your current plan is unchanged.",
+        );
+      } else {
+        throw e;
+      }
+    }
   };
 
   const exportBackup = async () => {
     const backup = await buildBackup(db);
-    const path = `${FileSystem.cacheDirectory}lazy-meal-planner-backup-${new Date()
+    const path = `${FileSystem.cacheDirectory}eezyplate-backup-${new Date()
       .toISOString()
       .slice(0, 10)}.json`;
     await FileSystem.writeAsStringAsync(path, JSON.stringify(backup, null, 2));
@@ -208,13 +209,29 @@ export default function Settings() {
           ))}
         </View>
 
-        <SectionLabel>Daily protein goal (g)</SectionLabel>
-        <TextInput
-          className="rounded-xl border-2 border-border bg-card px-4 py-3 text-base text-foreground"
-          keyboardType="number-pad"
-          value={goalText}
-          onChangeText={setGoalText}
+        <SectionLabel>Daily protein & calorie goals</SectionLabel>
+        <GoalSliderCard
+          label="Protein"
+          levelLabel={proteinLevelLabel(goal)}
+          value={goal}
+          unitLabel="g / day"
+          min={60}
+          max={200}
+          step={5}
+          onChange={setGoal}
         />
+        <View className="mt-3">
+          <GoalSliderCard
+            label="Calories"
+            levelLabel={calorieLevelLabel(calories)}
+            value={calories}
+            unitLabel="kcal / day"
+            min={1200}
+            max={3500}
+            step={50}
+            onChange={setCalories}
+          />
+        </View>
 
         <SectionLabel>Meals per day</SectionLabel>
         <View className="flex-row gap-2">
@@ -260,16 +277,21 @@ export default function Settings() {
         <Pressable
           onPress={() => void save()}
           disabled={!dirty}
-          className={`h-12 rounded-xl items-center justify-center mt-6 ${
-            dirty ? "bg-primary" : "bg-secondary"
+          className={`h-12 rounded-full flex-row items-center justify-center gap-2 mt-6 ${
+            dirty ? "bg-primary" : "bg-secondary opacity-60"
           }`}
         >
+          <Feather
+            name="check"
+            size={15}
+            color={dirty ? "#fefbf8" : "#6c6158"}
+          />
           <Text
             className={`text-sm font-semibold ${
               dirty ? "text-primary-foreground" : "text-muted-foreground"
             }`}
           >
-            Save changes
+            Save and regenerate plan
           </Text>
         </Pressable>
 
