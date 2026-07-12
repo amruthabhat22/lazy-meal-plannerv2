@@ -245,14 +245,14 @@ export const ShareSheet = forwardRef<
         stickyHeaderIndices={[]}
       >
         <SheetHeader
-          title="Share on WhatsApp"
-          subtitle="Send your weekly plan or a single recipe."
+          title="Share"
+          subtitle="Send your weekly plan or a single recipe on WhatsApp."
         />
 
         {/* Mode radio group */}
         <View className="px-5 py-3">
           <RadioRow
-            label="Weekly plan"
+            label="Weekly Meal Plan"
             selected={mode === "plan"}
             onPress={() => setMode("plan")}
           />

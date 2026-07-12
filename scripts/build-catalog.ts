@@ -10,7 +10,7 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import { parseMealsCsv } from "./csv";
 
-const CATALOG_VERSION = 4;
+const CATALOG_VERSION = 5;
 
 const INGREDIENT_CATEGORIES = new Set([
   "Protein",

@@ -2,6 +2,7 @@ import React from "react";
 import { Pressable, Text, type ViewStyle } from "react-native";
 import type { LucideIcon } from "lucide-react-native";
 import { Icon, ICON_COLORS } from "@/components/ui/Icon";
+import { FONT_CLIP_FIX } from "@/utils/androidText";
 
 /**
  * The one shared CTA. Disabled state is a single style everywhere:
@@ -63,7 +64,13 @@ export function Button({
       style={[{ height }, shadowStyle]}
     >
       {icon ? <Icon icon={icon} size="sm" color={iconColor} /> : null}
-      <Text className={`text-sm font-semibold ${labelColor}`}>{label}</Text>
+      <Text
+        className={`text-sm font-semibold ${labelColor}`}
+        style={FONT_CLIP_FIX}
+        numberOfLines={1}
+      >
+        {label}
+      </Text>
     </Pressable>
   );
 }

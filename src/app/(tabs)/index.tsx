@@ -13,6 +13,7 @@ import {
   UserRound,
 } from "lucide-react-native";
 import { blockMeal, getBlockedMealIds } from "@/utils/blockedMeals";
+import { FONT_CLIP_FIX } from "@/utils/androidText";
 import { Icon, ICON_COLORS } from "@/components/ui/Icon";
 import type { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { captureRef } from "react-native-view-shot";
@@ -359,6 +360,7 @@ export default function WeekPlanScreen() {
                     <Icon icon={Plus} size={14} color={ICON_COLORS.primary} />
                     <Text
                       className="text-xs leading-4 font-semibold text-primary"
+                      style={FONT_CLIP_FIX}
                       numberOfLines={1}
                     >
                       Add meal
@@ -389,7 +391,11 @@ export default function WeekPlanScreen() {
             className="h-12 rounded-xl border border-dashed border-border bg-secondary/30 flex-row items-center justify-center gap-2"
           >
             <Icon icon={RefreshCw} size="sm" color={ICON_COLORS.accentForeground} />
-            <Text className="text-sm font-semibold text-foreground/80">
+            <Text
+              className="text-sm font-semibold text-foreground/80"
+              style={FONT_CLIP_FIX}
+              numberOfLines={1}
+            >
               Regenerate this day
             </Text>
           </Pressable>

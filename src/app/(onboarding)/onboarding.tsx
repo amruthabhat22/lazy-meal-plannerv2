@@ -13,18 +13,13 @@ import { useSQLiteContext } from "expo-sqlite";
 import {
   ArrowLeft,
   ArrowRight,
-  Beef,
   Check,
-  Citrus,
-  CookingPot,
   Drumstick,
   Egg,
-  Flame,
   Leaf,
   Lightbulb,
   Moon,
   Phone,
-  Pizza,
   Soup,
   Sparkles,
   Trash2,
@@ -101,15 +96,10 @@ const MEAL_OPTIONS: {
 ];
 
 const CUISINE_ICONS: Record<string, LucideIcon> = {
-  "south-indian": TreePalm,
   "north-indian": Wheat,
-  american: Beef,
+  "south-indian": TreePalm,
+  continental: UtensilsCrossed,
   chinese: Soup,
-  mediterranean: Citrus,
-  asian: UtensilsCrossed,
-  tibetan: CookingPot,
-  mexican: Flame,
-  italian: Pizza,
 };
 
 const inputStyle =

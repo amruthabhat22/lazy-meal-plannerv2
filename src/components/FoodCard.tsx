@@ -5,6 +5,7 @@ import * as Haptics from "expo-haptics";
 import { Icon, ICON_COLORS } from "@/components/ui/Icon";
 import type { Meal } from "@/engine/types";
 import { formatNumber, formatQty } from "@/utils/format";
+import { FONT_CLIP_FIX } from "@/utils/androidText";
 
 /** Meal card inside a slot section (design's FoodCard). Dropping the
  * quantity below min removes the meal from the slot. The book icon (in the
@@ -60,7 +61,9 @@ export function FoodCard({
           className="h-9 rounded-full flex-row items-center justify-center gap-1.5 px-3 -mr-1"
         >
           <Icon icon={Repeat} size="sm" color={ICON_COLORS.primary} />
-          <Text className="text-sm font-semibold text-primary">Swap</Text>
+          <Text className="text-sm font-semibold text-primary" style={FONT_CLIP_FIX}>
+            Swap
+          </Text>
         </Pressable>
       </View>
 
@@ -68,18 +71,20 @@ export function FoodCard({
         {/* Nutrition chips + recipe icon (design: icon lives in this row).
             Chips hug their text — no fixed widths anywhere. */}
         <View className="flex-row flex-wrap items-center gap-1.5 flex-1">
-          <View className="self-auto rounded-full bg-secondary/70 px-2 py-1">
+          <View className="self-auto rounded-full bg-secondary/70 px-2.5 py-1">
             <Text
               className="text-xs leading-4 font-semibold text-foreground/80 tabular-nums"
+              style={FONT_CLIP_FIX}
               numberOfLines={1}
             >
               {`${protein}g`}
             </Text>
           </View>
           {kcal != null ? (
-            <View className="self-auto rounded-full bg-secondary/70 px-2 py-1">
+            <View className="self-auto rounded-full bg-secondary/70 px-2.5 py-1">
               <Text
                 className="text-xs leading-4 font-semibold text-foreground/80 tabular-nums"
+                style={FONT_CLIP_FIX}
                 numberOfLines={1}
               >
                 {`${kcal} cal`}

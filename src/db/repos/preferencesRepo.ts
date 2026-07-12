@@ -1,6 +1,7 @@
 import type { SQLiteDatabase } from "expo-sqlite";
 import type { Diet } from "@/engine/types";
 import { newId, nowIso } from "@/utils/ids";
+import { normalizeCuisines } from "@/utils/cuisines";
 
 export interface UserPreferences {
   id: string;
@@ -44,10 +45,12 @@ export async function getPreferences(
     proteinGoal: row.protein_goal,
     calorieGoal: row.calorie_goal ?? DEFAULT_CALORIE_GOAL,
     mealsPerDay: normalizeMealsPerDay(row.meals_per_day),
-    cuisines: (row.cuisines ?? "")
-      .split(",")
-      .map((s) => s.trim())
-      .filter(Boolean),
+    cuisines: normalizeCuisines(
+      (row.cuisines ?? "")
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean),
+    ),
     allergies: (row.allergies ?? "")
       .split(",")
       .map((s) => s.trim())

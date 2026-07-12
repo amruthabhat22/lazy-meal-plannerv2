@@ -3,21 +3,21 @@ b-moong-chilla,Moong Dal Chilla,breakfast,veg,north-indian,IN,2,1,4,1,piece,6,90
 b-besan-chilla,Besan Chilla with Paneer Stuffing,breakfast,veg,north-indian,IN,2,1,4,1,piece,8,140,easy,20,dairy,main,
 b-paneer-bhurji,Paneer Bhurji,"breakfast,dinner",veg,north-indian,IN,1,0.5,2,0.5,bowl,18,280,easy,15,dairy,main,
 b-poha-peanut,Poha with Peanuts and Curd,breakfast,veg,north-indian,IN,1,0.5,2,0.5,bowl,10,320,easy,15,"peanut,dairy",main,
-b-masala-oats,Masala Oats cooked in Milk,breakfast,veg,"north-indian,american",IN,1,0.5,2,0.5,bowl,11,260,easy,10,dairy,main,
+b-masala-oats,Masala Oats cooked in Milk,breakfast,veg,"north-indian,continental",IN,1,0.5,2,0.5,bowl,11,260,easy,10,dairy,main,
 b-idli-sambar,Idli with Sambar,breakfast,veg,south-indian,IN,3,2,6,1,piece,3,70,medium,25,,main,
 b-upma-peanut,Vegetable Upma with Peanuts,breakfast,veg,south-indian,IN,1,0.5,2,0.5,bowl,8,300,easy,20,peanut,main,
 b-sprouts-salad,Moong Sprouts Salad,"breakfast,snack",veg,north-indian,IN,1,0.5,3,0.5,bowl,12,180,easy,10,,main,
 b-dahi-seeds,Dahi Bowl with Chia and Pumpkin Seeds,"breakfast,snack",veg,north-indian,IN,1,0.5,2,0.5,bowl,12,200,easy,5,dairy,main,
 b-paneer-paratha,Paneer Paratha with Curd,"breakfast,lunch",veg,north-indian,IN,2,1,3,1,piece,9,260,medium,25,"gluten,dairy",main,
-b-greek-yogurt,Greek Yogurt with Fruit and Seeds,"breakfast,snack",veg,"american,mediterranean",US,1,0.5,2,0.5,bowl,17,220,easy,5,dairy,main,
-b-pb-toast,Peanut Butter Toast,"breakfast,snack",veg,"american,north-indian",US,2,1,4,1,slice,6,190,easy,5,"gluten,peanut",main,
-b-overnight-oats,Overnight Oats with Chia and Milk,breakfast,veg,american,US,1,0.5,2,0.5,bowl,14,320,easy,10,dairy,main,
+b-greek-yogurt,Greek Yogurt with Fruit and Seeds,"breakfast,snack",veg,continental,US,1,0.5,2,0.5,bowl,17,220,easy,5,dairy,main,
+b-pb-toast,Peanut Butter Toast,"breakfast,snack",veg,"continental,north-indian",US,2,1,4,1,slice,6,190,easy,5,"gluten,peanut",main,
+b-overnight-oats,Overnight Oats with Chia and Milk,breakfast,veg,continental,US,1,0.5,2,0.5,bowl,14,320,easy,10,dairy,main,
 b-daliya,Vegetable Daliya,"breakfast,dinner",veg,north-indian,IN,1,0.5,2,0.5,bowl,9,220,easy,25,gluten,main,
 b-eggs-bhurji,Eggs Bhurji,"breakfast,dinner",egg,north-indian,IN,3,2,6,1,piece,6,90,easy,10,egg,main,
 b-masala-omelette,Masala Omelette,"breakfast,dinner",egg,north-indian,IN,3,2,6,1,piece,6,95,easy,10,egg,main,
 b-boiled-eggs,Boiled Eggs with Chaat Masala,"breakfast,snack",egg,north-indian,IN,3,2,6,1,piece,6,78,easy,12,egg,main,
 b-egg-paratha,Egg Paratha,"breakfast,lunch",egg,north-indian,IN,2,1,3,1,piece,9,240,medium,20,"egg,gluten",main,
-b-keema-toast,Chicken Keema on Toast,breakfast,non-veg,"north-indian,american",IN,1,0.5,2,0.5,serving,25,350,medium,20,gluten,main,
+b-keema-toast,Chicken Keema on Toast,breakfast,non-veg,"north-indian,continental",IN,1,0.5,2,0.5,serving,25,350,medium,20,gluten,main,
 l-rajma-chawal,Rajma Curry,"lunch,dinner",veg,north-indian,IN,1,0.5,2,0.5,serving,14,260,medium,40,,main,side-steamed-rice
 l-chole-rice,Chole (Chickpea Curry),"lunch,dinner",veg,north-indian,IN,1,0.5,2,0.5,serving,13,290,medium,40,,main,side-steamed-rice
 l-dal-tadka-roti,Dal Tadka,"lunch,dinner",veg,north-indian,IN,1,0.5,2,0.5,serving,12,230,medium,30,,main,side-roti
@@ -26,41 +26,41 @@ l-soya-chunk-curry,Soya Chunk Curry,"lunch,dinner",veg,north-indian,IN,1,0.5,2,0
 l-tofu-bhurji-roti,Tofu Bhurji,"lunch,dinner",veg,north-indian,IN,1,0.5,2,0.5,serving,18,210,easy,20,soy,main,side-roti
 l-kadhi-chawal,Kadhi,lunch,veg,north-indian,IN,1,0.5,2,0.5,serving,8,180,medium,35,dairy,main,side-steamed-rice
 l-veg-pulao-raita,Vegetable Pulao,"lunch,dinner",veg,north-indian,IN,1,0.5,2,0.5,serving,8,320,medium,30,,main,side-raita
-l-quinoa-chickpea,Quinoa Chickpea Salad,lunch,veg,"mediterranean,american",GR,1,0.5,2,0.5,bowl,15,350,easy,20,,main,
-l-paneer-wrap,Paneer Tikka Wrap,"lunch,snack",veg,"north-indian,mexican",IN,1,1,3,1,piece,20,380,easy,15,"gluten,dairy",main,
+l-quinoa-chickpea,Quinoa Chickpea Salad,lunch,veg,continental,GR,1,0.5,2,0.5,bowl,15,350,easy,20,,main,
+l-paneer-wrap,Paneer Tikka Wrap,"lunch,snack",veg,"north-indian,continental",IN,1,1,3,1,piece,20,380,easy,15,"gluten,dairy",main,
 l-dal-makhani-roti,Dal Makhani,"lunch,dinner",veg,north-indian,IN,1,0.5,2,0.5,serving,11,350,hard,50,dairy,main,side-roti
 l-palak-paneer-roti,Palak Paneer,"lunch,dinner",veg,north-indian,IN,1,0.5,2,0.5,serving,16,280,medium,35,dairy,main,side-roti
 l-sambar-rice,Sambar,"lunch,dinner",veg,south-indian,IN,1,0.5,2,0.5,serving,8,150,medium,30,,main,side-steamed-rice
 l-curd-rice,Curd Rice with Roasted Peanuts,lunch,veg,south-indian,IN,1,0.5,2,0.5,serving,11,320,easy,15,"dairy,peanut",main,
 l-egg-curry-rice,Egg Curry,"lunch,dinner",egg,north-indian,IN,1,0.5,2,0.5,serving,13,220,medium,30,egg,main,side-steamed-rice
-l-egg-fried-rice,Egg Fried Rice,"lunch,dinner",egg,"chinese,asian",CN,1,0.5,2,0.5,serving,16,450,easy,20,"egg,soy",main,
+l-egg-fried-rice,Egg Fried Rice,"lunch,dinner",egg,chinese,CN,1,0.5,2,0.5,serving,16,450,easy,20,"egg,soy",main,
 l-chicken-curry-rice,Chicken Curry,"lunch,dinner",non-veg,north-indian,IN,1,0.5,2,0.5,serving,31,320,medium,40,,main,side-steamed-rice
 l-chicken-biryani,Chicken Biryani,lunch,non-veg,north-indian,IN,1,0.5,2,0.5,serving,30,600,hard,60,dairy,main,
-l-grilled-chicken-salad,Grilled Chicken Salad,"lunch,dinner",non-veg,"american,mediterranean",US,1,0.5,2,0.5,bowl,32,380,easy,25,,main,
+l-grilled-chicken-salad,Grilled Chicken Salad,"lunch,dinner",non-veg,continental,US,1,0.5,2,0.5,bowl,32,380,easy,25,,main,
 l-fish-curry-rice,Fish Curry,"lunch,dinner",non-veg,south-indian,IN,1,0.5,2,0.5,serving,24,250,medium,35,fish,main,side-steamed-rice
-l-chicken-wrap,Chicken Tikka Wrap,"lunch,snack",non-veg,"north-indian,mexican",IN,1,1,3,1,piece,26,420,easy,15,"gluten,dairy",main,
+l-chicken-wrap,Chicken Tikka Wrap,"lunch,snack",non-veg,"north-indian,continental",IN,1,1,3,1,piece,26,420,easy,15,"gluten,dairy",main,
 l-keema-roti,Chicken Keema Matar,"lunch,dinner",non-veg,north-indian,IN,1,0.5,2,0.5,serving,25,310,medium,35,,main,side-roti
 d-moong-khichdi,Moong Dal Khichdi,dinner,veg,north-indian,IN,1,0.5,2,0.5,bowl,14,320,easy,30,,main,
 d-paneer-tikka,Grilled Paneer Tikka,"dinner,snack",veg,north-indian,IN,1,0.5,2,0.5,serving,30,320,medium,30,dairy,main,
 d-veg-paneer-soup,Vegetable Soup with Paneer,dinner,veg,north-indian,IN,1,0.5,2,0.5,bowl,12,180,easy,20,dairy,main,
 d-methi-thepla-curd,Methi Thepla,"dinner,breakfast",veg,north-indian,IN,2,1,4,1,piece,5,110,medium,25,gluten,main,side-curd
 d-tandoori-chicken,Tandoori Chicken,dinner,non-veg,north-indian,IN,1,0.5,2,0.5,serving,40,380,medium,35,dairy,main,
-d-grilled-fish-veg,Grilled Fish with Vegetables,dinner,non-veg,"american,mediterranean",US,1,0.5,2,0.5,serving,34,350,medium,30,fish,main,
+d-grilled-fish-veg,Grilled Fish with Vegetables,dinner,non-veg,continental,US,1,0.5,2,0.5,serving,34,350,medium,30,fish,main,
 d-chicken-shorba,Chicken Shorba Soup,"dinner,snack",non-veg,north-indian,IN,1,0.5,2,0.5,bowl,15,150,easy,25,,main,
-d-chicken-stirfry,Chicken Stir-fry,"dinner,lunch",non-veg,"chinese,asian",CN,1,0.5,2,0.5,serving,29,280,easy,25,soy,main,side-steamed-rice
-s-whey-shake,Whey Protein Shake with Milk,"snack,breakfast",veg,american,US,1,0.5,2,0.5,scoop,24,180,easy,5,dairy,main,
+d-chicken-stirfry,Chicken Stir-fry,"dinner,lunch",non-veg,chinese,CN,1,0.5,2,0.5,serving,29,280,easy,25,soy,main,side-steamed-rice
+s-whey-shake,Whey Protein Shake with Milk,"snack,breakfast",veg,continental,US,1,0.5,2,0.5,scoop,24,180,easy,5,dairy,main,
 s-roasted-chana,Roasted Chana,snack,veg,north-indian,IN,1,0.5,2,0.5,cup,14,180,easy,5,,main,
 s-peanut-chaat,Peanut Chaat,snack,veg,north-indian,IN,1,0.5,2,0.5,bowl,12,250,easy,10,peanut,main,
 s-chaas-nuts,Masala Chaas with Mixed Nuts,snack,veg,north-indian,IN,1,0.5,2,0.5,serving,8,150,easy,5,"dairy,nuts",main,
-s-protein-bar,Protein Bar,snack,veg,american,US,1,1,2,1,piece,20,220,easy,2,"nuts,dairy",main,
+s-protein-bar,Protein Bar,snack,veg,continental,US,1,1,2,1,piece,20,220,easy,2,"nuts,dairy",main,
 s-paneer-cubes,Spiced Paneer Cubes,snack,veg,north-indian,IN,100,50,200,50,g,0.18,2.9,easy,10,dairy,main,
 s-makhana-peanut,Roasted Makhana with Peanuts,snack,veg,north-indian,IN,1,0.5,2,0.5,bowl,7,180,easy,10,peanut,main,
-s-hummus-pita,Hummus with Pita,snack,veg,mediterranean,GR,1,0.5,2,0.5,serving,10,280,easy,10,"gluten,sesame",main,
+s-hummus-pita,Hummus with Pita,snack,veg,continental,GR,1,0.5,2,0.5,serving,10,280,easy,10,"gluten,sesame",main,
 s-turmeric-milk,Turmeric Milk,snack,veg,north-indian,IN,1,1,2,1,cup,8,120,easy,5,dairy,main,
 s-chicken-tikka-bites,Chicken Tikka Bites,snack,non-veg,north-indian,IN,1,0.5,2,0.5,serving,28,220,medium,25,dairy,main,
 side-roti,Roti (Whole Wheat),"lunch,dinner",veg,north-indian,IN,2,1,6,1,piece,2.5,85,easy,20,gluten,side,
-side-steamed-rice,Steamed Rice,"lunch,dinner",veg,"north-indian,south-indian,chinese,asian",IN,1,0.5,3,0.5,bowl,4.5,200,easy,20,,side,
+side-steamed-rice,Steamed Rice,"lunch,dinner",veg,"north-indian,south-indian,chinese",IN,1,0.5,3,0.5,bowl,4.5,200,easy,20,,side,
 side-naan,Butter Naan,"lunch,dinner",veg,north-indian,IN,1,1,4,1,piece,5,260,medium,25,"gluten,dairy",side,
 side-curd,Curd (Dahi),"breakfast,lunch,dinner",veg,"north-indian,south-indian",IN,1,0.5,2,0.5,bowl,5,90,easy,2,dairy,side,
 side-raita,Cucumber Raita,"lunch,dinner",veg,north-indian,IN,1,0.5,2,0.5,bowl,4,80,easy,10,dairy,side,
-side-salad,Kachumber Salad,"lunch,dinner",veg,"north-indian,mediterranean",IN,1,0.5,2,0.5,bowl,2,60,easy,10,,side,
+side-salad,Kachumber Salad,"lunch,dinner",veg,"north-indian,continental",IN,1,0.5,2,0.5,bowl,2,60,easy,10,,side,
