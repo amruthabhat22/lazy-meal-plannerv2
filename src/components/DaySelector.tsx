@@ -59,7 +59,7 @@ export function DaySelector({
             className="flex-1 items-center gap-1.5 py-1"
           >
             <Text
-              className={`text-[11px] font-semibold tracking-wide ${
+              className={`text-xs font-semibold tracking-wide ${
                 isActive ? "text-foreground" : "text-muted-foreground"
               }`}
             >

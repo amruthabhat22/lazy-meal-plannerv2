@@ -20,8 +20,10 @@ const meals = parseMealsCsv(
 let failed = false;
 for (const diet of DIETS) {
   for (const slot of SLOTS) {
+    // Only mains fill slots; sides ride along and don't count.
     const pool = meals.filter(
       (m) =>
+        m.role !== "side" &&
         dietRank[m.diet] <= dietRank[diet] &&
         m.slots.split(",").map((s) => s.trim()).includes(slot),
     );

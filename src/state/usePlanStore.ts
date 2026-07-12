@@ -2,6 +2,7 @@ import { create } from "zustand";
 import type { SQLiteDatabase } from "expo-sqlite";
 import { generateWeek } from "@/engine/generator";
 import { ALL_DAYS } from "@/engine/types";
+import { getBlockedMealIds } from "@/utils/blockedMeals";
 import type { Day, Meal, Slot } from "@/engine/types";
 import {
   getAllMeals,
@@ -96,6 +97,7 @@ export const usePlanStore = create<PlanState>((set, get) => ({
     const { catalog, plan: existingPlan, planMeals } = get();
     const slots = slotsForPrefs(prefs);
     const isFullWeek = days.length === ALL_DAYS.length;
+    const excludedMealIds = await getBlockedMealIds(db);
 
     const generated = generateWeek({
       meals: catalog,
@@ -105,6 +107,8 @@ export const usePlanStore = create<PlanState>((set, get) => ({
       days,
       existingWeek: isFullWeek ? undefined : planMeals,
       cuisinePrefs: prefs.cuisines,
+      allergies: prefs.allergies,
+      excludedMealIds,
     });
 
     const plan =

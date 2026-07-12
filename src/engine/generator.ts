@@ -36,6 +36,10 @@ export interface WeekState {
   planned: PlannedMeal[];
   /** Preferred cuisines (soft boost). Optional; empty = no preference. */
   cuisinePrefs?: string[];
+  /** Allergens to hard-exclude (safety - never relaxed). */
+  allergies?: string[];
+  /** Meal ids the user blocked ("don't show again") - hard excluded. */
+  excludedMealIds?: string[];
 }
 
 export interface Candidate {
@@ -48,6 +52,9 @@ interface CandidateOptions {
   rng?: () => number;
   /** For swap: hide the meal currently occupying the slot. */
   excludeMealId?: string;
+  /** Which roles to offer. Generation slots mains; swapping a side row
+   * offers sides; the Add-meal sheet offers everything. */
+  roleFilter?: "main" | "side" | "any";
 }
 
 function mealById(catalog: Meal[], id: string): Meal | undefined {
@@ -79,19 +86,26 @@ export function getCandidates(
   const config = options.config ?? DEFAULT_CONFIG;
   const rng = options.rng ?? Math.random;
 
+  const isSideRow = (pm: PlannedMeal) =>
+    mealById(state.catalog, pm.mealId)?.role === "side";
   const others = state.planned.filter(
     (pm) => !(pm.day === day && pm.slot === slot),
   );
 
   const usedToday = new Set(
-    others.filter((pm) => pm.day === day).map((pm) => pm.mealId),
+    others.filter((pm) => pm.day === day && !isSideRow(pm)).map((pm) => pm.mealId),
   );
   const prev = previousDay(day);
   const usedYesterday = new Set(
-    prev ? others.filter((pm) => pm.day === prev).map((pm) => pm.mealId) : [],
+    prev
+      ? others
+          .filter((pm) => pm.day === prev && !isSideRow(pm))
+          .map((pm) => pm.mealId)
+      : [],
   );
   const weeklyCount: Record<string, number> = {};
   for (const pm of others) {
+    if (isSideRow(pm)) continue; // sides are exempt from the weekly cap
     weeklyCount[pm.mealId] = (weeklyCount[pm.mealId] ?? 0) + 1;
   }
 
@@ -107,22 +121,43 @@ export function getCandidates(
     state.slots.filter((s) => s === slot || !filledSlots.has(s)).length,
   );
 
-  const base = state.catalog.filter(
+  const allergies = state.allergies ?? [];
+  const excluded = new Set(state.excludedMealIds ?? []);
+  const roleFilter = options.roleFilter ?? "main";
+  const baseAll = state.catalog.filter(
     (m) =>
       isDietCompatible(m.diet, state.diet) && // H1
       m.slots.includes(slot) && // H2
-      m.id !== options.excludeMealId,
+      (roleFilter === "any" || m.role === roleFilter) &&
+      m.id !== options.excludeMealId &&
+      !excluded.has(m.id) && // user blocklist - never relaxed
+      // allergen safety - never relaxed
+      !m.allergens.some((a) => allergies.includes(a)),
   );
 
-  // Relaxation ladder for H5: drop H4 first, then H3 as a last resort.
-  let pool = base.filter(
-    (m) => !usedToday.has(m.id) && (weeklyCount[m.id] ?? 0) < config.weeklyCap,
-  );
-  if (pool.length === 0) {
-    pool = base.filter((m) => !usedToday.has(m.id));
-  }
-  if (pool.length === 0) {
-    pool = base;
+  // Cuisine preferences are a HARD filter when set: only dishes from the
+  // user's cuisines are offered. It is relaxed only after H4 and H3 have
+  // both been dropped, as the alternative would be an empty plan.
+  const prefs = (state.cuisinePrefs ?? []).map((c) => c.toLowerCase());
+  const inCuisine = (m: Meal) =>
+    prefs.length === 0 ||
+    m.role === "side" || // sides pair with anything
+    m.cuisines.length === 0 || // custom dishes carry no cuisine tags
+    m.cuisines.some((c) => prefs.includes(c.toLowerCase()));
+  const base = baseAll.filter(inCuisine);
+
+  // Relaxation ladder for H5: drop H4, then H3, then (last resort) the
+  // cuisine restriction — repeating the same ladder without it.
+  const ladders = base.length > 0 ? [base] : [base, baseAll];
+  let pool: Meal[] = [];
+  for (const tier of ladders) {
+    pool = tier.filter(
+      (m) =>
+        !usedToday.has(m.id) && (weeklyCount[m.id] ?? 0) < config.weeklyCap,
+    );
+    if (pool.length === 0) pool = tier.filter((m) => !usedToday.has(m.id));
+    if (pool.length === 0) pool = tier;
+    if (pool.length > 0) break;
   }
 
   const ctx = {
@@ -216,10 +251,12 @@ function repairDay(
       );
       const weakest = entries[0];
       if (weakest) {
+        const weakestRole = mealById(catalog, weakest.pm.mealId)?.role;
         const candidates = getCandidates(day, weakest.pm.slot, state, {
           config,
           rng,
           excludeMealId: weakest.pm.mealId,
+          roleFilter: weakestRole === "side" ? "side" : "main",
         });
         if (candidates.length > 0) {
           const best = candidates.reduce((a, b) =>
@@ -277,6 +314,8 @@ export function generateWeek(
     slots: input.slots,
     planned,
     cuisinePrefs: input.cuisinePrefs,
+    allergies: input.allergies,
+    excludedMealIds: input.excludedMealIds,
   };
 
   for (const day of input.days) {
@@ -292,6 +331,27 @@ export function generateWeek(
         mealId: pick.id,
         quantity: pick.default_qty,
       });
+      // Mains bring their default side (roti/rice/raita…) as a separate
+      // row so quantities scale independently. Safety filters still apply.
+      if (pick.default_side) {
+        const side = mealById(input.meals, pick.default_side);
+        const allergies = input.allergies ?? [];
+        const excluded = new Set(input.excludedMealIds ?? []);
+        if (
+          side &&
+          side.role === "side" &&
+          isDietCompatible(side.diet, input.diet) &&
+          !excluded.has(side.id) &&
+          !side.allergens.some((a) => allergies.includes(a))
+        ) {
+          planned.push({
+            day,
+            slot,
+            mealId: side.id,
+            quantity: side.default_qty,
+          });
+        }
+      }
     }
     repairDay(day, state, config, rng);
   }

@@ -245,6 +245,24 @@ scripts/          build-catalog.ts (CSV+recipes→JSON, owns CATALOG_VERSION,
 - Hard rules: H1 diet-compatible (veg < egg < non-veg hierarchy), H2 slot
   membership, H3 no duplicate meal within a day, H4 max 2× same meal per
   week, H5 every slot filled.
+- Meals have a ROLE (catalog v4): the generator slots only `main`s; a
+  main's `default_side` (roti/rice/raita…) is appended as its own row so
+  quantities scale independently (5 rotis, 1 curry). Sides are exempt from
+  H3/H4 and never slotted directly; swap keeps like-for-like roles, Add
+  offers everything.
+- Cuisine preferences are a HARD filter (meals carry multi-cuisine tags in
+  `cuisines`; overlaps allowed, e.g. a sandwich is american AND
+  north-indian). Untagged (custom) meals and sides always pass. The filter
+  relaxes only after H4 and H3 have both been dropped — better a
+  off-cuisine dish than an empty slot. W_cuisine still soft-boosts within
+  the filtered pool.
+- Two user exclusions sit beside H1/H2 and are NEVER relaxed: allergies
+  (`GeneratorInput.allergies`, matched against `meal.allergens` — safety)
+  and the "don't show this dish again" blocklist
+  (`GeneratorInput.excludedMealIds`, stored in app_meta via
+  `src/utils/blockedMeals.ts`, managed in Profile → Hidden dishes). If they
+  empty a pool the engine throws CatalogTooSmallError rather than serving
+  an unsafe/blocked dish. Allergy edits in Profile always regenerate.
 - H5 conflicts are resolved by a fixed relaxation ladder: drop H4, then H3,
   then throw `CatalogTooSmallError` (UI shows a friendly alert). Never
   reorder the ladder.

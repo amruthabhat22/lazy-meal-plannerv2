@@ -43,7 +43,7 @@ export interface CsvMealRecord {
   name: string;
   slots: string;
   diet: string;
-  cuisine: string | null;
+  cuisines: string;
   country: string | null;
   default_qty: number;
   min_qty: number;
@@ -55,6 +55,8 @@ export interface CsvMealRecord {
   difficulty: string | null;
   prep_time_min: number | null;
   allergens: string;
+  role: string;
+  default_side: string | null;
 }
 
 const REQUIRED_COLUMNS = [
@@ -62,7 +64,7 @@ const REQUIRED_COLUMNS = [
   "name",
   "slots",
   "diet",
-  "cuisine",
+  "cuisines",
   "country",
   "default_qty",
   "min_qty",
@@ -74,6 +76,8 @@ const REQUIRED_COLUMNS = [
   "difficulty",
   "prep_time_min",
   "allergens",
+  "role",
+  "default_side",
 ];
 
 export function parseMealsCsv(text: string): CsvMealRecord[] {
@@ -100,7 +104,7 @@ export function parseMealsCsv(text: string): CsvMealRecord[] {
       name: get(row, "name"),
       slots: get(row, "slots"),
       diet: get(row, "diet"),
-      cuisine: get(row, "cuisine") || null,
+      cuisines: get(row, "cuisines"),
       country: get(row, "country") || null,
       default_qty: num("default_qty"),
       min_qty: num("min_qty"),
@@ -112,6 +116,8 @@ export function parseMealsCsv(text: string): CsvMealRecord[] {
       difficulty: get(row, "difficulty") || null,
       prep_time_min: get(row, "prep_time_min") ? num("prep_time_min") : null,
       allergens: get(row, "allergens"),
+      role: get(row, "role") || "main",
+      default_side: get(row, "default_side") || null,
     };
   });
 }

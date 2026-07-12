@@ -1,10 +1,19 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import { Alert, Pressable, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Redirect } from "expo-router";
+import { Redirect, router, useFocusEffect } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
 import * as Haptics from "expo-haptics";
-import { Feather } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
+import {
+  CookingPot,
+  Plus,
+  RefreshCw,
+  Share2,
+  UserRound,
+} from "lucide-react-native";
+import { blockMeal, getBlockedMealIds } from "@/utils/blockedMeals";
+import { Icon, ICON_COLORS } from "@/components/ui/Icon";
 import type { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { captureRef } from "react-native-view-shot";
 import * as Sharing from "expo-sharing";
@@ -21,6 +30,7 @@ import { FoodCard } from "@/components/FoodCard";
 import { SwapSheet } from "@/components/SwapSheet";
 import { ShareSheet } from "@/components/ShareSheet";
 import { RecipeSheet } from "@/components/RecipeSheet";
+import { ConfirmHideSheet } from "@/components/ConfirmHideSheet";
 import { PlanTableImage } from "@/components/PlanTableImage";
 
 const SLOT_LABELS: Record<Slot, string> = {
@@ -69,10 +79,20 @@ export default function WeekPlanScreen() {
     quantity: number;
     recipe: MealRecipe | null;
   } | null>(null);
+  const [blockedIds, setBlockedIds] = useState<string[]>([]);
+  const [hideTarget, setHideTarget] = useState<Meal | null>(null);
+  const [scrolled, setScrolled] = useState(false);
   const swapSheetRef = useRef<BottomSheetModal>(null);
   const shareSheetRef = useRef<BottomSheetModal>(null);
   const recipeSheetRef = useRef<BottomSheetModal>(null);
+  const confirmHideRef = useRef<BottomSheetModal>(null);
   const planImageRef = useRef<View>(null);
+
+  useFocusEffect(
+    useCallback(() => {
+      void getBlockedMealIds(db).then(setBlockedIds);
+    }, [db]),
+  );
 
   const mealById = useMemo(
     () => new Map(catalog.map((m) => [m.id, m])),
@@ -107,12 +127,20 @@ export default function WeekPlanScreen() {
         slots: slotsForPrefs(prefs),
         planned: planMeals,
         cuisinePrefs: prefs.cuisines,
+        allergies: prefs.allergies,
+        excludedMealIds: blockedIds,
       },
       {
         excludeMealId: target.mode === "swap" ? target.row.mealId : undefined,
+        // Swapping keeps like-for-like (a side offers sides, a main offers
+        // mains); the Add sheet offers everything.
+        roleFilter:
+          target.mode === "swap"
+            ? (mealById.get(target.row.mealId)?.role ?? "main")
+            : "any",
       },
     );
-  }, [target, selectedDay, planMeals, catalog, prefs]);
+  }, [target, selectedDay, planMeals, catalog, prefs, blockedIds, mealById]);
 
   if (!prefs) return <Redirect href="/onboarding" />;
 
@@ -170,6 +198,23 @@ export default function WeekPlanScreen() {
     recipeSheetRef.current?.present();
   };
 
+  // Design: a confirmation bottomsheet (not a native alert) explains the
+  // consequence and that it's reversible from Profile.
+  const blockDish = (meal: Meal) => {
+    setHideTarget(meal);
+    confirmHideRef.current?.present();
+  };
+
+  const confirmHide = (meal: Meal) => {
+    void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+    void blockMeal(db, meal.id).then((ids) => {
+      setBlockedIds(ids);
+      confirmHideRef.current?.dismiss();
+      recipeSheetRef.current?.dismiss();
+      setHideTarget(null);
+    });
+  };
+
   const shareAsImage = async () => {
     const uri = await captureRef(planImageRef, {
       format: "png",
@@ -191,11 +236,14 @@ export default function WeekPlanScreen() {
       {/* Header */}
       <View className="flex-row items-start justify-between px-5 pt-4 pb-2 gap-3">
         <View className="flex-1 min-w-0">
-          <Text className="text-2xl font-bold tracking-tight text-foreground">
-            Your week 🍲
-          </Text>
+          <View className="flex-row items-center gap-2">
+            <Text className="text-2xl font-bold tracking-tight text-foreground">
+              Your week
+            </Text>
+            <Icon icon={CookingPot} size="lg" color={ICON_COLORS.primary} />
+          </View>
           <Text
-            className="mt-1 text-[13px] text-muted-foreground"
+            className="mt-1 text-sm text-muted-foreground"
             numberOfLines={1}
           >
             {DIET_LABEL[prefs.diet]} · {prefs.proteinGoal}g protein/day ·{" "}
@@ -204,31 +252,55 @@ export default function WeekPlanScreen() {
         </View>
         <View className="flex-row items-center gap-2 mt-1">
           <Pressable
-            onPress={() => void runRegenerate([...ALL_DAYS])}
-            hitSlop={6}
-            className="h-10 w-10 rounded-full border border-border bg-card items-center justify-center"
-          >
-            <Feather name="refresh-cw" size={15} color="#291f18" />
-          </Pressable>
-          <Pressable
             onPress={() => shareSheetRef.current?.present()}
             hitSlop={6}
+            accessibilityLabel="Share plan on WhatsApp"
             className="h-10 w-10 rounded-full border border-border bg-card items-center justify-center"
           >
-            <Feather name="share-2" size={15} color="#291f18" />
+            <Icon icon={Share2} size="sm" color={ICON_COLORS.primary} />
+          </Pressable>
+          <Pressable
+            onPress={() => router.push("/profile")}
+            hitSlop={6}
+            accessibilityLabel="Profile"
+            className="h-10 w-10 rounded-full border border-border bg-card items-center justify-center"
+          >
+            <Icon icon={UserRound} size="sm" color={ICON_COLORS.foreground} />
           </Pressable>
         </View>
       </View>
 
       <DaySelector
         selected={selectedDay}
-        onSelect={setSelectedDay}
+        onSelect={(day) => {
+          void Haptics.selectionAsync();
+          setSelectedDay(day);
+        }}
         proteinRatioByDay={proteinRatioByDay}
       />
 
+      <View className="flex-1">
+        {/* Bottom-only scroll shadow: a fade strip under the day tabs
+            (native shadows bleed upward too, so we draw the fade). */}
+        {scrolled ? (
+          <LinearGradient
+            colors={["rgba(80, 60, 40, 0.09)", "rgba(80, 60, 40, 0)"]}
+            pointerEvents="none"
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              height: 12,
+              zIndex: 10,
+            }}
+          />
+        ) : null}
       <ScrollView
         className="flex-1"
         contentContainerStyle={{ paddingBottom: 40 }}
+        onScroll={(e) => setScrolled(e.nativeEvent.contentOffset.y > 2)}
+        scrollEventThrottle={16}
       >
         <View className="pt-3">
           <StatCard
@@ -258,13 +330,13 @@ export default function WeekPlanScreen() {
             return (
               <View key={slot}>
                 <View className="flex-row items-center justify-between gap-3 mb-3">
-                  <View className="min-w-0">
+                  <View className="flex-1 min-w-0">
                     <View className="flex-row items-baseline gap-2">
                       <Text className="text-lg font-bold tracking-tight text-foreground">
                         {SLOT_LABELS[slot]}
                       </Text>
                       {slot === "snack" ? (
-                        <Text className="text-[11px] font-medium text-muted-foreground">
+                        <Text className="text-xs font-medium text-muted-foreground">
                           optional
                         </Text>
                       ) : null}
@@ -280,11 +352,15 @@ export default function WeekPlanScreen() {
                       setTarget({ mode: "add", slot });
                       swapSheetRef.current?.present();
                     }}
-                    hitSlop={6}
-                    className="h-8 px-3 rounded-full border border-primary/40 bg-primary/5 flex-row items-center gap-1"
+                    hitSlop={8}
+                    accessibilityLabel={`Add ${SLOT_LABELS[slot].toLowerCase()}`}
+                    className="shrink-0 self-center rounded-full border border-primary/40 bg-primary/5 flex-row items-center gap-1 px-3 py-2"
                   >
-                    <Feather name="plus" size={13} color="#a55a37" />
-                    <Text className="text-xs font-semibold text-primary">
+                    <Icon icon={Plus} size={14} color={ICON_COLORS.primary} />
+                    <Text
+                      className="text-xs leading-4 font-semibold text-primary"
+                      numberOfLines={1}
+                    >
                       Add meal
                     </Text>
                   </Pressable>
@@ -310,14 +386,16 @@ export default function WeekPlanScreen() {
 
           <Pressable
             onPress={() => void runRegenerate([selectedDay])}
-            className="h-12 rounded-xl border border-dashed border-border bg-secondary/30 items-center justify-center"
+            className="h-12 rounded-xl border border-dashed border-border bg-secondary/30 flex-row items-center justify-center gap-2"
           >
+            <Icon icon={RefreshCw} size="sm" color={ICON_COLORS.accentForeground} />
             <Text className="text-sm font-semibold text-foreground/80">
-              ↻ Regenerate this day
+              Regenerate this day
             </Text>
           </Pressable>
         </View>
       </ScrollView>
+      </View>
 
       <SwapSheet
         ref={swapSheetRef}
@@ -342,6 +420,16 @@ export default function WeekPlanScreen() {
         meal={recipeTarget?.meal ?? null}
         quantity={recipeTarget?.quantity ?? 1}
         recipe={recipeTarget?.recipe ?? null}
+        onBlockDish={blockDish}
+      />
+      <ConfirmHideSheet
+        ref={confirmHideRef}
+        meal={hideTarget}
+        onConfirm={confirmHide}
+        onCancel={() => {
+          confirmHideRef.current?.dismiss();
+          setHideTarget(null);
+        }}
       />
 
       {/* Off-screen render target for the shareable plan-table image. */}

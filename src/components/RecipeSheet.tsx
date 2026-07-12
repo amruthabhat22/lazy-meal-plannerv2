@@ -1,7 +1,15 @@
 import React, { forwardRef } from "react";
 import { Pressable, Text, View } from "react-native";
 import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
-import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import {
+  ChefHat,
+  Clock,
+  EyeOff,
+  Gauge,
+  UtensilsCrossed,
+  X,
+} from "lucide-react-native";
+import { Icon, ICON_COLORS } from "@/components/ui/Icon";
 import type { Meal } from "@/engine/types";
 import type { MealRecipe } from "@/db/repos/mealsRepo";
 import { formatIngredientQty, formatNumber } from "@/utils/format";
@@ -9,13 +17,15 @@ import {
   renderSheetBackdrop,
   sheetBackgroundStyle,
   sheetHandleStyle,
+  useSheetFooterPadding,
+  useSheetSizing,
 } from "@/components/sheetChrome";
 
 /** Difficulty chip tints per design: Easy emerald, Medium amber, Hard rose. */
 const DIFFICULTY_STYLE: Record<string, { bg: string; fg: string }> = {
-  easy: { bg: "rgba(16, 185, 129, 0.1)", fg: "#059669" },
-  medium: { bg: "rgba(245, 158, 11, 0.1)", fg: "#d97706" },
-  hard: { bg: "rgba(244, 63, 94, 0.1)", fg: "#e11d48" },
+  easy: { bg: "rgba(16, 185, 129, 0.1)", fg: "#047857" },
+  medium: { bg: "rgba(245, 158, 11, 0.1)", fg: "#b45309" },
+  hard: { bg: "rgba(244, 63, 94, 0.1)", fg: "#be123c" },
 };
 
 function Chip({ children }: { children: React.ReactNode }) {
@@ -34,7 +44,7 @@ function SectionHeading({
   title: string;
 }) {
   return (
-    <View className="flex-row items-center gap-2 mb-2.5">
+    <View className="flex-row items-center gap-2 mb-3">
       {icon}
       <Text className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
         {title}
@@ -46,12 +56,21 @@ function SectionHeading({
 /**
  * Recipe & cooking info bottomsheet (design's RecipeSheet): prep time,
  * difficulty, protein/cal chips, ingredients list, numbered instructions.
- * Ingredient amounts are scaled to the planned quantity — honest numbers.
+ * Sizes to content (no dead bottom whitespace); ingredient amounts are
+ * scaled to the planned quantity — honest numbers.
  */
 export const RecipeSheet = forwardRef<
   BottomSheetModal,
-  { meal: Meal | null; quantity: number; recipe: MealRecipe | null }
->(function RecipeSheet({ meal, quantity, recipe }, ref) {
+  {
+    meal: Meal | null;
+    quantity: number;
+    recipe: MealRecipe | null;
+    /** "Don't show this dish again" — omit to hide the action. */
+    onBlockDish?: (meal: Meal) => void;
+  }
+>(function RecipeSheet({ meal, quantity, recipe, onBlockDish }, ref) {
+  const sizing = useSheetSizing();
+  const footerPadding = useSheetFooterPadding();
   const scale = meal && meal.default_qty > 0 ? quantity / meal.default_qty : 1;
   const difficulty = meal?.difficulty
     ? (DIFFICULTY_STYLE[meal.difficulty] ?? DIFFICULTY_STYLE.medium)
@@ -64,23 +83,24 @@ export const RecipeSheet = forwardRef<
   return (
     <BottomSheetModal
       ref={ref}
-      snapPoints={["85%"]}
-      enableDynamicSizing={false}
+      {...sizing}
       backdropComponent={renderSheetBackdrop}
       backgroundStyle={sheetBackgroundStyle}
       handleIndicatorStyle={sheetHandleStyle}
     >
       {meal ? (
-        <>
+        <BottomSheetScrollView
+          contentContainerStyle={{ paddingBottom: footerPadding }}
+        >
           {/* Header */}
-          <View className="px-5 pt-1 pb-3 border-b border-border">
-            <Text className="text-lg font-bold text-foreground pr-8">
+          <View className="px-5 pt-1 pb-4 border-b border-border">
+            <Text className="text-xl font-bold tracking-tight text-foreground pr-8">
               {meal.name}
             </Text>
-            <View className="flex-row flex-wrap items-center gap-2 pt-2">
+            <View className="flex-row flex-wrap items-center gap-2 mt-2.5">
               {meal.prep_time_min != null ? (
                 <Chip>
-                  <Feather name="clock" size={13} color="#3a2a20" />
+                  <Icon icon={Clock} size={14} color={ICON_COLORS.accentForeground} />
                   <Text className="text-xs text-foreground/80">
                     {meal.prep_time_min} min
                   </Text>
@@ -91,11 +111,7 @@ export const RecipeSheet = forwardRef<
                   className="flex-row items-center gap-1 rounded-full px-2.5 py-1"
                   style={{ backgroundColor: difficulty.bg }}
                 >
-                  <MaterialCommunityIcons
-                    name="gauge"
-                    size={13}
-                    color={difficulty.fg}
-                  />
+                  <Icon icon={Gauge} size={14} color={difficulty.fg} />
                   <Text
                     className="text-xs font-semibold capitalize"
                     style={{ color: difficulty.fg }}
@@ -119,23 +135,17 @@ export const RecipeSheet = forwardRef<
             </View>
           </View>
 
-          <BottomSheetScrollView
-            contentContainerStyle={{
-              paddingHorizontal: 20,
-              paddingTop: 20,
-              paddingBottom: 8,
-            }}
-          >
+          <View className="px-5 py-5">
             {recipe ? (
               <>
                 {/* Ingredients */}
-                <View className="mb-5">
+                <View className="mb-6">
                   <SectionHeading
                     icon={
-                      <MaterialCommunityIcons
-                        name="silverware-fork-knife"
-                        size={15}
-                        color="#a55a37"
+                      <Icon
+                        icon={UtensilsCrossed}
+                        size="sm"
+                        color={ICON_COLORS.primary}
                       />
                     }
                     title="Ingredients"
@@ -162,14 +172,10 @@ export const RecipeSheet = forwardRef<
                 </View>
 
                 {/* Instructions */}
-                <View className="mb-4">
+                <View>
                   <SectionHeading
                     icon={
-                      <MaterialCommunityIcons
-                        name="chef-hat"
-                        size={15}
-                        color="#a55a37"
-                      />
+                      <Icon icon={ChefHat} size="sm" color={ICON_COLORS.primary} />
                     }
                     title="Instructions"
                   />
@@ -181,7 +187,7 @@ export const RecipeSheet = forwardRef<
                       }`}
                     >
                       <View className="h-6 w-6 rounded-full bg-primary/10 items-center justify-center">
-                        <Text className="text-[11px] font-bold text-primary">
+                        <Text className="text-xs font-bold text-primary">
                           {i + 1}
                         </Text>
                       </View>
@@ -204,21 +210,33 @@ export const RecipeSheet = forwardRef<
                 </Text>
               </View>
             )}
-          </BottomSheetScrollView>
+          </View>
 
-          {/* Close */}
-          <View className="px-5 pb-8 pt-2 bg-card">
+          {/* Footer — flush with the safe area, no dead space below */}
+          <View className="px-5 pt-1" style={{ gap: 8 }}>
+            {onBlockDish ? (
+              <Pressable
+                onPress={() => onBlockDish(meal)}
+                accessibilityRole="button"
+                className="h-11 rounded-full border border-destructive/30 bg-destructive/5 flex-row items-center justify-center gap-2"
+              >
+                <Icon icon={EyeOff} size="sm" color={ICON_COLORS.destructive} />
+                <Text className="text-sm font-semibold text-destructive">
+                  Don't show this dish again
+                </Text>
+              </Pressable>
+            ) : null}
             <Pressable
               onPress={dismiss}
               className="h-11 rounded-full bg-secondary flex-row items-center justify-center gap-2"
             >
-              <Feather name="x" size={15} color="#291f18" />
+              <Icon icon={X} size="sm" color={ICON_COLORS.foreground} />
               <Text className="text-sm font-semibold text-foreground">
                 Close
               </Text>
             </Pressable>
           </View>
-        </>
+        </BottomSheetScrollView>
       ) : null}
     </BottomSheetModal>
   );

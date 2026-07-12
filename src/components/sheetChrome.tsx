@@ -1,15 +1,18 @@
 import React from "react";
-import { Pressable } from "react-native";
+import { Text, View, useWindowDimensions } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   BottomSheetBackdrop,
   type BottomSheetBackdropProps,
 } from "@gorhom/bottom-sheet";
-import { Feather } from "@expo/vector-icons";
 
 /**
- * Shared bottom-sheet chrome matching the design: every sheet sits on a
- * black/80 tinted scrim that fades in, has a rounded-t-2xl card background,
- * a subtle drag handle, and an X close button in the top-right corner.
+ * Shared bottom-sheet chrome matching the design: black/80 tinted scrim,
+ * rounded-t-2xl card surface, subtle drag handle, and one header pattern —
+ * text-xl bold title, text-sm muted subtitle, hairline divider. Sheets size
+ * to their content (h-auto) capped at 85% of the screen; use
+ * `useSheetSizing()` for the cap and `useSheetFooterPadding()` so footers
+ * end at the safe-area inset with no dead whitespace.
  */
 
 export function renderSheetBackdrop(props: BottomSheetBackdropProps) {
@@ -35,19 +38,47 @@ export const sheetBackgroundStyle = {
 export const sheetHandleStyle = {
   backgroundColor: "rgba(108, 97, 88, 0.2)",
   width: 40,
-  height: 5,
+  height: 6,
 } as const;
 
-/** Absolute X close button (design: top-right, opacity-70). */
-export function SheetCloseButton({ onPress }: { onPress: () => void }) {
+/** Content-sized sheet capped at 85% of the window (design max-h-[85vh]). */
+export function useSheetSizing() {
+  const { height } = useWindowDimensions();
+  return {
+    enableDynamicSizing: true,
+    maxDynamicContentSize: Math.round(height * 0.85),
+  } as const;
+}
+
+/** Footers pad down to exactly the safe-area inset — nothing more. */
+export function useSheetFooterPadding() {
+  const insets = useSafeAreaInsets();
+  return Math.max(insets.bottom, 12);
+}
+
+/** Design header: px-5 title text-xl bold + subtitle, hairline divider. */
+export function SheetHeader({
+  title,
+  subtitle,
+  divider = true,
+}: {
+  title: string;
+  subtitle?: string;
+  divider?: boolean;
+}) {
   return (
-    <Pressable
-      onPress={onPress}
-      hitSlop={10}
-      accessibilityLabel="Close"
-      className="absolute right-4 top-1 h-8 w-8 rounded-full items-center justify-center opacity-70"
-    >
-      <Feather name="x" size={18} color="#291f18" />
-    </Pressable>
+    <>
+      <View className="px-5 pt-1 pb-4">
+        <Text className="text-xl font-bold tracking-tight text-foreground pr-8">
+          {title}
+        </Text>
+        {subtitle ? (
+          <Text className="text-sm text-muted-foreground mt-1.5 leading-relaxed">
+            {subtitle}
+          </Text>
+        ) : null}
+      </View>
+      {divider ? <View className="h-px bg-border" /> : null}
+    </>
   );
 }

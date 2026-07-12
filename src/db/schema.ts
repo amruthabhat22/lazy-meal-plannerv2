@@ -101,6 +101,17 @@ const MIGRATIONS: string[] = [
   ALTER TABLE meals ADD COLUMN ingredients_json TEXT;
   ALTER TABLE meals ADD COLUMN steps_json TEXT;
   `,
+  // 5: user allergies (comma-separated slugs), hard-excluded by the generator.
+  `
+  ALTER TABLE user_preferences ADD COLUMN allergies TEXT;
+  `,
+  // 6: mains vs sides + multi-cuisine tags. 'cuisines' supersedes the old
+  // single 'cuisine' column (kept for shipped rows; readers fall back).
+  `
+  ALTER TABLE meals ADD COLUMN cuisines TEXT;
+  ALTER TABLE meals ADD COLUMN role TEXT NOT NULL DEFAULT 'main';
+  ALTER TABLE meals ADD COLUMN default_side TEXT;
+  `,
 ];
 
 export async function getMeta(

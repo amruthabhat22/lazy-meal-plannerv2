@@ -1,11 +1,13 @@
-import React, { useCallback, useMemo, useRef, useState } from "react";
-import { Pressable, ScrollView, Text, View } from "react-native";
+import React, { useCallback, useMemo, useState } from "react";
+import { Alert, Linking, Pressable, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSQLiteContext } from "expo-sqlite";
 import * as Haptics from "expo-haptics";
-import { Feather } from "@expo/vector-icons";
-import type { BottomSheetModal } from "@gorhom/bottom-sheet";
+import * as Clipboard from "expo-clipboard";
+import { Check, ChevronDown, ChevronRight, ShoppingBag, ShoppingBasket } from "lucide-react-native";
 import { useFocusEffect } from "expo-router";
+import { Icon, ICON_COLORS } from "@/components/ui/Icon";
+import { Button } from "@/components/ui/Button";
 import { usePlanStore } from "@/state/usePlanStore";
 import {
   getItems,
@@ -16,7 +18,11 @@ import {
 import { getRecipesByMealIds } from "@/db/repos/mealsRepo";
 import { aggregateGroceries, CATEGORY_ORDER } from "@/utils/grocery";
 import { formatIngredientQty } from "@/utils/format";
-import { OrderSheet } from "@/components/OrderSheet";
+
+const SWIGGY_INSTAMART_URL = "https://www.swiggy.com/instamart";
+
+const itemKey = (i: { name: string; unit: string }) =>
+  `${i.name.toLowerCase()}|${i.unit}`;
 
 export default function GroceryScreen() {
   const db = useSQLiteContext();
@@ -25,31 +31,33 @@ export default function GroceryScreen() {
   const catalog = usePlanStore((s) => s.catalog);
   const [items, setItems] = useState<GroceryItem[]>([]);
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
-  const orderSheetRef = useRef<BottomSheetModal>(null);
 
-  const generate = useCallback(async () => {
+  /** Re-aggregate from the current week on every visit — no manual
+   * Rebuild. Checked state carries over by (name, unit). */
+  const refresh = useCallback(async () => {
     if (!plan) return;
+    const existing = await getItems(db, plan.id);
+    const checkedKeys = new Set(
+      existing.filter((i) => i.isChecked).map(itemKey),
+    );
     const mealIds = [...new Set(planMeals.map((pm) => pm.mealId))];
     const recipes = await getRecipesByMealIds(db, mealIds);
     const aggregated = aggregateGroceries(planMeals, catalog, recipes);
     await replaceItems(db, plan.id, aggregated);
-    setItems(await getItems(db, plan.id));
-    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    const fresh = await getItems(db, plan.id);
+    for (const item of fresh) {
+      if (checkedKeys.has(itemKey(item))) {
+        await setChecked(db, item.id, true);
+        item.isChecked = true;
+      }
+    }
+    setItems(fresh);
   }, [db, plan, planMeals, catalog]);
 
-  // Auto-generate on first visit so the list always reflects the week.
   useFocusEffect(
     useCallback(() => {
-      if (!plan) return;
-      void (async () => {
-        const existing = await getItems(db, plan.id);
-        if (existing.length === 0 && planMeals.length > 0) {
-          await generate();
-        } else {
-          setItems(existing);
-        }
-      })();
-    }, [db, plan, planMeals, generate]),
+      void refresh();
+    }, [refresh]),
   );
 
   const toggle = (item: GroceryItem) => {
@@ -88,45 +96,42 @@ export default function GroceryScreen() {
     );
   }, [items]);
 
+  /** Copy the selected items as a paste-ready list, then open Swiggy
+   * Instamart where the Shopping List feature builds the cart from it. */
+  const orderItems = async () => {
+    const list = items.filter((i) => i.isChecked);
+    if (list.length === 0) return;
+    const text = list
+      .map((i) => `${i.name} — ${formatIngredientQty(i.amount, i.unit)}`)
+      .join("\n");
+    await Clipboard.setStringAsync(text);
+    Alert.alert(
+      "List copied",
+      `${list.length} items copied. In Swiggy Instamart, open "Shopping list" and paste to build your cart.`,
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Open Swiggy",
+          onPress: () => void Linking.openURL(SWIGGY_INSTAMART_URL),
+        },
+      ],
+    );
+  };
+
   return (
     <SafeAreaView className="flex-1 bg-secondary/30" edges={["top"]}>
       {/* Header */}
-      <View className="border-b border-border bg-background px-4 py-3 flex-row items-center justify-between gap-3">
-        <View className="flex-row items-center gap-2.5 flex-1 min-w-0">
-          <View className="h-8 w-8 rounded-xl bg-primary/15 items-center justify-center">
-            <Feather name="shopping-cart" size={15} color="#a55a37" />
-          </View>
-          <View className="flex-1 min-w-0">
-            <Text className="text-sm font-semibold text-foreground">
-              Grocery List
-            </Text>
-            <Text className="text-[11px] text-muted-foreground">
-              Auto-generated from your week
-            </Text>
-          </View>
+      <View className="border-b border-border bg-background px-4 py-3 flex-row items-center gap-2.5">
+        <View className="h-8 w-8 rounded-xl bg-primary/15 items-center justify-center">
+          <Icon icon={ShoppingBasket} size="sm" color={ICON_COLORS.primary} />
         </View>
-        <View className="flex-row items-center gap-2">
-          <Pressable
-            onPress={() => void generate()}
-            hitSlop={6}
-            className="h-9 px-3 rounded-full border border-border bg-card flex-row items-center gap-1.5"
-          >
-            <Feather name="refresh-cw" size={13} color="#291f18" />
-            <Text className="text-xs font-medium text-foreground">
-              {items.length ? "Rebuild" : "Generate"}
-            </Text>
-          </Pressable>
-          <Pressable
-            onPress={() => setAll(false)}
-            disabled={done === 0}
-            hitSlop={6}
-            className={`h-9 px-3 rounded-full border border-border bg-card flex-row items-center gap-1.5 ${
-              done === 0 ? "opacity-50" : ""
-            }`}
-          >
-            <Feather name="rotate-ccw" size={13} color="#291f18" />
-            <Text className="text-xs font-medium text-foreground">Reset</Text>
-          </Pressable>
+        <View className="flex-1 min-w-0">
+          <Text className="text-sm font-semibold text-foreground">
+            Grocery List
+          </Text>
+          <Text className="text-xs text-muted-foreground">
+            Auto-generated from your week
+          </Text>
         </View>
       </View>
 
@@ -137,7 +142,7 @@ export default function GroceryScreen() {
         {total === 0 ? (
           <View className="items-center mt-12 px-6">
             <Text className="text-center text-sm text-muted-foreground">
-              Tap Generate to turn this week's meals into a checklist.
+              Your list appears here once this week has meals planned.
             </Text>
           </View>
         ) : (
@@ -186,7 +191,8 @@ export default function GroceryScreen() {
             <View className="mb-3 flex-row items-center justify-between px-1">
               <Pressable
                 onPress={() => setAll(!allChecked)}
-                className="flex-row items-center gap-2"
+                hitSlop={10}
+                className="flex-row items-center gap-2 py-2"
               >
                 <View
                   className={`h-5 w-5 rounded-md border items-center justify-center ${
@@ -196,7 +202,11 @@ export default function GroceryScreen() {
                   }`}
                 >
                   {allChecked ? (
-                    <Feather name="check" size={12} color="#fefbf8" />
+                    <Icon
+                      icon={Check}
+                      size={13}
+                      color={ICON_COLORS.primaryForeground}
+                    />
                   ) : null}
                 </View>
                 <Text className="text-sm font-medium text-foreground">
@@ -240,7 +250,7 @@ export default function GroceryScreen() {
                           }`}
                         >
                           <Text
-                            className={`text-[11px] font-semibold tabular-nums ${
+                            className={`text-xs font-semibold tabular-nums ${
                               allDone ? "text-success" : "text-muted-foreground"
                             }`}
                           >
@@ -248,10 +258,10 @@ export default function GroceryScreen() {
                           </Text>
                         </View>
                       </View>
-                      <Feather
-                        name={isCollapsed ? "chevron-right" : "chevron-down"}
-                        size={16}
-                        color="#6c6158"
+                      <Icon
+                        icon={isCollapsed ? ChevronRight : ChevronDown}
+                        size="sm"
+                        color={ICON_COLORS.muted}
                       />
                     </Pressable>
 
@@ -272,10 +282,10 @@ export default function GroceryScreen() {
                               }`}
                             >
                               {item.isChecked ? (
-                                <Feather
-                                  name="check"
-                                  size={12}
-                                  color="#fefbf8"
+                                <Icon
+                                  icon={Check}
+                                  size={13}
+                                  color={ICON_COLORS.primaryForeground}
                                 />
                               ) : null}
                             </View>
@@ -305,29 +315,15 @@ export default function GroceryScreen() {
       {/* Sticky order CTA */}
       {total > 0 ? (
         <View className="absolute left-0 right-0 bottom-0 px-4 pb-3 pt-2">
-          <Pressable
-            onPress={() => orderSheetRef.current?.present()}
+          <Button
+            label={`Order Items${done > 0 ? ` (${done})` : ""}`}
+            icon={ShoppingBag}
+            onPress={() => void orderItems()}
             disabled={done === 0}
-            className={`h-12 rounded-full flex-row items-center justify-center gap-2 ${
-              done === 0 ? "bg-primary/50" : "bg-primary"
-            }`}
-            style={{
-              shadowColor: "#a55a37",
-              shadowOpacity: 0.3,
-              shadowRadius: 12,
-              shadowOffset: { width: 0, height: 6 },
-              elevation: 6,
-            }}
-          >
-            <Feather name="shopping-bag" size={15} color="#fefbf8" />
-            <Text className="text-sm font-semibold text-primary-foreground">
-              Compare Apps and Order
-            </Text>
-          </Pressable>
+            shadow
+          />
         </View>
       ) : null}
-
-      <OrderSheet ref={orderSheetRef} items={items} />
     </SafeAreaView>
   );
 }

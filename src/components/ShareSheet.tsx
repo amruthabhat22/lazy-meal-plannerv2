@@ -5,8 +5,20 @@ import {
   BottomSheetScrollView,
   BottomSheetTextInput,
 } from "@gorhom/bottom-sheet";
-import { Feather } from "@expo/vector-icons";
+import {
+  Check,
+  ChefHat,
+  Image as ImageIcon,
+  Phone,
+  Plus,
+  Search,
+  Send,
+  Trash2,
+  X,
+} from "lucide-react-native";
 import { useSQLiteContext } from "expo-sqlite";
+import { Icon, ICON_COLORS } from "@/components/ui/Icon";
+import { Button } from "@/components/ui/Button";
 import type { Meal, Slot } from "@/engine/types";
 import type { PlanRow } from "@/db/repos/plansRepo";
 import { getRecipeByMealId } from "@/db/repos/mealsRepo";
@@ -18,32 +30,71 @@ import {
   removeContact,
   type ShareContact,
 } from "@/utils/contacts";
-import {
-  buildPlanMessage,
-  buildRecipeMessage,
-  mealOccurrences,
-} from "@/utils/shareMessage";
+import { buildPlanMessage, buildRecipeMessage } from "@/utils/shareMessage";
 import {
   renderSheetBackdrop,
   sheetBackgroundStyle,
   sheetHandleStyle,
+  SheetHeader,
+  useSheetFooterPadding,
+  useSheetSizing,
 } from "@/components/sheetChrome";
-
-const WHATSAPP_GREEN = "#25D366";
 
 const inputStyle = {
   backgroundColor: "#f3ede6",
   borderRadius: 12,
   paddingHorizontal: 14,
-  paddingVertical: 10,
+  paddingVertical: 12,
   fontSize: 15,
   color: "#291f18",
 } as const;
 
+type ShareMode = "plan" | "recipe";
+
+function RadioRow({
+  label,
+  selected,
+  onPress,
+}: {
+  label: string;
+  selected: boolean;
+  onPress: () => void;
+}) {
+  return (
+    <Pressable
+      onPress={onPress}
+      hitSlop={8}
+      accessibilityRole="radio"
+      accessibilityState={{ selected }}
+      className="flex-row items-center gap-3.5 py-3"
+    >
+      <View
+        className={`h-6 w-6 rounded-full border-2 items-center justify-center ${
+          selected ? "border-primary" : "border-muted-foreground/30"
+        }`}
+      >
+        {selected ? (
+          <View className="h-3 w-3 rounded-full bg-primary" />
+        ) : null}
+      </View>
+      <Text
+        className={`text-base ${
+          selected
+            ? "font-semibold text-foreground"
+            : "font-medium text-muted-foreground"
+        }`}
+      >
+        {label}
+      </Text>
+    </Pressable>
+  );
+}
+
 /**
- * "Share Weekly Plan" sheet (design). Sends the plan as WhatsApp text or as
- * a table image, and can send any planned meal's full recipe — the plan text
- * invites the recipient to ask for one.
+ * "Share on WhatsApp" sheet (updated design): radio choice between the
+ * weekly plan and a single recipe (searchable from this week's meals),
+ * contact checklist, green CTA. Plan mode also offers the table-image
+ * share.
  */
 export const ShareSheet = forwardRef<
   BottomSheetModal,
@@ -55,13 +106,17 @@ export const ShareSheet = forwardRef<
   }
 >(function ShareSheet({ planMeals, catalog, slots, onShareImage }, ref) {
   const db = useSQLiteContext();
+  const sizing = useSheetSizing();
+  const footerPadding = useSheetFooterPadding();
+  const [mode, setMode] = useState<ShareMode>("plan");
   const [contacts, setContacts] = useState<ShareContact[]>([]);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [opened, setOpened] = useState<Set<string>>(new Set());
   const [showAdd, setShowAdd] = useState(false);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [recipeQuery, setRecipeQuery] = useState("");
+  const [query, setQuery] = useState("");
+  const [pickedMeal, setPickedMeal] = useState<Meal | null>(null);
   const [busyImage, setBusyImage] = useState(false);
 
   useEffect(() => {
@@ -69,18 +124,15 @@ export const ShareSheet = forwardRef<
   }, [db]);
 
   const reset = () => {
+    setMode("plan");
     setSelected(new Set());
     setOpened(new Set());
     setShowAdd(false);
     setName("");
     setPhone("");
-    setRecipeQuery("");
+    setQuery("");
+    setPickedMeal(null);
   };
-
-  const message = useMemo(
-    () => buildPlanMessage(planMeals, catalog, slots),
-    [planMeals, catalog, slots],
-  );
 
   /** Distinct meals on this week's plan, for recipe sharing. */
   const weekMeals = useMemo(() => {
@@ -94,10 +146,13 @@ export const ShareSheet = forwardRef<
   }, [planMeals, catalog]);
 
   const matchedMeals = useMemo(() => {
-    const q = recipeQuery.trim().toLowerCase();
+    const q = query.trim().toLowerCase();
     if (!q) return [];
-    return weekMeals.filter((m) => m.name.toLowerCase().includes(q));
-  }, [weekMeals, recipeQuery]);
+    return weekMeals.filter((m) => m.name.toLowerCase().includes(q)).slice(0, 6);
+  }, [weekMeals, query]);
+
+  const canSend =
+    selected.size > 0 && (mode === "plan" || pickedMeal !== null);
 
   const toggle = (id: string) => {
     setSelected((prev) => {
@@ -134,13 +189,19 @@ export const ShareSheet = forwardRef<
     });
   };
 
-  const sendText = async (text: string) => {
-    const targets = contacts.filter((c) => selected.has(c.id));
-    if (targets.length === 0) {
-      await Share.share({ message: text });
-      return;
+  const buildMessage = async (): Promise<string> => {
+    if (mode === "recipe" && pickedMeal) {
+      const recipe = await getRecipeByMealId(db, pickedMeal.id);
+      return buildRecipeMessage(pickedMeal, recipe, planMeals);
     }
+    return buildPlanMessage(planMeals, catalog, slots);
+  };
+
+  const send = async () => {
+    if (!canSend) return;
+    const text = await buildMessage();
     const encoded = encodeURIComponent(text);
+    const targets = contacts.filter((c) => selected.has(c.id));
     for (const target of targets) {
       const url = `https://wa.me/${target.phone}?text=${encoded}`;
       const ok = await Linking.canOpenURL(url);
@@ -151,11 +212,7 @@ export const ShareSheet = forwardRef<
       await Linking.openURL(url);
       setOpened((prev) => new Set(prev).add(target.id));
     }
-  };
-
-  const shareRecipe = async (meal: Meal) => {
-    const recipe = await getRecipeByMealId(db, meal.id);
-    await sendText(buildRecipeMessage(meal, recipe, planMeals));
+    if (targets.length === 0) await Share.share({ message: text });
   };
 
   const shareImage = async () => {
@@ -169,58 +226,166 @@ export const ShareSheet = forwardRef<
     }
   };
 
+  const mealMacros = (m: Meal) =>
+    `${Math.round(m.protein_per_unit * m.default_qty)}g protein · ${Math.round(
+      (m.kcal_per_unit ?? 0) * m.default_qty,
+    )} cal`;
+
   return (
     <BottomSheetModal
       ref={ref}
-      snapPoints={["85%"]}
-      enableDynamicSizing={false}
+      {...sizing}
       onDismiss={reset}
       backdropComponent={renderSheetBackdrop}
       backgroundStyle={sheetBackgroundStyle}
       handleIndicatorStyle={sheetHandleStyle}
     >
-      <View className="px-5 pt-1 pb-3">
-        <Text className="text-base font-bold text-foreground">
-          Share Weekly Plan
-        </Text>
-        <Text className="text-xs text-muted-foreground mt-0.5">
-          Send your full 7-day plan on WhatsApp — to your cook, family, or
-          yourself.
-        </Text>
-      </View>
-
       <BottomSheetScrollView
-        contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 16 }}
+        contentContainerStyle={{ paddingBottom: footerPadding }}
+        stickyHeaderIndices={[]}
       >
-        {contacts.length === 0 && !showAdd ? (
-          <View className="rounded-xl border border-dashed border-border bg-secondary/30 p-5 items-center">
-            <View className="h-10 w-10 rounded-full bg-primary/10 items-center justify-center mb-2">
-              <Feather name="phone" size={15} color="#a55a37" />
-            </View>
-            <Text className="text-sm font-semibold text-foreground">
-              No saved contacts yet
-            </Text>
-            <Text className="text-xs text-muted-foreground mt-1">
-              Add a number to share your plan every week.
-            </Text>
-          </View>
-        ) : null}
+        <SheetHeader
+          title="Share on WhatsApp"
+          subtitle="Send your weekly plan or a single recipe."
+        />
 
-        {contacts.map((c) => {
-          const isSel = selected.has(c.id);
-          const wasOpened = opened.has(c.id);
-          return (
-            <View
-              key={c.id}
-              className={`flex-row items-center gap-3 rounded-xl border p-3 mb-2 ${
-                isSel ? "border-primary bg-primary/5" : "border-border bg-card"
-              }`}
-            >
-              <Pressable
-                onPress={() => toggle(c.id)}
-                className="flex-row items-center gap-3 flex-1"
+        {/* Mode radio group */}
+        <View className="px-5 py-3">
+          <RadioRow
+            label="Weekly plan"
+            selected={mode === "plan"}
+            onPress={() => setMode("plan")}
+          />
+          <RadioRow
+            label="Recipe"
+            selected={mode === "recipe"}
+            onPress={() => setMode("recipe")}
+          />
+        </View>
+
+        <View className="px-5">
+          {mode === "recipe" ? (
+            <View className="mb-1">
+              {pickedMeal ? (
+                <View className="rounded-xl border border-primary bg-primary/5 p-3 flex-row items-center gap-3">
+                  <View className="h-9 w-9 rounded-full bg-primary/10 items-center justify-center">
+                    <Icon icon={ChefHat} size="sm" color={ICON_COLORS.primary} />
+                  </View>
+                  <View className="flex-1 min-w-0">
+                    <Text
+                      className="text-sm font-semibold text-foreground"
+                      numberOfLines={1}
+                    >
+                      {pickedMeal.name}
+                    </Text>
+                    <Text className="text-xs text-muted-foreground tabular-nums mt-0.5">
+                      {mealMacros(pickedMeal)}
+                    </Text>
+                  </View>
+                  <Pressable
+                    onPress={() => {
+                      setPickedMeal(null);
+                      setQuery("");
+                    }}
+                    hitSlop={10}
+                    accessibilityLabel="Change meal"
+                    className="h-8 w-8 rounded-full items-center justify-center"
+                  >
+                    <Icon icon={X} size="sm" color={ICON_COLORS.muted} />
+                  </Pressable>
+                </View>
+              ) : (
+                <>
+                  <View className="relative">
+                    <View
+                      className="absolute left-3 top-0 bottom-0 justify-center z-10"
+                      pointerEvents="none"
+                    >
+                      <Icon icon={Search} size="sm" color={ICON_COLORS.muted} />
+                    </View>
+                    <BottomSheetTextInput
+                      placeholder="Search a meal from your plan"
+                      placeholderTextColor="#6c6158"
+                      value={query}
+                      onChangeText={setQuery}
+                      style={{ ...inputStyle, paddingLeft: 40 }}
+                    />
+                  </View>
+                  {query.trim() !== "" && matchedMeals.length === 0 ? (
+                    <View className="rounded-xl border border-dashed border-border bg-secondary/30 p-4 mt-2">
+                      <Text className="text-xs text-muted-foreground text-center">
+                        No matching meal in this week's plan.
+                      </Text>
+                    </View>
+                  ) : null}
+                  {matchedMeals.length > 0 ? (
+                    <View className="rounded-xl border border-border bg-card overflow-hidden mt-2">
+                      {matchedMeals.map((m, i) => (
+                        <Pressable
+                          key={m.id}
+                          onPress={() => setPickedMeal(m)}
+                          className={`flex-row items-center gap-3 px-3 py-2.5 ${
+                            i > 0 ? "border-t border-border" : ""
+                          }`}
+                        >
+                          <Icon
+                            icon={ChefHat}
+                            size="sm"
+                            color={ICON_COLORS.primary}
+                          />
+                          <View className="flex-1 min-w-0">
+                            <Text
+                              className="text-sm font-semibold text-foreground"
+                              numberOfLines={1}
+                            >
+                              {m.name}
+                            </Text>
+                            <Text className="text-xs text-muted-foreground tabular-nums">
+                              {mealMacros(m)}
+                            </Text>
+                          </View>
+                        </Pressable>
+                      ))}
+                    </View>
+                  ) : null}
+                </>
+              )}
+              <Text className="pt-3 pb-1 text-xs font-semibold tracking-widest uppercase text-muted-foreground">
+                Send to
+              </Text>
+            </View>
+          ) : null}
+
+          {/* Contacts */}
+          {contacts.length === 0 && !showAdd ? (
+            <View className="rounded-xl border border-dashed border-border bg-secondary/30 p-5 items-center">
+              <View className="h-10 w-10 rounded-full bg-primary/10 items-center justify-center mb-2">
+                <Icon icon={Phone} size="sm" color={ICON_COLORS.primary} />
+              </View>
+              <Text className="text-sm font-semibold text-foreground">
+                No saved contacts yet
+              </Text>
+              <Text className="text-xs text-muted-foreground mt-1">
+                Add a number to share your plan.
+              </Text>
+            </View>
+          ) : null}
+
+          {contacts.map((c) => {
+            const isSel = selected.has(c.id);
+            const wasOpened = opened.has(c.id);
+            return (
+              <View
+                key={c.id}
+                className={`flex-row items-center gap-3 rounded-xl border p-3 mb-2 ${
+                  isSel ? "border-primary bg-primary/5" : "border-border bg-card"
+                }`}
               >
-                <View
+                <Pressable
+                  onPress={() => toggle(c.id)}
+                  hitSlop={10}
+                  accessibilityRole="checkbox"
+                  accessibilityState={{ checked: isSel }}
                   className={`h-5 w-5 rounded-md border items-center justify-center ${
                     isSel
                       ? "bg-primary border-primary"
@@ -228,10 +393,17 @@ export const ShareSheet = forwardRef<
                   }`}
                 >
                   {isSel ? (
-                    <Feather name="check" size={12} color="#fefbf8" />
+                    <Icon
+                      icon={Check}
+                      size={13}
+                      color={ICON_COLORS.primaryForeground}
+                    />
                   ) : null}
-                </View>
-                <View className="flex-1 min-w-0">
+                </Pressable>
+                <Pressable
+                  onPress={() => toggle(c.id)}
+                  className="flex-1 min-w-0"
+                >
                   <Text className="text-sm font-semibold text-foreground">
                     {c.name}
                   </Text>
@@ -243,163 +415,107 @@ export const ShareSheet = forwardRef<
                       </Text>
                     ) : null}
                   </Text>
-                </View>
-              </Pressable>
-              <Pressable onPress={() => void handleRemove(c.id)} hitSlop={8}>
-                <Feather name="trash-2" size={15} color="#6c6158" />
-              </Pressable>
-            </View>
-          );
-        })}
+                </Pressable>
+                <Pressable
+                  onPress={() => void handleRemove(c.id)}
+                  hitSlop={12}
+                  accessibilityLabel={`Remove ${c.name}`}
+                  className="h-8 w-8 rounded-full items-center justify-center"
+                >
+                  <Icon icon={Trash2} size="sm" color={ICON_COLORS.muted} />
+                </Pressable>
+              </View>
+            );
+          })}
 
-        {!showAdd ? (
-          <Pressable
-            onPress={() => setShowAdd(true)}
-            className="h-12 rounded-xl border border-dashed border-border bg-secondary/30 flex-row items-center justify-center gap-2"
-          >
-            <Feather name="plus" size={15} color="#3a2a20" />
-            <Text className="text-sm font-semibold text-foreground/80">
-              Add new contact
-            </Text>
-          </Pressable>
-        ) : (
-          <View className="rounded-xl border border-dashed border-border bg-secondary/30 p-3">
-            <BottomSheetTextInput
-              placeholder="Name"
-              placeholderTextColor="#6c6158"
-              value={name}
-              onChangeText={setName}
-              style={inputStyle}
-            />
-            <View className="mt-2.5">
+          {!showAdd ? (
+            <Pressable
+              onPress={() => setShowAdd(true)}
+              className="h-12 rounded-xl border border-dashed border-border bg-secondary/30 flex-row items-center justify-center gap-2"
+            >
+              <Icon icon={Plus} size="sm" color={ICON_COLORS.accentForeground} />
+              <Text className="text-sm font-semibold text-foreground/80">
+                Add new contact
+              </Text>
+            </Pressable>
+          ) : (
+            <View className="rounded-xl border border-dashed border-border bg-secondary/30 p-3">
               <BottomSheetTextInput
-                placeholder="Phone with country code (e.g. 919812345678)"
+                placeholder="Name"
                 placeholderTextColor="#6c6158"
-                keyboardType="phone-pad"
-                value={phone}
-                onChangeText={setPhone}
+                value={name}
+                onChangeText={setName}
                 style={inputStyle}
               />
-            </View>
-            <View className="flex-row items-center gap-2 mt-3">
-              <Pressable
-                onPress={() => {
-                  setShowAdd(false);
-                  setName("");
-                  setPhone("");
-                }}
-                className="h-12 px-4 rounded-xl items-center justify-center"
-              >
-                <Text className="text-sm font-medium text-muted-foreground">
-                  Cancel
-                </Text>
-              </Pressable>
-              <Pressable
-                onPress={() => void handleAdd()}
-                disabled={!canAdd}
-                className={`flex-1 h-12 rounded-xl items-center justify-center ${
-                  canAdd ? "bg-primary" : "bg-secondary"
-                }`}
-              >
-                <Text
-                  className={`text-sm font-semibold ${
-                    canAdd ? "text-primary-foreground" : "text-muted-foreground"
-                  }`}
+              <View className="mt-2.5">
+                <BottomSheetTextInput
+                  placeholder="Phone with country code (e.g. 919812345678)"
+                  placeholderTextColor="#6c6158"
+                  keyboardType="phone-pad"
+                  value={phone}
+                  onChangeText={setPhone}
+                  style={inputStyle}
+                />
+              </View>
+              <View className="flex-row items-center gap-2 mt-3">
+                <Pressable
+                  onPress={() => {
+                    setShowAdd(false);
+                    setName("");
+                    setPhone("");
+                  }}
+                  className="h-12 px-4 rounded-xl items-center justify-center"
                 >
-                  Save contact
-                </Text>
-              </Pressable>
+                  <Text className="text-sm font-medium text-muted-foreground">
+                    Cancel
+                  </Text>
+                </Pressable>
+                <View className="flex-1">
+                  <Button
+                    label="Save contact"
+                    rounded="xl"
+                    onPress={() => void handleAdd()}
+                    disabled={!canAdd}
+                  />
+                </View>
+              </View>
             </View>
-          </View>
-        )}
+          )}
+        </View>
 
-        {/* Recipe sharing */}
-        {weekMeals.length > 0 ? (
-          <View className="mt-6">
-            <Text className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1.5">
-              Send a recipe
-            </Text>
-            <Text className="text-xs text-muted-foreground mb-2.5">
-              Got asked for a recipe? Type the meal and send its full recipe —
-              prep time, ease of cooking, ingredients, and steps.
-            </Text>
-            <BottomSheetTextInput
-              placeholder="Type a meal from this week…"
-              placeholderTextColor="#6c6158"
-              value={recipeQuery}
-              onChangeText={setRecipeQuery}
-              style={inputStyle}
-            />
-            {matchedMeals.slice(0, 5).map((meal) => (
-              <Pressable
-                key={meal.id}
-                onPress={() => void shareRecipe(meal)}
-                className="flex-row items-center gap-3 rounded-xl border border-border bg-card p-3 mt-2"
-              >
-                <View className="h-8 w-8 rounded-full bg-primary/10 items-center justify-center">
-                  <Feather name="book-open" size={13} color="#a55a37" />
-                </View>
-                <View className="flex-1 min-w-0">
-                  <Text className="text-sm font-semibold text-foreground">
-                    {meal.name}
-                  </Text>
-                  <Text
-                    className="text-xs text-muted-foreground mt-0.5"
-                    numberOfLines={1}
-                  >
-                    {mealOccurrences(meal.id, planMeals) || "On this week"}
-                  </Text>
-                </View>
-                <Feather name="send" size={14} color="#25D366" />
-              </Pressable>
-            ))}
-            {recipeQuery.trim().length > 0 && matchedMeals.length === 0 ? (
-              <Text className="text-xs text-muted-foreground text-center mt-3">
-                No meal on this week's plan matches "{recipeQuery.trim()}".
-              </Text>
-            ) : null}
-          </View>
-        ) : null}
-      </BottomSheetScrollView>
-
-      {/* Footer CTAs */}
-      <View className="border-t border-border px-4 pt-3 pb-6 bg-background">
-        <Pressable
-          onPress={() => void sendText(message)}
-          disabled={selected.size === 0}
-          className="h-12 rounded-xl flex-row items-center justify-center gap-2"
-          style={{
-            backgroundColor: selected.size === 0 ? "#f1eae0" : WHATSAPP_GREEN,
-          }}
-        >
-          <Feather
-            name="send"
-            size={15}
-            color={selected.size === 0 ? "#6c6158" : "#ffffff"}
+        {/* Footer */}
+        <View className="border-t border-border px-4 pt-3 mt-4">
+          <Button
+            label={`${mode === "recipe" ? "Share recipe" : "Share weekly plan"}${
+              selected.size > 0 ? ` (${selected.size})` : ""
+            }`}
+            icon={Send}
+            variant="whatsapp"
+            rounded="xl"
+            onPress={() => void send()}
+            disabled={!canSend}
           />
-          <Text
-            className="text-sm font-semibold"
-            style={{ color: selected.size === 0 ? "#6c6158" : "#ffffff" }}
-          >
-            Share on WhatsApp{selected.size > 0 ? ` (${selected.size})` : ""}
+          {mode === "plan" ? (
+            <View className="mt-2">
+              <Button
+                label={
+                  busyImage ? "Preparing image…" : "Share plan as image (table)"
+                }
+                icon={ImageIcon}
+                variant="outline"
+                rounded="xl"
+                onPress={() => void shareImage()}
+                disabled={busyImage}
+              />
+            </View>
+          ) : null}
+          <Text className="mt-2 text-xs text-muted-foreground text-center">
+            {mode === "recipe" && !pickedMeal
+              ? "Pick a meal from your plan to share its recipe."
+              : "WhatsApp opens once per contact. Tap send on each chat to deliver."}
           </Text>
-        </Pressable>
-        <Pressable
-          onPress={() => void shareImage()}
-          disabled={busyImage}
-          className={`h-11 rounded-xl border border-border bg-card flex-row items-center justify-center gap-2 mt-2 ${
-            busyImage ? "opacity-50" : ""
-          }`}
-        >
-          <Feather name="image" size={14} color="#291f18" />
-          <Text className="text-sm font-semibold text-foreground">
-            {busyImage ? "Preparing image…" : "Share plan as image (table)"}
-          </Text>
-        </Pressable>
-        <Text className="mt-2 text-[11px] text-muted-foreground text-center">
-          WhatsApp opens once per contact. Tap send on each chat to deliver.
-        </Text>
-      </View>
+        </View>
+      </BottomSheetScrollView>
     </BottomSheetModal>
   );
 });

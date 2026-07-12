@@ -7,7 +7,10 @@ export interface MealRow {
   slots: string;
   diet: string;
   cuisine: string | null;
+  cuisines: string | null;
   country: string | null;
+  role: string | null;
+  default_side: string | null;
   default_qty: number;
   min_qty: number;
   max_qty: number;
@@ -116,8 +119,11 @@ export function rowToMeal(row: MealRow): Meal {
     name: row.name,
     slots: splitList(row.slots) as Slot[],
     diet: row.diet as Diet,
-    cuisine: row.cuisine,
+    // Fall back to the legacy single-cuisine column for old rows.
+    cuisines: splitList(row.cuisines ?? row.cuisine),
     country: row.country,
+    role: row.role === "side" ? "side" : "main",
+    default_side: row.default_side,
     default_qty: row.default_qty,
     min_qty: row.min_qty,
     max_qty: row.max_qty,

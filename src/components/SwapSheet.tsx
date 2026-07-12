@@ -5,11 +5,16 @@ import {
   BottomSheetFlatList,
   BottomSheetTextInput,
 } from "@gorhom/bottom-sheet";
-import { Feather } from "@expo/vector-icons";
+import { Check, Plus } from "lucide-react-native";
+import * as Haptics from "expo-haptics";
+import { Icon, ICON_COLORS } from "@/components/ui/Icon";
+import { Button } from "@/components/ui/Button";
 import {
   renderSheetBackdrop,
   sheetBackgroundStyle,
   sheetHandleStyle,
+  SheetHeader,
+  useSheetFooterPadding,
 } from "@/components/sheetChrome";
 import type { Candidate } from "@/engine/generator";
 import type { Diet, Slot } from "@/engine/types";
@@ -70,6 +75,7 @@ export const SwapSheet = forwardRef<
   }, [candidates, query]);
 
   const toggle = (id: string) => {
+    void Haptics.selectionAsync();
     setSelected((prev) => {
       const next = new Set(prev);
       if (next.has(id)) next.delete(id);
@@ -138,13 +144,17 @@ export const SwapSheet = forwardRef<
       ? "Pick from suggestions or create your own."
       : `${currentMealName ? `Replacing "${currentMealName}". ` : ""}Pick one or more alternatives.`;
 
+  const footerPadding = useSheetFooterPadding();
+
   const CheckBox = ({ isSel }: { isSel: boolean }) => (
     <View
       className={`h-5 w-5 rounded-md border items-center justify-center ${
         isSel ? "bg-primary border-primary" : "border-border bg-background"
       }`}
     >
-      {isSel ? <Feather name="check" size={12} color="#fefbf8" /> : null}
+      {isSel ? (
+        <Icon icon={Check} size={13} color={ICON_COLORS.primaryForeground} />
+      ) : null}
     </View>
   );
 
@@ -158,11 +168,8 @@ export const SwapSheet = forwardRef<
       backgroundStyle={sheetBackgroundStyle}
       handleIndicatorStyle={sheetHandleStyle}
     >
-      <View className="px-5 pb-2">
-        <Text className="text-base font-bold text-foreground">{title}</Text>
-        <Text className="text-xs text-muted-foreground mt-0.5 mb-3">
-          {description}
-        </Text>
+      <SheetHeader title={title} subtitle={description} divider={false} />
+      <View className="px-5 pb-3">
         <BottomSheetTextInput
           placeholder="Search meals"
           placeholderTextColor="#6c6158"
@@ -171,11 +178,16 @@ export const SwapSheet = forwardRef<
           style={inputStyle}
         />
       </View>
+      <View className="h-px bg-border" />
 
       <BottomSheetFlatList
         data={filtered}
         keyExtractor={(item: Candidate) => item.meal.id}
-        contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 16 }}
+        contentContainerStyle={{
+          paddingHorizontal: 20,
+          paddingTop: 16,
+          paddingBottom: 16,
+        }}
         ListEmptyComponent={
           <Text className="text-center text-muted-foreground mt-8">
             No meals match your search.
@@ -204,15 +216,17 @@ export const SwapSheet = forwardRef<
                 </Text>
               </View>
               <View className="rounded-full bg-accent/60 px-2 py-0.5">
-                <Text className="text-[11px] font-semibold text-accent-foreground tabular-nums">
+                <Text className="text-xs font-semibold text-accent-foreground tabular-nums">
                   {formatProtein(meal.protein_per_unit * meal.default_qty)}
                 </Text>
               </View>
             </Pressable>
           );
         }}
-        ListFooterComponent={
-          <View>
+        // Design feedback: keep "Add your own item" up top so it isn't
+        // buried under a long suggestion list.
+        ListHeaderComponent={
+          <View className="mb-2">
             {customs.map((c) => {
               const isSel = selected.has(c.tempId);
               return (
@@ -231,7 +245,7 @@ export const SwapSheet = forwardRef<
                       <Text className="text-sm font-semibold text-foreground">
                         {c.input.name}
                       </Text>
-                      <Text className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
+                      <Text className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
                         custom
                       </Text>
                     </View>
@@ -246,13 +260,13 @@ export const SwapSheet = forwardRef<
               );
             })}
 
-            <View className="rounded-xl border border-dashed border-border bg-secondary/30 mt-1">
+            <View className="rounded-xl border border-dashed border-border bg-secondary/30">
               {!customOpen ? (
                 <Pressable
                   onPress={() => setCustomOpen(true)}
                   className="h-12 rounded-xl flex-row items-center justify-center gap-2"
                 >
-                  <Feather name="plus" size={15} color="#3a2a20" />
+                  <Icon icon={Plus} size="sm" color={ICON_COLORS.accentForeground} />
                   <Text className="text-sm font-semibold text-foreground/80">
                     Add your own item
                   </Text>
@@ -306,28 +320,15 @@ export const SwapSheet = forwardRef<
                         Cancel
                       </Text>
                     </Pressable>
-                    <Pressable
-                      onPress={addCustomToList}
-                      disabled={!customValid}
-                      className={`flex-1 h-12 rounded-xl flex-row items-center justify-center gap-1.5 ${
-                        customValid ? "bg-primary" : "bg-secondary"
-                      }`}
-                    >
-                      <Feather
-                        name="plus"
-                        size={15}
-                        color={customValid ? "#fefbf8" : "#6c6158"}
+                    <View className="flex-1">
+                      <Button
+                        label="Add to list"
+                        icon={Plus}
+                        rounded="xl"
+                        onPress={addCustomToList}
+                        disabled={!customValid}
                       />
-                      <Text
-                        className={`text-sm font-semibold ${
-                          customValid
-                            ? "text-primary-foreground"
-                            : "text-muted-foreground"
-                        }`}
-                      >
-                        Add to list
-                      </Text>
-                    </Pressable>
+                    </View>
                   </View>
                 </View>
               )}
@@ -336,23 +337,16 @@ export const SwapSheet = forwardRef<
         }
       />
 
-      <View className="border-t border-border p-4 bg-background">
-        <Pressable
+      <View
+        className="border-t border-border px-4 pt-3 bg-background"
+        style={{ paddingBottom: footerPadding }}
+      >
+        <Button
+          label={`${mode === "add" ? "Add" : "Swap"}${count > 0 ? ` (${count})` : ""}`}
+          rounded="xl"
           onPress={confirm}
           disabled={count === 0}
-          className={`h-12 rounded-xl items-center justify-center ${
-            count === 0 ? "bg-secondary" : "bg-primary"
-          }`}
-        >
-          <Text
-            className={`text-sm font-semibold ${
-              count === 0 ? "text-muted-foreground" : "text-primary-foreground"
-            }`}
-          >
-            {mode === "add" ? "Add" : "Swap"}
-            {count > 0 ? ` (${count})` : ""}
-          </Text>
-        </Pressable>
+        />
       </View>
     </BottomSheetModal>
   );

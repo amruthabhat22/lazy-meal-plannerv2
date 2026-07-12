@@ -10,7 +10,7 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import { parseMealsCsv } from "./csv";
 
-const CATALOG_VERSION = 3;
+const CATALOG_VERSION = 4;
 
 const INGREDIENT_CATEGORIES = new Set([
   "Protein",
@@ -54,6 +54,24 @@ for (const m of records) {
   }
   if (m.qty_step <= 0) throw new Error(`Meal '${m.id}': qty_step must be > 0`);
   if (m.protein_per_unit <= 0) throw new Error(`Meal '${m.id}': protein_per_unit must be > 0`);
+  if (m.role !== "main" && m.role !== "side") {
+    throw new Error(`Meal '${m.id}': role must be 'main' or 'side'`);
+  }
+  if (m.role === "side" && m.default_side) {
+    throw new Error(`Meal '${m.id}': a side cannot have a default_side`);
+  }
+  if (!m.cuisines.trim()) {
+    throw new Error(`Meal '${m.id}': needs at least one cuisine tag`);
+  }
+}
+for (const m of records) {
+  if (m.default_side) {
+    const side = records.find((r) => r.id === m.default_side);
+    if (!side) throw new Error(`Meal '${m.id}': default_side '${m.default_side}' not in catalog`);
+    if (side.role !== "side") {
+      throw new Error(`Meal '${m.id}': default_side '${m.default_side}' is not a side`);
+    }
+  }
 }
 
 // Recipe coverage: every catalog meal needs a usable recipe (the recipe

@@ -7,8 +7,10 @@ export interface CatalogMeal {
   name: string;
   slots: string;
   diet: string;
-  cuisine: string | null;
+  cuisines: string;
   country: string | null;
+  role: string;
+  default_side: string | null;
   default_qty: number;
   min_qty: number;
   max_qty: number;
@@ -48,17 +50,19 @@ export async function importCatalogIfNewer(
     for (const m of bundle.meals) {
       await db.runAsync(
         `INSERT INTO meals (
-           id, name, slots, diet, cuisine, country,
+           id, name, slots, diet, cuisines, country, role, default_side,
            default_qty, min_qty, max_qty, qty_step, unit, protein_per_unit,
            kcal_per_unit, difficulty, prep_time_min, allergens,
            ingredients_json, steps_json, is_custom, catalog_version
-         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?)
+         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?)
          ON CONFLICT(id) DO UPDATE SET
            name = excluded.name,
            slots = excluded.slots,
            diet = excluded.diet,
-           cuisine = excluded.cuisine,
+           cuisines = excluded.cuisines,
            country = excluded.country,
+           role = excluded.role,
+           default_side = excluded.default_side,
            default_qty = excluded.default_qty,
            min_qty = excluded.min_qty,
            max_qty = excluded.max_qty,
@@ -78,8 +82,10 @@ export async function importCatalogIfNewer(
           m.name,
           m.slots,
           m.diet,
-          m.cuisine,
+          m.cuisines,
           m.country,
+          m.role,
+          m.default_side,
           m.default_qty,
           m.min_qty,
           m.max_qty,

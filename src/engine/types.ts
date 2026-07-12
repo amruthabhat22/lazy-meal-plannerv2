@@ -15,13 +15,22 @@ export type Difficulty = "easy" | "medium" | "hard";
 export const ALL_DAYS: Day[] = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
 export const ALL_SLOTS: Slot[] = ["breakfast", "lunch", "dinner", "snack"];
 
+/** Sides (roti, rice, raita…) accompany a main and are exempt from the
+ * repeat rules; the generator only ever slots mains directly. */
+export type MealRole = "main" | "side";
+
 export interface Meal {
   id: string;
   name: string;
   slots: Slot[];
   diet: Diet;
-  cuisine: string | null;
+  /** All cuisines this dish belongs to (dishes can overlap, e.g. a
+   * sandwich is american AND north-indian). */
+  cuisines: string[];
   country: string | null;
+  role: MealRole;
+  /** For mains: id of the side dish auto-added alongside (nullable). */
+  default_side: string | null;
   default_qty: number;
   min_qty: number;
   max_qty: number;
@@ -51,6 +60,11 @@ export interface GeneratorInput {
   existingWeek?: PlannedMeal[];
   /** Preferred cuisines (soft scoring boost only). Empty = no preference. */
   cuisinePrefs?: string[];
+  /** User allergies: meals containing any of these allergens are HARD
+   * excluded - never relaxed (safety, like the diet rule). */
+  allergies?: string[];
+  /** Meal ids the user marked "don't show again" - hard excluded. */
+  excludedMealIds?: string[];
   rngSeed?: number;
 }
 

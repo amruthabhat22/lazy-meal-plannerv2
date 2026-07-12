@@ -36,8 +36,11 @@ export function scoreMeal(
   const fit = proteinFit(meal, ctx.remainingBudget, ctx.slotsLeftIncludingThis);
   const consecPenalty = ctx.usedYesterday.has(meal.id) ? 1 : 0;
   const repeatCount = ctx.weeklyCount[meal.id] ?? 0;
-  const cuisineBonus =
-    meal.cuisine && ctx.cuisinePrefs.has(meal.cuisine.toLowerCase()) ? 1 : 0;
+  const cuisineBonus = meal.cuisines.some((c) =>
+    ctx.cuisinePrefs.has(c.toLowerCase()),
+  )
+    ? 1
+    : 0;
   return (
     config.W_protein * fit -
     config.W_consec * consecPenalty -

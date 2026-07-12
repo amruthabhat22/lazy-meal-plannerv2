@@ -11,6 +11,8 @@ export interface UserPreferences {
   mealsPerDay: 2 | 3 | 4;
   /** Preferred cuisines (soft scoring boost). Empty = no preference. */
   cuisines: string[];
+  /** Allergen slugs the generator must hard-exclude. Empty = none. */
+  allergies: string[];
 }
 
 interface PrefsRow {
@@ -20,6 +22,7 @@ interface PrefsRow {
   calorie_goal: number | null;
   meals_per_day: number;
   cuisines: string | null;
+  allergies: string | null;
 }
 
 export const DEFAULT_CALORIE_GOAL = 2000;
@@ -45,6 +48,10 @@ export async function getPreferences(
       .split(",")
       .map((s) => s.trim())
       .filter(Boolean),
+    allergies: (row.allergies ?? "")
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean),
   };
 }
 
@@ -55,15 +62,17 @@ export async function savePreferences(
   const existing = await getPreferences(db);
   const now = nowIso();
   const cuisines = prefs.cuisines.join(",");
+  const allergies = prefs.allergies.join(",");
   if (existing) {
     await db.runAsync(
-      "UPDATE user_preferences SET diet = ?, protein_goal = ?, calorie_goal = ?, meals_per_day = ?, cuisines = ?, updated_at = ? WHERE id = ?",
+      "UPDATE user_preferences SET diet = ?, protein_goal = ?, calorie_goal = ?, meals_per_day = ?, cuisines = ?, allergies = ?, updated_at = ? WHERE id = ?",
       [
         prefs.diet,
         prefs.proteinGoal,
         prefs.calorieGoal,
         prefs.mealsPerDay,
         cuisines,
+        allergies,
         now,
         existing.id,
       ],
@@ -72,7 +81,7 @@ export async function savePreferences(
   }
   const id = newId();
   await db.runAsync(
-    "INSERT INTO user_preferences (id, diet, protein_goal, calorie_goal, meals_per_day, cuisines, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+    "INSERT INTO user_preferences (id, diet, protein_goal, calorie_goal, meals_per_day, cuisines, allergies, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
     [
       id,
       prefs.diet,
@@ -80,6 +89,7 @@ export async function savePreferences(
       prefs.calorieGoal,
       prefs.mealsPerDay,
       cuisines,
+      allergies,
       now,
       now,
     ],

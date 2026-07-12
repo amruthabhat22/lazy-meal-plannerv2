@@ -17,8 +17,10 @@ module.exports = {
         destructive: { DEFAULT: "#ce403a", foreground: "#fefbf8" },
         border: "#e3ddd5",
         input: "#e9e4dc",
-        success: { DEFAULT: "#429c5a", foreground: "#fefbf8" },
-        warning: { DEFAULT: "#e1a035", foreground: "#291f18" },
+        // Darkened from the design's oklch values to pass WCAG AA as text
+        // on cream cards (success 5.0:1, warning 4.95:1 on #fffdfa).
+        success: { DEFAULT: "#2f7d45", foreground: "#fefbf8" },
+        warning: { DEFAULT: "#b45309", foreground: "#fefbf8" },
       },
       borderRadius: {
         xl: "14px",

@@ -80,37 +80,40 @@ export function mealOccurrences(
   return spots.join(", ");
 }
 
-/** WhatsApp-formatted single-meal recipe: when it's planned, how easy it
- * is to cook, prep time, ingredients, and steps. */
+/** WhatsApp-formatted single-meal recipe (design's format): summary line
+ * with prep time, ease of cooking, and macros, then ingredients + steps.
+ * Adds where the meal sits on this week's plan. */
 export function buildRecipeMessage(
   meal: Meal,
   recipe: MealRecipe | null,
   planMeals: PlanRow[],
 ): string {
-  const lines: string[] = [`👩‍🍳 *${meal.name}*`, ""];
+  const lines: string[] = [`👩‍🍳 *${meal.name}*`];
+
+  const summary: string[] = [];
+  if (meal.prep_time_min != null) summary.push(`${meal.prep_time_min} min`);
+  if (meal.difficulty) {
+    summary.push(
+      meal.difficulty.charAt(0).toUpperCase() + meal.difficulty.slice(1),
+    );
+  }
+  summary.push(
+    `${Math.round(meal.protein_per_unit * meal.default_qty)}g protein`,
+  );
+  if (meal.kcal_per_unit != null) {
+    summary.push(`${Math.round(meal.kcal_per_unit * meal.default_qty)} cal`);
+  }
+  lines.push(`_${summary.join(" · ")}_`);
 
   const when = mealOccurrences(meal.id, planMeals);
   if (when) lines.push(`🗓 On the plan: ${when}`);
-  if (meal.prep_time_min != null) lines.push(`⏱ Prep time: ${meal.prep_time_min} min`);
-  if (meal.difficulty) {
-    const label =
-      meal.difficulty.charAt(0).toUpperCase() + meal.difficulty.slice(1);
-    lines.push(`🔥 Ease of cooking: ${label}`);
-  }
-  lines.push(
-    `💪 ${Math.round(meal.protein_per_unit * meal.default_qty)}g protein` +
-      (meal.kcal_per_unit != null
-        ? ` · ${Math.round(meal.kcal_per_unit * meal.default_qty)} cal`
-        : "") +
-      ` per ${formatQty(meal.default_qty, meal.unit)}`,
-  );
 
   if (recipe) {
     lines.push("", "*Ingredients*");
     for (const ing of recipe.ingredients) {
       lines.push(`• ${formatIngredientQty(ing.amount, ing.unit)} ${ing.name}`);
     }
-    lines.push("", "*Steps*");
+    lines.push("", "*Instructions*");
     recipe.steps.forEach((step, i) => {
       lines.push(`${i + 1}. ${step}`);
     });

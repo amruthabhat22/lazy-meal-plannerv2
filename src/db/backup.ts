@@ -16,6 +16,8 @@ export interface BackupV1 {
     calorie_goal?: number;
     meals_per_day: number;
     cuisines?: string[];
+    /** Optional for backwards compatibility with pre-allergy backups. */
+    allergies?: string[];
   } | null;
   week_plans: {
     id: string;
@@ -74,6 +76,7 @@ export async function buildBackup(db: SQLiteDatabase): Promise<BackupV1> {
           calorie_goal: prefs.calorieGoal,
           meals_per_day: prefs.mealsPerDay,
           cuisines: prefs.cuisines,
+          allergies: prefs.allergies,
         }
       : null,
     week_plans: weekPlans,
@@ -181,6 +184,7 @@ export async function restoreBackup(
       calorieGoal: backup.preferences.calorie_goal ?? 2000,
       mealsPerDay: mpd === 2 || mpd === 4 ? mpd : 3,
       cuisines: backup.preferences.cuisines ?? [],
+      allergies: backup.preferences.allergies ?? [],
     });
   }
 

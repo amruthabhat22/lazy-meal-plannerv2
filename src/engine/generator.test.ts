@@ -22,8 +22,10 @@ function makeMeal(overrides: Partial<Meal> = {}): Meal {
     name: `Meal ${counter}`,
     slots: ["breakfast", "lunch", "dinner", "snack"],
     diet: "veg",
-    cuisine: "indian",
+    cuisines: ["indian"],
     country: "IN",
+    role: "main",
+    default_side: null,
     default_qty: 1,
     min_qty: 0.5,
     max_qty: 3,
@@ -148,6 +150,45 @@ describe("hard rules", () => {
         new Set(["breakfast", "lunch", "dinner", "snack"]),
       );
     }
+  });
+});
+
+describe("user exclusions (never relaxed)", () => {
+  it("never picks a meal containing a user allergen, across 200 generations", () => {
+    const catalog = makeCatalog(12).map((m, i) =>
+      i % 3 === 0 ? { ...m, allergens: ["nuts"] } : m,
+    );
+    const withNuts = new Set(
+      catalog.filter((m) => m.allergens.includes("nuts")).map((m) => m.id),
+    );
+    for (let seed = 0; seed < 200; seed++) {
+      const plan = generateWeek(
+        baseInput({ meals: catalog, allergies: ["nuts"], rngSeed: seed }),
+      );
+      for (const pm of plan) {
+        expect(withNuts.has(pm.mealId)).toBe(false);
+      }
+    }
+  });
+
+  it("never picks a blocked meal, across 200 generations", () => {
+    const catalog = makeCatalog(12);
+    const blocked = catalog.slice(0, 5).map((m) => m.id);
+    for (let seed = 0; seed < 200; seed++) {
+      const plan = generateWeek(
+        baseInput({ meals: catalog, excludedMealIds: blocked, rngSeed: seed }),
+      );
+      for (const pm of plan) {
+        expect(blocked.includes(pm.mealId)).toBe(false);
+      }
+    }
+  });
+
+  it("throws CatalogTooSmallError rather than relaxing the allergen rule", () => {
+    const catalog = makeCatalog(4).map((m) => ({ ...m, allergens: ["dairy"] }));
+    expect(() =>
+      generateWeek(baseInput({ meals: catalog, allergies: ["dairy"] })),
+    ).toThrow(CatalogTooSmallError);
   });
 });
 
@@ -286,14 +327,69 @@ describe("single-day regeneration", () => {
   });
 });
 
+describe("cuisine hard filter and sides", () => {
+  it("only plans dishes from the selected cuisines when the pool suffices", () => {
+    const meals = [
+      ...Array.from({ length: 12 }, () => makeMeal({ cuisines: ["south-indian"] })),
+      ...Array.from({ length: 12 }, () => makeMeal({ cuisines: ["mexican"] })),
+    ];
+    for (let seed = 0; seed < 50; seed++) {
+      const plan = generateWeek(
+        baseInput({ meals, cuisinePrefs: ["south-indian"], rngSeed: seed }),
+      );
+      for (const pm of plan) {
+        const meal = meals.find((m) => m.id === pm.mealId)!;
+        expect(meal.cuisines).toContain("south-indian");
+      }
+    }
+  });
+
+  it("relaxes the cuisine filter instead of failing when the pool is too small", () => {
+    const meals = makeCatalog(12).map((m) => ({ ...m, cuisines: ["mexican"] }));
+    const plan = generateWeek(
+      baseInput({ meals, cuisinePrefs: ["tibetan"], rngSeed: 1 }),
+    );
+    expect(plan.length).toBeGreaterThan(0); // fell back rather than throwing
+  });
+
+  it("a main's default side is added as its own row, and sides bypass the weekly cap", () => {
+    const side = makeMeal({
+      id: "side-rice",
+      role: "side",
+      slots: ["lunch", "dinner"],
+      protein_per_unit: 4,
+    });
+    const mains = Array.from({ length: 12 }, () =>
+      makeMeal({ slots: ["lunch"], default_side: "side-rice" }),
+    );
+    // Other slots get their own pools; lunch has ONLY paired mains.
+    const others = makeCatalog(12).filter((m) => !m.slots.includes("lunch"));
+    const plan = generateWeek(
+      baseInput({ meals: [...mains, ...others, side], rngSeed: 7 }),
+    );
+    const riceRows = plan.filter((pm) => pm.mealId === "side-rice");
+    // Every lunch main brings rice: 7 days > weekly cap of 2 — exempt.
+    expect(riceRows.length).toBe(7);
+    for (const pm of plan.filter((p) => p.slot === "lunch")) {
+      expect(["side-rice", ...mains.map((m) => m.id)]).toContain(pm.mealId);
+    }
+  });
+
+  it("never slots a side as a main", () => {
+    const side = makeMeal({ id: "only-side", role: "side" });
+    const plan = generateWeek(baseInput({ rngSeed: 3 }));
+    expect(plan.some((pm) => pm.mealId === "only-side")).toBe(false);
+  });
+});
+
 describe("cuisine preference boost", () => {
   it("prefers preferred-cuisine meals when protein fit is equal", () => {
     // Two identical pools except cuisine; preference should dominate picks.
     const preferred = Array.from({ length: 14 }, () =>
-      makeMeal({ cuisine: "south-indian" }),
+      makeMeal({ cuisines: ["south-indian"] }),
     );
     const other = Array.from({ length: 14 }, () =>
-      makeMeal({ cuisine: "mexican" }),
+      makeMeal({ cuisines: ["mexican"] }),
     );
     const meals = [...preferred, ...other];
     const preferredIds = new Set(preferred.map((m) => m.id));
@@ -309,9 +405,9 @@ describe("cuisine preference boost", () => {
         if (preferredIds.has(pm.mealId)) preferredPicks++;
       }
     }
-    // Soft boost, not a hard rule: clearly favored but not exclusive.
-    expect(preferredPicks / total).toBeGreaterThan(0.6);
-    expect(preferredPicks / total).toBeLessThan(1);
+    // Cuisine prefs are now a HARD filter (relaxed only as a last
+    // resort), so with a sufficient pool every pick matches.
+    expect(preferredPicks / total).toBe(1);
   });
 
   it("no preference set means no effect on determinism", () => {

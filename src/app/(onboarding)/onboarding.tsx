@@ -7,15 +7,42 @@ import {
   TextInput,
   View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
-import { Feather } from "@expo/vector-icons";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Beef,
+  Check,
+  Citrus,
+  CookingPot,
+  Drumstick,
+  Egg,
+  Flame,
+  Leaf,
+  Lightbulb,
+  Moon,
+  Phone,
+  Pizza,
+  Soup,
+  Sparkles,
+  Trash2,
+  TreePalm,
+  Utensils,
+  UtensilsCrossed,
+  Wheat,
+  type LucideIcon,
+} from "lucide-react-native";
 import type { Diet } from "@/engine/types";
 import { CatalogTooSmallError } from "@/engine/types";
 import { usePrefsStore } from "@/state/usePrefsStore";
 import { usePlanStore } from "@/state/usePlanStore";
 import { CUISINES } from "@/utils/cuisines";
+import { Icon, ICON_COLORS } from "@/components/ui/Icon";
+import { Button } from "@/components/ui/Button";
+import { SelectableCard } from "@/components/SelectableCard";
+import { AllergenChips } from "@/components/AllergenChips";
 import {
   GoalSliderCard,
   calorieLevelLabel,
@@ -30,12 +57,20 @@ import {
   type ShareContact,
 } from "@/utils/contacts";
 
-const TOTAL_STEPS = 5;
+const TOTAL_STEPS = 6;
 
 const STEP_META = [
   { title: "What's your diet?", subtitle: "We'll tailor every meal to suit you." },
   { title: "Your daily goals", subtitle: "Set your protein and calorie targets." },
-  { title: "Cuisine preferences", subtitle: "Optional — pick the flavors you love." },
+  {
+    title: "Cuisine preferences",
+    subtitle:
+      "We\u2019ll only plan dishes from cuisines you pick. Skip to allow all.",
+  },
+  {
+    title: "Any allergies?",
+    subtitle: "Optional — we'll never suggest a dish containing these.",
+  },
   {
     title: "Share Weekly Plan",
     subtitle: "Optional — save numbers to share your plan on WhatsApp each week.",
@@ -47,40 +82,34 @@ const DIET_OPTIONS: {
   value: Diet;
   title: string;
   description: string;
-  icon: string;
+  icon: LucideIcon;
 }[] = [
-  { value: "veg", title: "Vegetarian", description: "Paneer, dals, tofu & legumes", icon: "🥬" },
-  { value: "egg", title: "Eggetarian", description: "Veg meals plus eggs", icon: "🥚" },
-  { value: "non-veg", title: "Non-Vegetarian", description: "Chicken, fish, eggs & more", icon: "🍗" },
+  { value: "veg", title: "Vegetarian", description: "Paneer, dals, tofu & legumes", icon: Leaf },
+  { value: "egg", title: "Eggetarian", description: "Veg meals plus eggs", icon: Egg },
+  { value: "non-veg", title: "Non-Vegetarian", description: "Chicken, fish, eggs & more", icon: Drumstick },
 ];
 
 const MEAL_OPTIONS: {
   value: 2 | 3 | 4;
   title: string;
   description: string;
-  icon: string;
+  icon: LucideIcon;
 }[] = [
-  { value: 2, title: "2 meals", description: "Skip breakfast or dinner", icon: "🌗" },
-  { value: 3, title: "3 meals", description: "Breakfast · Lunch · Dinner", icon: "🍽️" },
-  { value: 4, title: "4 meals", description: "3 meals + a protein snack", icon: "✨" },
+  { value: 2, title: "2 meals", description: "Skip breakfast or dinner", icon: Moon },
+  { value: 3, title: "3 meals", description: "Breakfast · Lunch · Dinner", icon: Utensils },
+  { value: 4, title: "4 meals", description: "3 meals + a protein snack", icon: Sparkles },
 ];
 
-const CUISINE_ICONS: Record<string, string> = {
-  "south-indian": "🥥",
-  "north-indian": "🫓",
-  american: "🍔",
-  chinese: "🥡",
-  mediterranean: "🫒",
-  asian: "🍜",
-  tibetan: "🥟",
-  mexican: "🌮",
-  italian: "🍝",
-};
-
-const DIET_ICON: Record<Diet, string> = {
-  veg: "🌿",
-  egg: "🥚",
-  "non-veg": "🍗",
+const CUISINE_ICONS: Record<string, LucideIcon> = {
+  "south-indian": TreePalm,
+  "north-indian": Wheat,
+  american: Beef,
+  chinese: Soup,
+  mediterranean: Citrus,
+  asian: UtensilsCrossed,
+  tibetan: CookingPot,
+  mexican: Flame,
+  italian: Pizza,
 };
 
 const inputStyle =
@@ -126,70 +155,9 @@ function StepProgress({
   );
 }
 
-function SelectableCard({
-  icon,
-  title,
-  description,
-  selected,
-  onPress,
-}: {
-  icon: string;
-  title: string;
-  description: string;
-  selected: boolean;
-  onPress: () => void;
-}) {
-  return (
-    <Pressable
-      onPress={onPress}
-      className={`rounded-2xl border bg-card px-4 py-3.5 mb-3 ${
-        selected ? "border-primary/70" : "border-border"
-      }`}
-      style={
-        selected
-          ? {
-              shadowColor: "#503c28",
-              shadowOpacity: 0.18,
-              shadowRadius: 15,
-              shadowOffset: { width: 0, height: 10 },
-              elevation: 3,
-            }
-          : undefined
-      }
-    >
-      <View className="flex-row items-center gap-3.5">
-        <View
-          className={`h-12 w-12 rounded-xl items-center justify-center ${
-            selected ? "bg-primary/10" : "bg-accent"
-          }`}
-        >
-          <Text className="text-xl">{icon}</Text>
-        </View>
-        <View className="flex-1 min-w-0">
-          <Text className="text-base font-semibold text-foreground leading-tight">
-            {title}
-          </Text>
-          <Text
-            className="text-[13px] text-muted-foreground mt-0.5"
-            numberOfLines={1}
-          >
-            {description}
-          </Text>
-        </View>
-        <View
-          className={`h-5 w-5 rounded-full border items-center justify-center ${
-            selected ? "border-primary bg-primary" : "border-border"
-          }`}
-        >
-          {selected ? <Feather name="check" size={11} color="#fefbf8" /> : null}
-        </View>
-      </View>
-    </Pressable>
-  );
-}
-
 export default function Onboarding() {
   const db = useSQLiteContext();
+  const insets = useSafeAreaInsets();
   const savePrefs = usePrefsStore((s) => s.save);
   const regenerate = usePlanStore((s) => s.regenerate);
 
@@ -198,6 +166,7 @@ export default function Onboarding() {
   const [goal, setGoal] = useState(100);
   const [calories, setCalories] = useState(2000);
   const [cuisines, setCuisines] = useState<Set<string>>(new Set());
+  const [allergies, setAllergies] = useState<Set<string>>(new Set());
   const [meals, setMeals] = useState<2 | 3 | 4 | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -212,14 +181,21 @@ export default function Onboarding() {
 
   const canContinue =
     (step === 1 && diet !== null) ||
-    step === 2 ||
-    step === 3 ||
-    step === 4 ||
-    (step === 5 && meals !== null && !busy);
+    (step >= 2 && step <= 5) ||
+    (step === 6 && meals !== null && !busy);
   const isLast = step === TOTAL_STEPS;
 
   const toggleCuisine = (slug: string) => {
     setCuisines((prev) => {
+      const next = new Set(prev);
+      if (next.has(slug)) next.delete(slug);
+      else next.add(slug);
+      return next;
+    });
+  };
+
+  const toggleAllergy = (slug: string) => {
+    setAllergies((prev) => {
       const next = new Set(prev);
       if (next.has(slug)) next.delete(slug);
       else next.add(slug);
@@ -252,6 +228,7 @@ export default function Onboarding() {
         calorieGoal: calories,
         mealsPerDay: meals,
         cuisines: [...cuisines],
+        allergies: [...allergies],
       });
       await regenerate(db, prefs);
       router.replace("/");
@@ -288,11 +265,13 @@ export default function Onboarding() {
           <Pressable
             onPress={() => setStep((s) => Math.max(1, s - 1))}
             disabled={step === 1}
+            hitSlop={8}
+            accessibilityLabel="Back"
             className={`h-10 w-10 rounded-full border border-border bg-card items-center justify-center ${
               step === 1 ? "opacity-0" : ""
             }`}
           >
-            <Feather name="arrow-left" size={15} color="#291f18" />
+            <Icon icon={ArrowLeft} size="sm" color={ICON_COLORS.foreground} />
           </Pressable>
           <Text className="text-sm font-semibold tracking-tight text-foreground">
             EezyPlate
@@ -351,9 +330,13 @@ export default function Onboarding() {
                 onChange={setCalories}
               />
             </View>
-            <View className="flex-row items-center gap-2.5 rounded-full bg-accent/60 border border-accent px-4 py-2.5 mt-4">
-              <Text>💡</Text>
-              <Text className="flex-1 text-xs leading-snug text-accent-foreground">
+            <View className="flex-row items-center gap-2.5 rounded-full bg-accent/60 border border-accent px-4 py-3 mt-4">
+              <Icon
+                icon={Lightbulb}
+                size="sm"
+                color={ICON_COLORS.accentForeground}
+              />
+              <Text className="flex-1 text-sm leading-snug text-accent-foreground">
                 <Text className="font-semibold">Tip:</Text> aim for ~1g protein
                 per kg of body weight.
               </Text>
@@ -363,7 +346,7 @@ export default function Onboarding() {
 
         {step === 3 && (
           <>
-            <Text className="text-[13px] text-muted-foreground mb-3">
+            <Text className="text-sm text-muted-foreground mb-3">
               Pick as many as you like.
             </Text>
             <View className="flex-row flex-wrap" style={{ gap: 10 }}>
@@ -383,11 +366,17 @@ export default function Onboarding() {
                         selected ? "bg-primary/10" : "bg-accent"
                       }`}
                     >
-                      <Text className="text-lg">
-                        {CUISINE_ICONS[c.slug] ?? "🍽️"}
-                      </Text>
+                      <Icon
+                        icon={CUISINE_ICONS[c.slug] ?? Utensils}
+                        size="md"
+                        color={
+                          selected
+                            ? ICON_COLORS.primary
+                            : ICON_COLORS.accentForeground
+                        }
+                      />
                     </View>
-                    <Text className="flex-1 text-[14px] font-semibold text-foreground leading-tight">
+                    <Text className="flex-1 text-sm font-semibold text-foreground leading-tight">
                       {c.label}
                     </Text>
                     <View
@@ -396,7 +385,11 @@ export default function Onboarding() {
                       }`}
                     >
                       {selected ? (
-                        <Feather name="check" size={11} color="#fefbf8" />
+                        <Icon
+                          icon={Check}
+                          size={12}
+                          color={ICON_COLORS.primaryForeground}
+                        />
                       ) : null}
                     </View>
                   </Pressable>
@@ -408,13 +401,22 @@ export default function Onboarding() {
 
         {step === 4 && (
           <>
+            <Text className="text-sm text-muted-foreground mb-3">
+              Pick any that apply — you can change these in Profile anytime.
+            </Text>
+            <AllergenChips selected={allergies} onToggle={toggleAllergy} />
+          </>
+        )}
+
+        {step === 5 && (
+          <>
             {contacts.map((c) => (
               <View
                 key={c.id}
                 className="flex-row items-center gap-3 rounded-xl border border-border bg-card p-3 mb-2"
               >
                 <View className="h-9 w-9 rounded-full bg-primary/10 items-center justify-center">
-                  <Feather name="phone" size={14} color="#a55a37" />
+                  <Icon icon={Phone} size="sm" color={ICON_COLORS.primary} />
                 </View>
                 <View className="flex-1 min-w-0">
                   <Text className="text-sm font-semibold text-foreground">
@@ -430,9 +432,10 @@ export default function Onboarding() {
                       setContacts(await getContacts(db)),
                     );
                   }}
-                  hitSlop={8}
+                  hitSlop={12}
+                  accessibilityLabel={`Remove ${c.name}`}
                 >
-                  <Feather name="trash-2" size={15} color="#6c6158" />
+                  <Icon icon={Trash2} size="sm" color={ICON_COLORS.muted} />
                 </Pressable>
               </View>
             ))}
@@ -459,23 +462,15 @@ export default function Onboarding() {
                 value={contactPhone}
                 onChangeText={setContactPhone}
               />
-              <Pressable
-                onPress={() => void handleAddContact()}
-                disabled={!canAddContact}
-                className={`h-11 rounded-xl items-center justify-center mt-3 ${
-                  canAddContact ? "bg-primary" : "bg-secondary"
-                }`}
-              >
-                <Text
-                  className={`text-sm font-semibold ${
-                    canAddContact
-                      ? "text-primary-foreground"
-                      : "text-muted-foreground"
-                  }`}
-                >
-                  Save contact
-                </Text>
-              </Pressable>
+              <View className="mt-3">
+                <Button
+                  label="Save contact"
+                  rounded="xl"
+                  height={44}
+                  onPress={() => void handleAddContact()}
+                  disabled={!canAddContact}
+                />
+              </View>
             </View>
             <Text className="text-xs text-muted-foreground text-center mt-3">
               You can skip this — sharing also works without saved numbers.
@@ -483,7 +478,7 @@ export default function Onboarding() {
           </>
         )}
 
-        {step === 5 && (
+        {step === 6 && (
           <>
             {MEAL_OPTIONS.map((opt) => (
               <SelectableCard
@@ -497,17 +492,13 @@ export default function Onboarding() {
             ))}
             {meals ? (
               <View className="rounded-2xl border border-border bg-secondary/50 px-4 py-3.5 mt-3">
-                <Text className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground mb-1">
+                <Text className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-1">
                   Your plan
                 </Text>
                 <Row
                   label="Diet"
                   value={
-                    diet
-                      ? `${DIET_ICON[diet]} ${
-                          DIET_OPTIONS.find((d) => d.value === diet)?.title ?? ""
-                        }`
-                      : "—"
+                    DIET_OPTIONS.find((d) => d.value === diet)?.title ?? "—"
                   }
                 />
                 <Row label="Protein" value={`${goal}g / day`} />
@@ -525,10 +516,15 @@ export default function Onboarding() {
       </ScrollView>
 
       {/* Fixed bottom CTA */}
-      <View className="absolute left-0 right-0 bottom-0 border-t border-border bg-background px-5 pt-3 pb-6">
+      <View
+        className="absolute left-0 right-0 bottom-0 border-t border-border bg-background px-5 pt-3"
+        style={{ paddingBottom: Math.max(insets.bottom, 12) }}
+      >
         <Pressable
           onPress={handleNext}
           disabled={!canContinue}
+          accessibilityRole="button"
+          accessibilityState={{ disabled: !canContinue }}
           className={`h-14 rounded-full flex-row items-center justify-center gap-2 ${
             canContinue ? "bg-primary" : "bg-secondary"
           }`}
@@ -545,31 +541,34 @@ export default function Onboarding() {
           }
         >
           {isLast ? (
-            <Text
-              className={`text-base font-semibold ${
-                canContinue ? "text-primary-foreground" : "text-muted-foreground"
-              }`}
-            >
-              ✨ Generate My Week
-            </Text>
-          ) : (
-            <>
-              <Text
-                className={`text-base font-semibold ${
-                  canContinue
-                    ? "text-primary-foreground"
-                    : "text-muted-foreground"
-                }`}
-              >
-                Continue
-              </Text>
-              <Feather
-                name="arrow-right"
-                size={16}
-                color={canContinue ? "#fefbf8" : "#6c6158"}
-              />
-            </>
-          )}
+            <Icon
+              icon={Sparkles}
+              size="sm"
+              color={
+                canContinue
+                  ? ICON_COLORS.primaryForeground
+                  : ICON_COLORS.muted
+              }
+            />
+          ) : null}
+          <Text
+            className={`text-base font-semibold ${
+              canContinue ? "text-primary-foreground" : "text-muted-foreground"
+            }`}
+          >
+            {isLast ? "Generate My Week" : "Continue"}
+          </Text>
+          {!isLast ? (
+            <Icon
+              icon={ArrowRight}
+              size="sm"
+              color={
+                canContinue
+                  ? ICON_COLORS.primaryForeground
+                  : ICON_COLORS.muted
+              }
+            />
+          ) : null}
         </Pressable>
       </View>
     </SafeAreaView>
