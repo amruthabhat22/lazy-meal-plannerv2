@@ -4,7 +4,7 @@ b-besan-chilla,Besan Chilla with Paneer Stuffing,breakfast,veg,north-indian,IN,2
 b-paneer-bhurji,Paneer Bhurji,"breakfast,dinner",veg,north-indian,IN,1,0.5,2,0.5,bowl,18,280,easy,15,dairy,main,
 b-poha-peanut,Poha with Peanuts and Curd,breakfast,veg,north-indian,IN,1,0.5,2,0.5,bowl,10,320,easy,15,"peanut,dairy",main,
 b-masala-oats,Masala Oats cooked in Milk,breakfast,veg,"north-indian,continental",IN,1,0.5,2,0.5,bowl,11,260,easy,10,dairy,main,
-b-idli-sambar,Idli with Sambar,breakfast,veg,south-indian,IN,3,2,6,1,piece,3,70,medium,25,,main,
+b-idli-sambar,Idli,"breakfast,dinner",veg,south-indian,IN,3,2,6,1,piece,3,60,medium,25,,main,side-sambar
 b-upma-peanut,Vegetable Upma with Peanuts,breakfast,veg,south-indian,IN,1,0.5,2,0.5,bowl,8,300,easy,20,peanut,main,
 b-sprouts-salad,Moong Sprouts Salad,"breakfast,snack",veg,north-indian,IN,1,0.5,3,0.5,bowl,12,180,easy,10,,main,
 b-dahi-seeds,Dahi Bowl with Chia and Pumpkin Seeds,"breakfast,snack",veg,north-indian,IN,1,0.5,2,0.5,bowl,12,200,easy,5,dairy,main,
@@ -64,3 +64,12 @@ side-naan,Butter Naan,"lunch,dinner",veg,north-indian,IN,1,1,4,1,piece,5,260,med
 side-curd,Curd (Dahi),"breakfast,lunch,dinner",veg,"north-indian,south-indian",IN,1,0.5,2,0.5,bowl,5,90,easy,2,dairy,side,
 side-raita,Cucumber Raita,"lunch,dinner",veg,north-indian,IN,1,0.5,2,0.5,bowl,4,80,easy,10,dairy,side,
 side-salad,Kachumber Salad,"lunch,dinner",veg,"north-indian,continental",IN,1,0.5,2,0.5,bowl,2,60,easy,10,,side,
+b-masala-dosa,Masala Dosa,"breakfast,dinner",veg,south-indian,IN,1,1,3,1,piece,6,220,medium,30,,main,side-sambar
+l-rasam,Rasam,"lunch,dinner",veg,south-indian,IN,1,0.5,2,0.5,bowl,4,90,easy,20,,main,side-steamed-rice
+l-lemon-rice,Lemon Rice with Peanuts,lunch,veg,south-indian,IN,1,0.5,2,0.5,bowl,8,340,easy,20,peanut,main,
+l-puliogare,Puliogare (Tamarind Rice),lunch,veg,south-indian,IN,1,0.5,2,0.5,bowl,7,350,medium,25,peanut,main,
+s-aloo-tikki,Aloo Tikki,snack,veg,north-indian,IN,2,1,4,1,piece,3,150,easy,25,,main,
+d-soya-chaap,Soya Chaap Tikka,"dinner,snack",veg,north-indian,IN,1,0.5,2,0.5,serving,22,280,medium,30,soy,main,
+side-sambar,Sambar (Side),"breakfast,lunch,dinner",veg,south-indian,IN,1,0.5,2,0.5,bowl,4,90,medium,25,,side,
+side-poori,Poori,"breakfast,lunch,dinner",veg,north-indian,IN,3,1,6,1,piece,2,110,easy,25,gluten,side,
+side-bhatura,Bhatura,"lunch,dinner",veg,north-indian,IN,2,1,4,1,piece,3,230,medium,35,gluten,side,

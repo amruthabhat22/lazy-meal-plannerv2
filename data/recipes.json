@@ -248,43 +248,12 @@
         "amount": 250,
         "unit": "g",
         "category": "Grains & Carbs"
-      },
-      {
-        "name": "Toor dal",
-        "amount": 50,
-        "unit": "g",
-        "category": "Protein"
-      },
-      {
-        "name": "Mixed vegetables",
-        "amount": 100,
-        "unit": "g",
-        "category": "Vegetables"
-      },
-      {
-        "name": "Sambar powder",
-        "amount": 2,
-        "unit": "tsp",
-        "category": "Pantry Items"
-      },
-      {
-        "name": "Tamarind",
-        "amount": 10,
-        "unit": "g",
-        "category": "Pantry Items"
-      },
-      {
-        "name": "Curry leaves",
-        "amount": 1,
-        "unit": "sprig",
-        "category": "Vegetables"
       }
     ],
     "steps": [
-      "Steam ladles of idli batter in a greased idli stand for 10–12 minutes.",
-      "Pressure-cook toor dal until soft; mash.",
-      "Simmer dal with vegetables, tamarind water, and sambar powder for 10 minutes.",
-      "Temper with curry leaves and serve the idlis dunked in hot sambar."
+      "Grease the idli plates and fill each mould with batter.",
+      "Steam 10–12 minutes until a toothpick comes out clean.",
+      "Rest 2 minutes, unmould — pairs with sambar and chutney."
     ]
   },
   "b-upma-peanut": {
@@ -2571,6 +2540,379 @@
     "steps": [
       "Dice onion, tomato, and cucumber evenly.",
       "Toss with lemon juice and salt just before serving."
+    ]
+  },
+  "side-sambar": {
+    "ingredients": [
+      {
+        "name": "Toor dal",
+        "amount": 50,
+        "unit": "g",
+        "category": "Protein"
+      },
+      {
+        "name": "Mixed vegetables",
+        "amount": 100,
+        "unit": "g",
+        "category": "Vegetables"
+      },
+      {
+        "name": "Sambar powder",
+        "amount": 2,
+        "unit": "tsp",
+        "category": "Pantry Items"
+      },
+      {
+        "name": "Tamarind",
+        "amount": 10,
+        "unit": "g",
+        "category": "Pantry Items"
+      },
+      {
+        "name": "Curry leaves",
+        "amount": 1,
+        "unit": "sprig",
+        "category": "Vegetables"
+      }
+    ],
+    "steps": [
+      "Pressure-cook toor dal until soft; mash.",
+      "Simmer with vegetables, tamarind water, and sambar powder 10 minutes.",
+      "Temper with curry leaves and serve hot."
+    ]
+  },
+  "b-masala-dosa": {
+    "ingredients": [
+      {
+        "name": "Dosa batter",
+        "amount": 200,
+        "unit": "g",
+        "category": "Grains & Carbs"
+      },
+      {
+        "name": "Potato",
+        "amount": 2,
+        "unit": "piece",
+        "category": "Vegetables"
+      },
+      {
+        "name": "Onion",
+        "amount": 1,
+        "unit": "piece",
+        "category": "Vegetables"
+      },
+      {
+        "name": "Mustard seeds",
+        "amount": 0.5,
+        "unit": "tsp",
+        "category": "Pantry Items"
+      },
+      {
+        "name": "Curry leaves",
+        "amount": 1,
+        "unit": "sprig",
+        "category": "Vegetables"
+      },
+      {
+        "name": "Turmeric powder",
+        "amount": 0.5,
+        "unit": "tsp",
+        "category": "Pantry Items"
+      },
+      {
+        "name": "Cooking oil",
+        "amount": 1,
+        "unit": "tbsp",
+        "category": "Pantry Items"
+      }
+    ],
+    "steps": [
+      "Boil and crumble the potatoes; temper mustard, curry leaves, onion, and turmeric, then toss the potato through.",
+      "Spread a ladle of dosa batter thin on a hot oiled tawa.",
+      "Crisp 2 minutes, spoon the masala down the middle, and fold.",
+      "Serve hot — pairs with sambar and chutney."
+    ]
+  },
+  "l-rasam": {
+    "ingredients": [
+      {
+        "name": "Tomato",
+        "amount": 2,
+        "unit": "piece",
+        "category": "Vegetables"
+      },
+      {
+        "name": "Tamarind",
+        "amount": 15,
+        "unit": "g",
+        "category": "Pantry Items"
+      },
+      {
+        "name": "Rasam powder",
+        "amount": 2,
+        "unit": "tsp",
+        "category": "Pantry Items"
+      },
+      {
+        "name": "Garlic",
+        "amount": 3,
+        "unit": "piece",
+        "category": "Vegetables"
+      },
+      {
+        "name": "Curry leaves",
+        "amount": 1,
+        "unit": "sprig",
+        "category": "Vegetables"
+      },
+      {
+        "name": "Ghee",
+        "amount": 1,
+        "unit": "tsp",
+        "category": "Dairy"
+      }
+    ],
+    "steps": [
+      "Crush tomatoes with garlic; simmer with tamarind water and rasam powder 10 minutes.",
+      "Temper mustard and curry leaves in ghee; pour over.",
+      "Serve steaming — pairs with steamed rice."
+    ]
+  },
+  "l-lemon-rice": {
+    "ingredients": [
+      {
+        "name": "Rice",
+        "amount": 80,
+        "unit": "g",
+        "category": "Grains & Carbs"
+      },
+      {
+        "name": "Lemon",
+        "amount": 1,
+        "unit": "piece",
+        "category": "Fruits"
+      },
+      {
+        "name": "Peanuts",
+        "amount": 25,
+        "unit": "g",
+        "category": "Pantry Items"
+      },
+      {
+        "name": "Mustard seeds",
+        "amount": 0.5,
+        "unit": "tsp",
+        "category": "Pantry Items"
+      },
+      {
+        "name": "Curry leaves",
+        "amount": 1,
+        "unit": "sprig",
+        "category": "Vegetables"
+      },
+      {
+        "name": "Turmeric powder",
+        "amount": 0.5,
+        "unit": "tsp",
+        "category": "Pantry Items"
+      },
+      {
+        "name": "Cooking oil",
+        "amount": 1,
+        "unit": "tbsp",
+        "category": "Pantry Items"
+      }
+    ],
+    "steps": [
+      "Cook the rice and let it cool slightly.",
+      "Temper mustard, curry leaves, peanuts, and turmeric in oil.",
+      "Toss the rice through with salt and plenty of lemon juice.",
+      "Serve warm or at room temperature."
+    ]
+  },
+  "l-puliogare": {
+    "ingredients": [
+      {
+        "name": "Rice",
+        "amount": 80,
+        "unit": "g",
+        "category": "Grains & Carbs"
+      },
+      {
+        "name": "Tamarind",
+        "amount": 25,
+        "unit": "g",
+        "category": "Pantry Items"
+      },
+      {
+        "name": "Peanuts",
+        "amount": 25,
+        "unit": "g",
+        "category": "Pantry Items"
+      },
+      {
+        "name": "Puliogare powder",
+        "amount": 2,
+        "unit": "tsp",
+        "category": "Pantry Items"
+      },
+      {
+        "name": "Curry leaves",
+        "amount": 1,
+        "unit": "sprig",
+        "category": "Vegetables"
+      },
+      {
+        "name": "Cooking oil",
+        "amount": 1,
+        "unit": "tbsp",
+        "category": "Pantry Items"
+      }
+    ],
+    "steps": [
+      "Cook the rice and spread it to cool.",
+      "Simmer thick tamarind pulp with puliogare powder into a paste.",
+      "Temper peanuts and curry leaves in oil; fold paste and rice together.",
+      "Rest 10 minutes for the flavors to soak, then serve."
+    ]
+  },
+  "s-aloo-tikki": {
+    "ingredients": [
+      {
+        "name": "Potato",
+        "amount": 3,
+        "unit": "piece",
+        "category": "Vegetables"
+      },
+      {
+        "name": "Green chilli",
+        "amount": 1,
+        "unit": "piece",
+        "category": "Vegetables"
+      },
+      {
+        "name": "Coriander leaves",
+        "amount": 10,
+        "unit": "g",
+        "category": "Vegetables"
+      },
+      {
+        "name": "Cornflour",
+        "amount": 1,
+        "unit": "tbsp",
+        "category": "Pantry Items"
+      },
+      {
+        "name": "Cooking oil",
+        "amount": 2,
+        "unit": "tbsp",
+        "category": "Pantry Items"
+      },
+      {
+        "name": "Chaat masala",
+        "amount": 0.5,
+        "unit": "tsp",
+        "category": "Pantry Items"
+      }
+    ],
+    "steps": [
+      "Boil, mash, and season the potatoes with chilli, coriander, and salt.",
+      "Bind with cornflour and shape into patties.",
+      "Shallow-fry until deeply golden on both sides.",
+      "Dust with chaat masala and serve hot."
+    ]
+  },
+  "d-soya-chaap": {
+    "ingredients": [
+      {
+        "name": "Soya chaap",
+        "amount": 250,
+        "unit": "g",
+        "category": "Protein"
+      },
+      {
+        "name": "Curd",
+        "amount": 60,
+        "unit": "g",
+        "category": "Dairy"
+      },
+      {
+        "name": "Tandoori masala",
+        "amount": 2,
+        "unit": "tsp",
+        "category": "Pantry Items"
+      },
+      {
+        "name": "Ginger-garlic paste",
+        "amount": 1,
+        "unit": "tsp",
+        "category": "Pantry Items"
+      },
+      {
+        "name": "Cooking oil",
+        "amount": 1,
+        "unit": "tbsp",
+        "category": "Pantry Items"
+      },
+      {
+        "name": "Lemon",
+        "amount": 0.5,
+        "unit": "piece",
+        "category": "Fruits"
+      }
+    ],
+    "steps": [
+      "Marinate chaap pieces in curd, tandoori masala, and ginger-garlic 20 minutes.",
+      "Roast in a hot pan or air fryer, basting with oil, until charred.",
+      "Squeeze lemon over and serve hot."
+    ]
+  },
+  "side-poori": {
+    "ingredients": [
+      {
+        "name": "Whole wheat atta",
+        "amount": 70,
+        "unit": "g",
+        "category": "Grains & Carbs"
+      },
+      {
+        "name": "Cooking oil",
+        "amount": 150,
+        "unit": "ml",
+        "category": "Pantry Items"
+      }
+    ],
+    "steps": [
+      "Knead a stiff dough with atta, salt, and water; rest 15 minutes.",
+      "Roll small discs and deep-fry in hot oil until puffed and golden.",
+      "Drain and serve immediately."
+    ]
+  },
+  "side-bhatura": {
+    "ingredients": [
+      {
+        "name": "Maida (refined flour)",
+        "amount": 80,
+        "unit": "g",
+        "category": "Grains & Carbs"
+      },
+      {
+        "name": "Curd",
+        "amount": 30,
+        "unit": "g",
+        "category": "Dairy"
+      },
+      {
+        "name": "Cooking oil",
+        "amount": 150,
+        "unit": "ml",
+        "category": "Pantry Items"
+      }
+    ],
+    "steps": [
+      "Knead a soft dough with maida, curd, a pinch of baking soda and salt; rest 2 hours.",
+      "Roll ovals and deep-fry in hot oil, ladling oil over until ballooned.",
+      "Serve hot — classic with chole."
     ]
   }
 }
