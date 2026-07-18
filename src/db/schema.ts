@@ -112,6 +112,10 @@ const MIGRATIONS: string[] = [
   ALTER TABLE meals ADD COLUMN role TEXT NOT NULL DEFAULT 'main';
   ALTER TABLE meals ADD COLUMN default_side TEXT;
   `,
+  // 7: approx cooked weight per unit (display-only; null for custom dishes).
+  `
+  ALTER TABLE meals ADD COLUMN grams_per_unit REAL;
+  `,
 ];
 
 export async function getMeta(

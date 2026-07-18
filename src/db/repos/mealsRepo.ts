@@ -18,6 +18,7 @@ export interface MealRow {
   unit: string;
   protein_per_unit: number;
   kcal_per_unit: number | null;
+  grams_per_unit: number | null;
   difficulty: string | null;
   prep_time_min: number | null;
   allergens: string | null;
@@ -131,6 +132,7 @@ export function rowToMeal(row: MealRow): Meal {
     unit: row.unit as Unit,
     protein_per_unit: row.protein_per_unit,
     kcal_per_unit: row.kcal_per_unit,
+    grams_per_unit: row.grams_per_unit ?? null,
     difficulty: (row.difficulty as Difficulty | null) ?? null,
     prep_time_min: row.prep_time_min,
     allergens: splitList(row.allergens),

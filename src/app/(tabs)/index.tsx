@@ -243,12 +243,8 @@ export default function WeekPlanScreen() {
             </Text>
             <Icon icon={CookingPot} size="lg" color={ICON_COLORS.primary} />
           </View>
-          <Text
-            className="mt-1 text-sm text-muted-foreground"
-            numberOfLines={1}
-          >
-            {DIET_LABEL[prefs.diet]} · {prefs.proteinGoal}g protein/day ·{" "}
-            {prefs.mealsPerDay} meals
+          <Text className="mt-1 text-sm text-muted-foreground">
+            {`${DIET_LABEL[prefs.diet]} · ${prefs.proteinGoal}g protein/day · ${prefs.mealsPerDay} meals`}
           </Text>
         </View>
         <View className="flex-row items-center gap-2 mt-1">
@@ -344,7 +340,7 @@ export default function WeekPlanScreen() {
                     </View>
                     {rows.length > 0 ? (
                       <Text className="mt-0.5 text-xs text-muted-foreground tabular-nums">
-                        {slotProtein}g protein · {slotKcal} cal
+                        {`${slotProtein}g protein · ${slotKcal} cal`}
                       </Text>
                     ) : null}
                   </View>

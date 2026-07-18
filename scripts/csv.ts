@@ -57,6 +57,7 @@ export interface CsvMealRecord {
   allergens: string;
   role: string;
   default_side: string | null;
+  grams_per_unit: number;
 }
 
 const REQUIRED_COLUMNS = [
@@ -78,6 +79,7 @@ const REQUIRED_COLUMNS = [
   "allergens",
   "role",
   "default_side",
+  "grams_per_unit",
 ];
 
 export function parseMealsCsv(text: string): CsvMealRecord[] {
@@ -118,6 +120,7 @@ export function parseMealsCsv(text: string): CsvMealRecord[] {
       allergens: get(row, "allergens"),
       role: get(row, "role") || "main",
       default_side: get(row, "default_side") || null,
+      grams_per_unit: num("grams_per_unit"),
     };
   });
 }

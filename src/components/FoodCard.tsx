@@ -51,7 +51,11 @@ export function FoodCard({
             {meal.name}
           </Text>
           <Text className="text-sm text-muted-foreground mt-0.5">
-            {formatQty(quantity, meal.unit)}
+            {meal.grams_per_unit != null && meal.unit !== "g"
+              ? `${formatQty(quantity, meal.unit)} (≈ ${Math.round(
+                  meal.grams_per_unit * quantity,
+                )} g)`
+              : formatQty(quantity, meal.unit)}
           </Text>
         </View>
         <Pressable

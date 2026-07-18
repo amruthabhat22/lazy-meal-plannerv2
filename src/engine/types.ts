@@ -39,6 +39,8 @@ export interface Meal {
   protein_per_unit: number;
   /** Display-only; the generator never optimizes for calories. */
   kcal_per_unit: number | null;
+  /** Approx cooked weight in g per unit. Display-only; null for custom dishes. */
+  grams_per_unit: number | null;
   difficulty: Difficulty | null;
   prep_time_min: number | null;
   allergens: string[];

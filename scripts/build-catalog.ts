@@ -10,7 +10,7 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import { parseMealsCsv } from "./csv";
 
-const CATALOG_VERSION = 6;
+const CATALOG_VERSION = 7;
 
 const INGREDIENT_CATEGORIES = new Set([
   "Protein",
@@ -54,6 +54,7 @@ for (const m of records) {
   }
   if (m.qty_step <= 0) throw new Error(`Meal '${m.id}': qty_step must be > 0`);
   if (m.protein_per_unit <= 0) throw new Error(`Meal '${m.id}': protein_per_unit must be > 0`);
+  if (m.grams_per_unit <= 0) throw new Error(`Meal '${m.id}': grams_per_unit must be > 0`);
   if (m.role !== "main" && m.role !== "side") {
     throw new Error(`Meal '${m.id}': role must be 'main' or 'side'`);
   }

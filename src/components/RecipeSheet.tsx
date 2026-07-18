@@ -12,7 +12,7 @@ import {
 import { Icon, ICON_COLORS } from "@/components/ui/Icon";
 import type { Meal } from "@/engine/types";
 import type { MealRecipe } from "@/db/repos/mealsRepo";
-import { formatIngredientQty, formatNumber } from "@/utils/format";
+import { formatIngredientQty, formatNumber, formatQty } from "@/utils/format";
 import {
   renderSheetBackdrop,
   sheetBackgroundStyle,
@@ -96,6 +96,13 @@ export const RecipeSheet = forwardRef<
           <View className="px-5 pt-1 pb-4 border-b border-border">
             <Text className="text-xl font-bold tracking-tight text-foreground pr-8">
               {meal.name}
+            </Text>
+            <Text className="text-sm text-muted-foreground mt-1">
+              {meal.grams_per_unit != null && meal.unit !== "g"
+                ? `Serving: ${formatQty(quantity, meal.unit)} (≈ ${Math.round(
+                    meal.grams_per_unit * quantity,
+                  )} g)`
+                : `Serving: ${formatQty(quantity, meal.unit)}`}
             </Text>
             <View className="flex-row flex-wrap items-center gap-2 mt-2.5">
               {meal.prep_time_min != null ? (

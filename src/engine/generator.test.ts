@@ -33,6 +33,7 @@ function makeMeal(overrides: Partial<Meal> = {}): Meal {
     unit: "serving",
     protein_per_unit: 20,
     kcal_per_unit: 300,
+    grams_per_unit: 250,
     difficulty: "easy",
     prep_time_min: 15,
     allergens: [],
