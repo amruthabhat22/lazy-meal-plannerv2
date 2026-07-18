@@ -53,6 +53,7 @@ import {
   type ShareContact,
 } from "@/utils/contacts";
 import { FONT_CLIP_FIX } from "@/utils/androidText";
+import { PLACEHOLDER_COLOR } from "@/utils/colors";
 
 const TOTAL_STEPS = 6;
 
@@ -336,8 +337,22 @@ export default function Onboarding() {
                 color={ICON_COLORS.accentForeground}
               />
               <Text className="flex-1 text-sm leading-snug text-accent-foreground">
-                <Text className="font-semibold" style={FONT_CLIP_FIX}>Tip:</Text> aim for ~1g protein
+                <Text className="font-semibold" style={FONT_CLIP_FIX}>Protein:</Text> aim for ~1g
                 per kg of body weight.
+              </Text>
+            </View>
+            <View className="flex-row items-start gap-2.5 rounded-2xl bg-accent/60 border border-accent px-4 py-3 mt-2.5">
+              <View className="mt-0.5">
+                <Icon
+                  icon={Lightbulb}
+                  size="sm"
+                  color={ICON_COLORS.accentForeground}
+                />
+              </View>
+              <Text className="flex-1 text-sm leading-snug text-accent-foreground">
+                <Text className="font-semibold" style={FONT_CLIP_FIX}>Calories:</Text> your weight
+                (kg) × 30 roughly maintains your weight — e.g. 65 kg ≈ 1,950
+                kcal. Take ~400 less to lose, ~400 more to gain.
               </Text>
             </View>
           </>
@@ -446,7 +461,7 @@ export default function Onboarding() {
               <TextInput
                 className={inputStyle}
                 placeholder="e.g. Amma"
-                placeholderTextColor="#6c6158"
+                placeholderTextColor={PLACEHOLDER_COLOR}
                 value={contactName}
                 onChangeText={setContactName}
               />
@@ -456,7 +471,7 @@ export default function Onboarding() {
               <TextInput
                 className={inputStyle}
                 placeholder="+91 98765 43210"
-                placeholderTextColor="#6c6158"
+                placeholderTextColor={PLACEHOLDER_COLOR}
                 keyboardType="phone-pad"
                 value={contactPhone}
                 onChangeText={setContactPhone}

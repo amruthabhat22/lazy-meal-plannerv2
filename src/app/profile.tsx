@@ -9,6 +9,8 @@ import {
   ArrowLeft,
   Check,
   EyeOff,
+  LogOut,
+  UserRound,
   X,
   Drumstick,
   Egg,
@@ -23,6 +25,8 @@ import { CatalogTooSmallError } from "@/engine/types";
 import { getMeta } from "@/db/schema";
 import { usePrefsStore } from "@/state/usePrefsStore";
 import { usePlanStore } from "@/state/usePlanStore";
+import { useSessionStore } from "@/state/useSessionStore";
+import { formatPhone } from "@/utils/contacts";
 import { CUISINES } from "@/utils/cuisines";
 import { Icon, ICON_COLORS } from "@/components/ui/Icon";
 import { Button } from "@/components/ui/Button";
@@ -73,6 +77,8 @@ export default function Profile() {
   const savePrefs = usePrefsStore((s) => s.save);
   const regenerate = usePlanStore((s) => s.regenerate);
   const catalog = usePlanStore((s) => s.catalog);
+  const session = useSessionStore((s) => s.session);
+  const signOut = useSessionStore((s) => s.signOut);
 
   const [diet, setDiet] = useState<Diet>(prefs?.diet ?? "veg");
   const [goal, setGoal] = useState(prefs?.proteinGoal ?? 120);
@@ -317,6 +323,48 @@ export default function Profile() {
             );
           })
         )}
+
+        <SectionLabel>Account</SectionLabel>
+        {session ? (
+          <View className="flex-row items-center gap-3 rounded-xl border border-border bg-card p-3 mb-3">
+            <View className="h-10 w-10 rounded-full bg-primary/10 items-center justify-center">
+              <Icon icon={UserRound} size="sm" color={ICON_COLORS.primary} />
+            </View>
+            <View className="flex-1 min-w-0">
+              <Text className="text-sm font-semibold text-foreground" style={FONT_CLIP_FIX}>
+                {session.name}
+              </Text>
+              <Text className="text-xs text-muted-foreground mt-0.5">
+                {session.method === "phone" && session.phone
+                  ? formatPhone(session.phone)
+                  : session.method === "email" && session.email
+                    ? session.email
+                    : "Signed in with Google"}
+              </Text>
+            </View>
+          </View>
+        ) : null}
+        <Pressable
+          onPress={() => {
+            Alert.alert("Log out?", "Your meal plan and settings stay on this phone.", [
+              { text: "Cancel", style: "cancel" },
+              {
+                text: "Log out",
+                style: "destructive",
+                onPress: () => {
+                  void signOut(db).then(() => router.replace("/login"));
+                },
+              },
+            ]);
+          }}
+          accessibilityRole="button"
+          className="h-12 rounded-full border border-destructive/30 bg-destructive/5 flex-row items-center justify-center gap-2"
+        >
+          <Icon icon={LogOut} size="sm" color={ICON_COLORS.destructive} />
+          <Text className="text-sm font-semibold text-destructive" style={FONT_CLIP_FIX}>
+            Log out
+          </Text>
+        </Pressable>
 
         <Text className="text-center text-xs text-muted-foreground mt-8">
           App version {Constants.expoConfig?.version ?? "1.0.0"} · Catalog

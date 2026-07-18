@@ -10,6 +10,7 @@ import { DB_NAME, migrate } from "@/db/schema";
 import { importCatalogIfNewer, type CatalogBundle } from "@/db/catalogImport";
 import { usePrefsStore } from "@/state/usePrefsStore";
 import { usePlanStore } from "@/state/usePlanStore";
+import { useSessionStore } from "@/state/useSessionStore";
 import catalogBundle from "../../assets/meals.json";
 
 async function initDb(db: SQLiteDatabase): Promise<void> {
@@ -21,15 +22,18 @@ function Bootstrap({ children }: { children: React.ReactNode }) {
   const db = useSQLiteContext();
   const prefsLoaded = usePrefsStore((s) => s.loaded);
   const planLoaded = usePlanStore((s) => s.loaded);
+  const sessionLoaded = useSessionStore((s) => s.loaded);
   const loadPrefs = usePrefsStore((s) => s.load);
   const loadPlan = usePlanStore((s) => s.load);
+  const loadSession = useSessionStore((s) => s.load);
 
   useEffect(() => {
     void loadPrefs(db);
     void loadPlan(db);
-  }, [db, loadPrefs, loadPlan]);
+    void loadSession(db);
+  }, [db, loadPrefs, loadPlan, loadSession]);
 
-  if (!prefsLoaded || !planLoaded) {
+  if (!prefsLoaded || !planLoaded || !sessionLoaded) {
     return (
       <View className="flex-1 items-center justify-center bg-background">
         <ActivityIndicator size="large" color="#d96d27" />

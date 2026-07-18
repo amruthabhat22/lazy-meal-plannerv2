@@ -25,6 +25,8 @@ import type { PlanRow } from "@/db/repos/plansRepo";
 import { getRecipeByMealId, type MealRecipe } from "@/db/repos/mealsRepo";
 import { usePrefsStore, slotsForPrefs } from "@/state/usePrefsStore";
 import { usePlanStore, type MealPick } from "@/state/usePlanStore";
+import { useSessionStore } from "@/state/useSessionStore";
+import { firstName } from "@/utils/session";
 import { DaySelector } from "@/components/DaySelector";
 import { StatCard } from "@/components/StatCard";
 import { FoodCard } from "@/components/FoodCard";
@@ -65,6 +67,7 @@ type SheetTarget =
 export default function WeekPlanScreen() {
   const db = useSQLiteContext();
   const prefs = usePrefsStore((s) => s.prefs);
+  const session = useSessionStore((s) => s.session);
   const catalog = usePlanStore((s) => s.catalog);
   const planMeals = usePlanStore((s) => s.planMeals);
   const regenerate = usePlanStore((s) => s.regenerate);
@@ -143,6 +146,7 @@ export default function WeekPlanScreen() {
     );
   }, [target, selectedDay, planMeals, catalog, prefs, blockedIds, mealById]);
 
+  if (!session) return <Redirect href="/login" />;
   if (!prefs) return <Redirect href="/onboarding" />;
 
   const slots = orderedSlots(slotsForPrefs(prefs));
@@ -239,7 +243,7 @@ export default function WeekPlanScreen() {
         <View className="flex-1 min-w-0">
           <View className="flex-row items-center gap-2">
             <Text className="text-2xl font-bold tracking-tight text-foreground" style={FONT_CLIP_FIX_BOLD}>
-              Your week
+              {session.name ? `${firstName(session)}'s week` : "Your week"}
             </Text>
             <Icon icon={CookingPot} size="lg" color={ICON_COLORS.primary} />
           </View>

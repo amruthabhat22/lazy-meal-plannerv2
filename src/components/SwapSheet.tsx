@@ -22,6 +22,7 @@ import type { CustomMealInput } from "@/db/repos/mealsRepo";
 import type { MealPick } from "@/state/usePlanStore";
 import { formatProtein, formatQty } from "@/utils/format";
 import { FONT_CLIP_FIX } from "@/utils/androidText";
+import { PLACEHOLDER_COLOR } from "@/utils/colors";
 
 const inputStyle = {
   backgroundColor: "#f3ede6",
@@ -173,7 +174,7 @@ export const SwapSheet = forwardRef<
       <View className="px-5 pb-3">
         <BottomSheetTextInput
           placeholder="Search meals"
-          placeholderTextColor="#6c6158"
+          placeholderTextColor={PLACEHOLDER_COLOR}
           value={query}
           onChangeText={setQuery}
           style={inputStyle}
@@ -279,7 +280,7 @@ export const SwapSheet = forwardRef<
                   </Text>
                   <BottomSheetTextInput
                     placeholder="e.g. Chicken shawarma bowl"
-                    placeholderTextColor="#6c6158"
+                    placeholderTextColor={PLACEHOLDER_COLOR}
                     value={customName}
                     onChangeText={setCustomName}
                     style={inputStyle}
@@ -291,7 +292,7 @@ export const SwapSheet = forwardRef<
                       </Text>
                       <BottomSheetTextInput
                         placeholder="25"
-                        placeholderTextColor="#6c6158"
+                        placeholderTextColor={PLACEHOLDER_COLOR}
                         keyboardType="numeric"
                         value={customProtein}
                         onChangeText={setCustomProtein}
@@ -304,7 +305,7 @@ export const SwapSheet = forwardRef<
                       </Text>
                       <BottomSheetTextInput
                         placeholder="450"
-                        placeholderTextColor="#6c6158"
+                        placeholderTextColor={PLACEHOLDER_COLOR}
                         keyboardType="numeric"
                         value={customKcal}
                         onChangeText={setCustomKcal}

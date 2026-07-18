@@ -40,6 +40,7 @@ import {
   useSheetSizing,
 } from "@/components/sheetChrome";
 import { FONT_CLIP_FIX } from "@/utils/androidText";
+import { PLACEHOLDER_COLOR } from "@/utils/colors";
 
 const inputStyle = {
   backgroundColor: "#f3ede6",
@@ -306,7 +307,7 @@ export const ShareSheet = forwardRef<
                     </View>
                     <BottomSheetTextInput
                       placeholder="Search a meal from your plan"
-                      placeholderTextColor="#6c6158"
+                      placeholderTextColor={PLACEHOLDER_COLOR}
                       value={query}
                       onChangeText={setQuery}
                       style={{ ...inputStyle, paddingLeft: 40 }}
@@ -443,7 +444,7 @@ export const ShareSheet = forwardRef<
             <View className="rounded-xl border border-dashed border-border bg-secondary/30 p-3">
               <BottomSheetTextInput
                 placeholder="Name"
-                placeholderTextColor="#6c6158"
+                placeholderTextColor={PLACEHOLDER_COLOR}
                 value={name}
                 onChangeText={setName}
                 style={inputStyle}
@@ -451,7 +452,7 @@ export const ShareSheet = forwardRef<
               <View className="mt-2.5">
                 <BottomSheetTextInput
                   placeholder="Phone with country code (e.g. 919812345678)"
-                  placeholderTextColor="#6c6158"
+                  placeholderTextColor={PLACEHOLDER_COLOR}
                   keyboardType="phone-pad"
                   value={phone}
                   onChangeText={setPhone}
