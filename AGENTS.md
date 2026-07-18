@@ -1,12 +1,12 @@
-# EezyPlate (Lazy Meal Planner) — AI Agent Reference
+# EezyMeals (Lazy Meal Planner) — AI Agent Reference
 
-## v3 "EezyPlate" update: COMPLETE
+## v3 "EezyMeals" update: COMPLETE
 
 Ported the July 2026 design from https://eezyplate.lovable.app (design
 source extracted from its published JS chunks — the old design repo went
 private). What changed:
 
-- **Rebrand**: display name "EezyPlate" (app.json name; slug/scheme/DB
+- **Rebrand**: display name "EezyMeals" (app.json name; slug/scheme/DB
   filename deliberately unchanged — project identity + installed user data).
 - **Recipes**: `data/recipes.json` = ingredients (structured amount/unit +
   grocery category) + steps for all 59 meals, keyed by meal id.

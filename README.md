@@ -1,10 +1,10 @@
-# EezyPlate (Lazy Meal Planner)
+# EezyMeals (Lazy Meal Planner)
 
 Protein-first, lazy-first meal planning. A 5-step onboarding, then a full
 week of meals that hits your protein and calorie goals — you only swap or
 adjust. Fully offline: no backend, no auth, no network calls. Built from
 [docs/spec.md](docs/spec.md) (MVP), then restyled and extended to match the
-Lovable "EezyPlate" design (terracotta/cream, https://eezyplate.lovable.app).
+Lovable "EezyMeals" design (terracotta/cream, https://eezyplate.lovable.app).
 
 **Full developer guide:** [DEVELOPMENT.md](DEVELOPMENT.md) — running on
 iOS/Android, catalog & schema updates, DB inspection, troubleshooting.

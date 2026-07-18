@@ -60,7 +60,7 @@ export function buildPlanMessage(
     "💬 Want the recipe for any of these meals? Just reply with the meal name and I'll send it over.",
   );
   lines.push("");
-  lines.push("Sent via EezyPlate");
+  lines.push("Sent via EezyMeals");
   return lines.join("\n");
 }
 
@@ -119,6 +119,6 @@ export function buildRecipeMessage(
     });
   }
 
-  lines.push("", "Sent via EezyPlate");
+  lines.push("", "Sent via EezyMeals");
   return lines.join("\n");
 }

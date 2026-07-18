@@ -264,7 +264,7 @@ export default function Onboarding() {
             <Icon icon={ArrowLeft} size="sm" color={ICON_COLORS.foreground} />
           </Pressable>
           <Text className="text-sm font-semibold tracking-tight text-foreground">
-            EezyPlate
+            EezyMeals
           </Text>
           <View className="h-10 w-10" />
         </View>
