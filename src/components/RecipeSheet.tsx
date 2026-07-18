@@ -20,6 +20,7 @@ import {
   useSheetFooterPadding,
   useSheetSizing,
 } from "@/components/sheetChrome";
+import { FONT_CLIP_FIX, FONT_CLIP_FIX_BOLD } from "@/utils/androidText";
 
 /** Difficulty chip tints per design: Easy emerald, Medium amber, Hard rose. */
 const DIFFICULTY_STYLE: Record<string, { bg: string; fg: string }> = {
@@ -46,7 +47,7 @@ function SectionHeading({
   return (
     <View className="flex-row items-center gap-2 mb-3">
       {icon}
-      <Text className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+      <Text className="text-xs font-bold uppercase tracking-widest text-muted-foreground" style={FONT_CLIP_FIX_BOLD}>
         {title}
       </Text>
     </View>
@@ -94,7 +95,7 @@ export const RecipeSheet = forwardRef<
         >
           {/* Header */}
           <View className="px-5 pt-1 pb-4 border-b border-border">
-            <Text className="text-xl font-bold tracking-tight text-foreground pr-8">
+            <Text className="text-xl font-bold tracking-tight text-foreground pr-8" style={FONT_CLIP_FIX_BOLD}>
               {meal.name}
             </Text>
             <Text className="text-sm text-muted-foreground mt-1">
@@ -121,7 +122,7 @@ export const RecipeSheet = forwardRef<
                   <Icon icon={Gauge} size={14} color={difficulty.fg} />
                   <Text
                     className="text-xs font-semibold capitalize"
-                    style={{ color: difficulty.fg }}
+                    style={[FONT_CLIP_FIX, { color: difficulty.fg }]}
                   >
                     {meal.difficulty}
                   </Text>
@@ -194,7 +195,7 @@ export const RecipeSheet = forwardRef<
                       }`}
                     >
                       <View className="h-6 w-6 rounded-full bg-primary/10 items-center justify-center">
-                        <Text className="text-xs font-bold text-primary">
+                        <Text className="text-xs font-bold text-primary" style={FONT_CLIP_FIX_BOLD}>
                           {i + 1}
                         </Text>
                       </View>
@@ -228,7 +229,7 @@ export const RecipeSheet = forwardRef<
                 className="h-11 rounded-full border border-destructive/30 bg-destructive/5 flex-row items-center justify-center gap-2"
               >
                 <Icon icon={EyeOff} size="sm" color={ICON_COLORS.destructive} />
-                <Text className="text-sm font-semibold text-destructive">
+                <Text className="text-sm font-semibold text-destructive" style={FONT_CLIP_FIX}>
                   Don't show this dish again
                 </Text>
               </Pressable>
@@ -238,7 +239,7 @@ export const RecipeSheet = forwardRef<
               className="h-11 rounded-full bg-secondary flex-row items-center justify-center gap-2"
             >
               <Icon icon={X} size="sm" color={ICON_COLORS.foreground} />
-              <Text className="text-sm font-semibold text-foreground">
+              <Text className="text-sm font-semibold text-foreground" style={FONT_CLIP_FIX}>
                 Close
               </Text>
             </Pressable>

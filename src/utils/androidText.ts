@@ -12,3 +12,13 @@ export const FONT_CLIP_FIX =
   Platform.OS === "android"
     ? ({ fontFamily: "sans-serif-medium" } as const)
     : undefined;
+
+/**
+ * Same fix for bold Text (className font-bold): an explicit plain family
+ * lets the fontWeight:700 from the class render without the OEM
+ * replacement font's over-wide metrics clipping the last word.
+ */
+export const FONT_CLIP_FIX_BOLD =
+  Platform.OS === "android"
+    ? ({ fontFamily: "sans-serif" } as const)
+    : undefined;

@@ -47,7 +47,7 @@ export function FoodCard({
           <Text
             className="text-[15px] font-semibold text-foreground leading-tight"
             numberOfLines={2}
-          >
+           style={FONT_CLIP_FIX}>
             {meal.name}
           </Text>
           <Text className="text-sm text-muted-foreground mt-0.5">
@@ -123,7 +123,7 @@ export function FoodCard({
           >
             <Icon icon={Minus} size="sm" color={ICON_COLORS.foreground} />
           </Pressable>
-          <Text className="w-9 text-center text-sm font-semibold text-foreground tabular-nums">
+          <Text className="w-9 text-center text-sm font-semibold text-foreground tabular-nums" style={FONT_CLIP_FIX}>
             {formatNumber(quantity)}
           </Text>
           <Pressable

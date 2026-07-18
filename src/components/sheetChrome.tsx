@@ -5,6 +5,7 @@ import {
   BottomSheetBackdrop,
   type BottomSheetBackdropProps,
 } from "@gorhom/bottom-sheet";
+import { FONT_CLIP_FIX_BOLD } from "@/utils/androidText";
 
 /**
  * Shared bottom-sheet chrome matching the design: black/80 tinted scrim,
@@ -69,7 +70,7 @@ export function SheetHeader({
   return (
     <>
       <View className="px-5 pt-1 pb-4">
-        <Text className="text-xl font-bold tracking-tight text-foreground pr-8">
+        <Text className="text-xl font-bold tracking-tight text-foreground pr-8" style={FONT_CLIP_FIX_BOLD}>
           {title}
         </Text>
         {subtitle ? (

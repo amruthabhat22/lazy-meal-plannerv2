@@ -10,6 +10,7 @@ import {
   sheetHandleStyle,
   useSheetFooterPadding,
 } from "@/components/sheetChrome";
+import { FONT_CLIP_FIX, FONT_CLIP_FIX_BOLD } from "@/utils/androidText";
 
 /**
  * Confirmation sheet for "Don't show this dish again" — explains the
@@ -43,7 +44,7 @@ export const ConfirmHideSheet = forwardRef<
               <View className="h-12 w-12 rounded-full bg-destructive/10 items-center justify-center mb-3">
                 <Icon icon={EyeOff} size="md" color={ICON_COLORS.destructive} />
               </View>
-              <Text className="text-xl font-bold tracking-tight text-foreground text-center">
+              <Text className="text-xl font-bold tracking-tight text-foreground text-center" style={FONT_CLIP_FIX_BOLD}>
                 Don't show this dish again?
               </Text>
               <Text className="text-sm text-muted-foreground text-center mt-2 leading-relaxed px-2">
@@ -68,7 +69,7 @@ export const ConfirmHideSheet = forwardRef<
                 size="sm"
                 color={ICON_COLORS.primaryForeground}
               />
-              <Text className="text-sm font-semibold text-destructive-foreground">
+              <Text className="text-sm font-semibold text-destructive-foreground" style={FONT_CLIP_FIX}>
                 Yes, don't show again
               </Text>
             </Pressable>
@@ -76,7 +77,7 @@ export const ConfirmHideSheet = forwardRef<
               onPress={onCancel}
               className="h-11 rounded-full bg-secondary items-center justify-center mt-2"
             >
-              <Text className="text-sm font-semibold text-foreground">
+              <Text className="text-sm font-semibold text-foreground" style={FONT_CLIP_FIX}>
                 Cancel
               </Text>
             </Pressable>

@@ -51,6 +51,7 @@ import {
   removeContact,
   type ShareContact,
 } from "@/utils/contacts";
+import { FONT_CLIP_FIX } from "@/utils/androidText";
 
 const TOTAL_STEPS = 6;
 
@@ -263,7 +264,7 @@ export default function Onboarding() {
           >
             <Icon icon={ArrowLeft} size="sm" color={ICON_COLORS.foreground} />
           </Pressable>
-          <Text className="text-sm font-semibold tracking-tight text-foreground">
+          <Text className="text-sm font-semibold tracking-tight text-foreground" style={FONT_CLIP_FIX}>
             EezyMeals
           </Text>
           <View className="h-10 w-10" />
@@ -276,7 +277,7 @@ export default function Onboarding() {
         contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 120 }}
       >
         <View className="mt-8 mb-7">
-          <Text className="text-3xl font-semibold tracking-tight text-foreground">
+          <Text className="text-3xl font-semibold tracking-tight text-foreground" style={FONT_CLIP_FIX}>
             {STEP_META[step - 1].title}
           </Text>
           <Text className="mt-2 text-base text-muted-foreground">
@@ -327,7 +328,7 @@ export default function Onboarding() {
                 color={ICON_COLORS.accentForeground}
               />
               <Text className="flex-1 text-sm leading-snug text-accent-foreground">
-                <Text className="font-semibold">Tip:</Text> aim for ~1g protein
+                <Text className="font-semibold" style={FONT_CLIP_FIX}>Tip:</Text> aim for ~1g protein
                 per kg of body weight.
               </Text>
             </View>
@@ -366,7 +367,7 @@ export default function Onboarding() {
                         }
                       />
                     </View>
-                    <Text className="flex-1 text-sm font-semibold text-foreground leading-tight">
+                    <Text className="flex-1 text-sm font-semibold text-foreground leading-tight" style={FONT_CLIP_FIX}>
                       {c.label}
                     </Text>
                     <View
@@ -409,7 +410,7 @@ export default function Onboarding() {
                   <Icon icon={Phone} size="sm" color={ICON_COLORS.primary} />
                 </View>
                 <View className="flex-1 min-w-0">
-                  <Text className="text-sm font-semibold text-foreground">
+                  <Text className="text-sm font-semibold text-foreground" style={FONT_CLIP_FIX}>
                     {c.name}
                   </Text>
                   <Text className="text-xs text-muted-foreground mt-0.5">
@@ -482,7 +483,7 @@ export default function Onboarding() {
             ))}
             {meals ? (
               <View className="rounded-2xl border border-border bg-secondary/50 px-4 py-3.5 mt-3">
-                <Text className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-1">
+                <Text className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-1" style={FONT_CLIP_FIX}>
                   Your plan
                 </Text>
                 <Row
@@ -545,7 +546,7 @@ export default function Onboarding() {
             className={`text-base font-semibold ${
               canContinue ? "text-primary-foreground" : "text-muted-foreground"
             }`}
-          >
+           style={FONT_CLIP_FIX}>
             {isLast ? "Generate My Week" : "Continue"}
           </Text>
           {!isLast ? (
@@ -569,7 +570,7 @@ function Row({ label, value }: { label: string; value: string }) {
   return (
     <View className="flex-row items-center justify-between py-2.5 border-b border-border/70">
       <Text className="text-sm text-muted-foreground">{label}</Text>
-      <Text className="text-sm font-semibold text-foreground tabular-nums">
+      <Text className="text-sm font-semibold text-foreground tabular-nums" style={FONT_CLIP_FIX}>
         {value}
       </Text>
     </View>

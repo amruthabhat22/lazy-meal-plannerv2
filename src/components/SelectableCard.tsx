@@ -3,6 +3,7 @@ import { Pressable, Text, View } from "react-native";
 import { Check, type LucideIcon } from "lucide-react-native";
 import * as Haptics from "expo-haptics";
 import { Icon, ICON_COLORS } from "@/components/ui/Icon";
+import { FONT_CLIP_FIX } from "@/utils/androidText";
 
 /** Design's option card (diet / meals-per-day): icon tile, title +
  * description, check circle on the right. Used by onboarding and Profile. */
@@ -57,7 +58,7 @@ export function SelectableCard({
           />
         </View>
         <View className="flex-1 min-w-0">
-          <Text className="text-base font-semibold text-foreground leading-tight">
+          <Text className="text-base font-semibold text-foreground leading-tight" style={FONT_CLIP_FIX}>
             {title}
           </Text>
           <Text

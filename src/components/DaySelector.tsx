@@ -2,6 +2,7 @@ import React from "react";
 import { Pressable, Text, View } from "react-native";
 import { ALL_DAYS } from "@/engine/types";
 import type { Day } from "@/engine/types";
+import { FONT_CLIP_FIX } from "@/utils/androidText";
 
 const LABELS: Record<Day, string> = {
   mon: "Mon",
@@ -62,7 +63,7 @@ export function DaySelector({
               className={`text-xs font-semibold tracking-wide ${
                 isActive ? "text-foreground" : "text-muted-foreground"
               }`}
-            >
+             style={FONT_CLIP_FIX}>
               {LABELS[day]}
             </Text>
             <View
@@ -76,7 +77,7 @@ export function DaySelector({
                 className={`text-sm font-semibold tabular-nums ${
                   isActive ? "text-background" : "text-foreground"
                 }`}
-              >
+               style={FONT_CLIP_FIX}>
                 {dates[day]}
               </Text>
             </View>

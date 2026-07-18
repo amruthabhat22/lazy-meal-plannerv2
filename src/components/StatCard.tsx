@@ -1,5 +1,6 @@
 import React from "react";
 import { Text, View } from "react-native";
+import { FONT_CLIP_FIX_BOLD } from "@/utils/androidText";
 
 /**
  * Two-column Protein | Calories card, both color-coded against goals —
@@ -69,7 +70,7 @@ function Cell({
       <View className="flex-row items-baseline gap-1.5">
         <Text
           className={`text-3xl font-bold tracking-tight tabular-nums ${valueClass}`}
-        >
+         style={FONT_CLIP_FIX_BOLD}>
           {value}
         </Text>
         <Text className="text-xs text-muted-foreground tabular-nums">

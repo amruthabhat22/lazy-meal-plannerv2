@@ -34,6 +34,7 @@ import {
   calorieLevelLabel,
   proteinLevelLabel,
 } from "@/components/GoalSliderCard";
+import { FONT_CLIP_FIX } from "@/utils/androidText";
 
 const DIET_OPTIONS: {
   value: Diet;
@@ -59,7 +60,7 @@ const MEAL_OPTIONS: {
 
 function SectionLabel({ children }: { children: string }) {
   return (
-    <Text className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3 mt-7">
+    <Text className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3 mt-7" style={FONT_CLIP_FIX}>
       {children}
     </Text>
   );
@@ -178,7 +179,7 @@ export default function Profile() {
         >
           <Icon icon={ArrowLeft} size="sm" color={ICON_COLORS.foreground} />
         </Pressable>
-        <Text className="text-base font-semibold tracking-tight text-foreground">
+        <Text className="text-base font-semibold tracking-tight text-foreground" style={FONT_CLIP_FIX}>
           Profile
         </Text>
         <View className="h-10 w-10" />
@@ -296,7 +297,7 @@ export default function Profile() {
                 <View className="h-9 w-9 rounded-full bg-destructive/10 items-center justify-center">
                   <Icon icon={EyeOff} size="sm" color={ICON_COLORS.destructive} />
                 </View>
-                <Text className="flex-1 text-sm font-semibold text-foreground">
+                <Text className="flex-1 text-sm font-semibold text-foreground" style={FONT_CLIP_FIX}>
                   {meal?.name ?? "Unknown dish"}
                 </Text>
                 <Pressable
@@ -308,7 +309,7 @@ export default function Profile() {
                   className="h-8 px-3 rounded-full border border-border bg-background flex-row items-center gap-1"
                 >
                   <Icon icon={X} size={13} color={ICON_COLORS.foreground} />
-                  <Text className="text-xs font-semibold text-foreground">
+                  <Text className="text-xs font-semibold text-foreground" style={FONT_CLIP_FIX}>
                     Unhide
                   </Text>
                 </Pressable>

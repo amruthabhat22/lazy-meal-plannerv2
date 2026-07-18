@@ -13,7 +13,7 @@ import {
   UserRound,
 } from "lucide-react-native";
 import { blockMeal, getBlockedMealIds } from "@/utils/blockedMeals";
-import { FONT_CLIP_FIX } from "@/utils/androidText";
+import { FONT_CLIP_FIX, FONT_CLIP_FIX_BOLD } from "@/utils/androidText";
 import { Icon, ICON_COLORS } from "@/components/ui/Icon";
 import type { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { captureRef } from "react-native-view-shot";
@@ -238,7 +238,7 @@ export default function WeekPlanScreen() {
       <View className="flex-row items-start justify-between px-5 pt-4 pb-2 gap-3">
         <View className="flex-1 min-w-0">
           <View className="flex-row items-center gap-2">
-            <Text className="text-2xl font-bold tracking-tight text-foreground">
+            <Text className="text-2xl font-bold tracking-tight text-foreground" style={FONT_CLIP_FIX_BOLD}>
               Your week
             </Text>
             <Icon icon={CookingPot} size="lg" color={ICON_COLORS.primary} />
@@ -329,7 +329,7 @@ export default function WeekPlanScreen() {
                 <View className="flex-row items-center justify-between gap-3 mb-3">
                   <View className="flex-1 min-w-0">
                     <View className="flex-row items-baseline gap-2">
-                      <Text className="text-lg font-bold tracking-tight text-foreground">
+                      <Text className="text-lg font-bold tracking-tight text-foreground" style={FONT_CLIP_FIX_BOLD}>
                         {SLOT_LABELS[slot]}
                       </Text>
                       {slot === "snack" ? (

@@ -18,6 +18,7 @@ import {
 import { getRecipesByMealIds } from "@/db/repos/mealsRepo";
 import { aggregateGroceries, CATEGORY_ORDER } from "@/utils/grocery";
 import { formatIngredientQty } from "@/utils/format";
+import { FONT_CLIP_FIX } from "@/utils/androidText";
 
 const SWIGGY_INSTAMART_URL = "https://www.swiggy.com/instamart";
 
@@ -126,7 +127,7 @@ export default function GroceryScreen() {
           <Icon icon={ShoppingBasket} size="sm" color={ICON_COLORS.primary} />
         </View>
         <View className="flex-1 min-w-0">
-          <Text className="text-sm font-semibold text-foreground">
+          <Text className="text-sm font-semibold text-foreground" style={FONT_CLIP_FIX}>
             Grocery List
           </Text>
           <Text className="text-xs text-muted-foreground">
@@ -151,7 +152,7 @@ export default function GroceryScreen() {
             <View className="rounded-2xl border border-border bg-card p-4 mb-5">
               <View className="flex-row items-baseline justify-between">
                 <View>
-                  <Text className="text-2xl font-semibold tracking-tight text-foreground tabular-nums">
+                  <Text className="text-2xl font-semibold tracking-tight text-foreground tabular-nums" style={FONT_CLIP_FIX}>
                     {done}
                     <Text className="text-lg text-muted-foreground/60">
                       {" "}
@@ -162,7 +163,7 @@ export default function GroceryScreen() {
                     items checked off
                   </Text>
                 </View>
-                <Text className="text-sm font-semibold text-foreground tabular-nums">
+                <Text className="text-sm font-semibold text-foreground tabular-nums" style={FONT_CLIP_FIX}>
                   {pct}%
                 </Text>
               </View>
@@ -241,7 +242,7 @@ export default function GroceryScreen() {
                       className="flex-row items-center justify-between gap-2 px-4 py-3.5"
                     >
                       <View className="flex-row items-center gap-2.5 flex-1 min-w-0">
-                        <Text className="text-sm font-semibold text-foreground">
+                        <Text className="text-sm font-semibold text-foreground" style={FONT_CLIP_FIX}>
                           {category}
                         </Text>
                         <View
@@ -253,7 +254,7 @@ export default function GroceryScreen() {
                             className={`text-xs font-semibold tabular-nums ${
                               allDone ? "text-success" : "text-muted-foreground"
                             }`}
-                          >
+                           style={FONT_CLIP_FIX}>
                             {catDone}/{list.length}
                           </Text>
                         </View>

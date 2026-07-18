@@ -39,6 +39,7 @@ import {
   useSheetFooterPadding,
   useSheetSizing,
 } from "@/components/sheetChrome";
+import { FONT_CLIP_FIX } from "@/utils/androidText";
 
 const inputStyle = {
   backgroundColor: "#f3ede6",
@@ -83,7 +84,7 @@ function RadioRow({
             ? "font-semibold text-foreground"
             : "font-medium text-muted-foreground"
         }`}
-      >
+       style={FONT_CLIP_FIX}>
         {label}
       </Text>
     </Pressable>
@@ -275,7 +276,7 @@ export const ShareSheet = forwardRef<
                     <Text
                       className="text-sm font-semibold text-foreground"
                       numberOfLines={1}
-                    >
+                     style={FONT_CLIP_FIX}>
                       {pickedMeal.name}
                     </Text>
                     <Text className="text-xs text-muted-foreground tabular-nums mt-0.5">
@@ -337,7 +338,7 @@ export const ShareSheet = forwardRef<
                             <Text
                               className="text-sm font-semibold text-foreground"
                               numberOfLines={1}
-                            >
+                             style={FONT_CLIP_FIX}>
                               {m.name}
                             </Text>
                             <Text className="text-xs text-muted-foreground tabular-nums">
@@ -350,7 +351,7 @@ export const ShareSheet = forwardRef<
                   ) : null}
                 </>
               )}
-              <Text className="pt-3 pb-1 text-xs font-semibold tracking-widest uppercase text-muted-foreground">
+              <Text className="pt-3 pb-1 text-xs font-semibold tracking-widest uppercase text-muted-foreground" style={FONT_CLIP_FIX}>
                 Send to
               </Text>
             </View>
@@ -362,7 +363,7 @@ export const ShareSheet = forwardRef<
               <View className="h-10 w-10 rounded-full bg-primary/10 items-center justify-center mb-2">
                 <Icon icon={Phone} size="sm" color={ICON_COLORS.primary} />
               </View>
-              <Text className="text-sm font-semibold text-foreground">
+              <Text className="text-sm font-semibold text-foreground" style={FONT_CLIP_FIX}>
                 No saved contacts yet
               </Text>
               <Text className="text-xs text-muted-foreground mt-1">
@@ -404,7 +405,7 @@ export const ShareSheet = forwardRef<
                   onPress={() => toggle(c.id)}
                   className="flex-1 min-w-0"
                 >
-                  <Text className="text-sm font-semibold text-foreground">
+                  <Text className="text-sm font-semibold text-foreground" style={FONT_CLIP_FIX}>
                     {c.name}
                   </Text>
                   <Text className="text-xs text-muted-foreground mt-0.5 tabular-nums">
@@ -434,7 +435,7 @@ export const ShareSheet = forwardRef<
               className="h-12 rounded-xl border border-dashed border-border bg-secondary/30 flex-row items-center justify-center gap-2"
             >
               <Icon icon={Plus} size="sm" color={ICON_COLORS.accentForeground} />
-              <Text className="text-sm font-semibold text-foreground/80">
+              <Text className="text-sm font-semibold text-foreground/80" style={FONT_CLIP_FIX}>
                 Add new contact
               </Text>
             </Pressable>

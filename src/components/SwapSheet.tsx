@@ -21,6 +21,7 @@ import type { Diet, Slot } from "@/engine/types";
 import type { CustomMealInput } from "@/db/repos/mealsRepo";
 import type { MealPick } from "@/state/usePlanStore";
 import { formatProtein, formatQty } from "@/utils/format";
+import { FONT_CLIP_FIX } from "@/utils/androidText";
 
 const inputStyle = {
   backgroundColor: "#f3ede6",
@@ -205,7 +206,7 @@ export const SwapSheet = forwardRef<
             >
               <CheckBox isSel={isSel} />
               <View className="flex-1 min-w-0">
-                <Text className="text-sm font-semibold text-foreground">
+                <Text className="text-sm font-semibold text-foreground" style={FONT_CLIP_FIX}>
                   {meal.name}
                 </Text>
                 <Text className="text-xs text-muted-foreground mt-0.5">
@@ -216,7 +217,7 @@ export const SwapSheet = forwardRef<
                 </Text>
               </View>
               <View className="rounded-full bg-accent/60 px-2 py-0.5">
-                <Text className="text-xs font-semibold text-accent-foreground tabular-nums">
+                <Text className="text-xs font-semibold text-accent-foreground tabular-nums" style={FONT_CLIP_FIX}>
                   {formatProtein(meal.protein_per_unit * meal.default_qty)}
                 </Text>
               </View>
@@ -242,7 +243,7 @@ export const SwapSheet = forwardRef<
                   <CheckBox isSel={isSel} />
                   <View className="flex-1 min-w-0">
                     <View className="flex-row items-center gap-1.5">
-                      <Text className="text-sm font-semibold text-foreground">
+                      <Text className="text-sm font-semibold text-foreground" style={FONT_CLIP_FIX}>
                         {c.input.name}
                       </Text>
                       <Text className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
@@ -267,7 +268,7 @@ export const SwapSheet = forwardRef<
                   className="h-12 rounded-xl flex-row items-center justify-center gap-2"
                 >
                   <Icon icon={Plus} size="sm" color={ICON_COLORS.accentForeground} />
-                  <Text className="text-sm font-semibold text-foreground/80">
+                  <Text className="text-sm font-semibold text-foreground/80" style={FONT_CLIP_FIX}>
                     Add your own item
                   </Text>
                 </Pressable>

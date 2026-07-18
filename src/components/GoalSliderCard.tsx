@@ -1,6 +1,7 @@
 import React from "react";
 import { Text, View } from "react-native";
 import { Slider } from "@/components/ui/Slider";
+import { FONT_CLIP_FIX } from "@/utils/androidText";
 
 /** Big goal card with a slider (design's StepProtein): label row with a
  * level tag, 5xl number, slider, min/max legend. Used by onboarding step 2
@@ -27,13 +28,13 @@ export function GoalSliderCard({
   return (
     <View className="rounded-3xl bg-card border border-border p-5">
       <View className="flex-row items-baseline justify-between">
-        <Text className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+        <Text className="text-xs font-semibold uppercase tracking-widest text-muted-foreground" style={FONT_CLIP_FIX}>
           {label}
         </Text>
         <Text className="text-xs text-muted-foreground">{levelLabel}</Text>
       </View>
       <View className="mt-2 flex-row items-baseline gap-1">
-        <Text className="text-5xl font-semibold text-foreground tabular-nums tracking-tight">
+        <Text className="text-5xl font-semibold text-foreground tabular-nums tracking-tight" style={FONT_CLIP_FIX}>
           {value}
         </Text>
         <Text className="text-xl font-medium text-muted-foreground">
