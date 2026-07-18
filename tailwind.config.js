@@ -10,7 +10,7 @@ module.exports = {
         background: "#fdfaf4",
         foreground: "#291f18",
         card: "#fffdfa",
-        primary: { DEFAULT: "#a55a37", foreground: "#fefbf8" },
+        primary: { DEFAULT: "#d96d27", foreground: "#fefbf8" },
         secondary: { DEFAULT: "#f1eae0", foreground: "#362c24" },
         muted: { DEFAULT: "#f3ede6", foreground: "#6c6158" },
         accent: { DEFAULT: "#f0dac2", foreground: "#3a2a20" },

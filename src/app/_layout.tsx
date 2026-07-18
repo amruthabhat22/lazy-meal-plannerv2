@@ -32,7 +32,7 @@ function Bootstrap({ children }: { children: React.ReactNode }) {
   if (!prefsLoaded || !planLoaded) {
     return (
       <View className="flex-1 items-center justify-center bg-background">
-        <ActivityIndicator size="large" color="#a55a37" />
+        <ActivityIndicator size="large" color="#d96d27" />
       </View>
     );
   }

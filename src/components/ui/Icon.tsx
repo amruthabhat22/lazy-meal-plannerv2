@@ -19,7 +19,7 @@ export type IconSize = keyof typeof ICON_SIZES;
 export const ICON_COLORS = {
   foreground: "#291f18",
   muted: "#6c6158",
-  primary: "#a55a37",
+  primary: "#d96d27",
   primaryForeground: "#fefbf8",
   accentForeground: "#3a2a20",
   success: "#2f7d45",

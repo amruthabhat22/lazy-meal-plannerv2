@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   Alert,
+  Image,
   Pressable,
   ScrollView,
   Text,
@@ -264,9 +265,16 @@ export default function Onboarding() {
           >
             <Icon icon={ArrowLeft} size="sm" color={ICON_COLORS.foreground} />
           </Pressable>
-          <Text className="text-sm font-semibold tracking-tight text-foreground" style={FONT_CLIP_FIX}>
-            EezyMeals
-          </Text>
+          <View className="flex-row items-center gap-1.5">
+            <Image
+              source={require("../../../assets/splash-icon.png")}
+              style={{ width: 22, height: 22 }}
+              accessibilityIgnoresInvertColors
+            />
+            <Text className="text-sm font-semibold tracking-tight text-foreground" style={FONT_CLIP_FIX}>
+              EezyMeals
+            </Text>
+          </View>
           <View className="h-10 w-10" />
         </View>
         <StepProgress current={step} total={TOTAL_STEPS} />

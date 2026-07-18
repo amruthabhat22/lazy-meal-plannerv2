@@ -62,7 +62,7 @@ export const PlanTableImage = forwardRef<
         }}
       >
         {/* Header row */}
-        <View style={{ flexDirection: "row", backgroundColor: "#a55a37" }}>
+        <View style={{ flexDirection: "row", backgroundColor: "#d96d27" }}>
           <HeaderCell width={DAY_COL} label="Day" />
           {slots.map((slot) => (
             <HeaderCell key={slot} label={SLOT_LABEL[slot]} />
