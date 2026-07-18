@@ -34,7 +34,9 @@ import { SelectableCard } from "@/components/SelectableCard";
 import { AllergenChips } from "@/components/AllergenChips";
 import { getBlockedMealIds, unblockMeal } from "@/utils/blockedMeals";
 import {
+  CALORIE_TIP,
   GoalSliderCard,
+  PROTEIN_TIP,
   calorieLevelLabel,
   proteinLevelLabel,
 } from "@/components/GoalSliderCard";
@@ -220,6 +222,7 @@ export default function Profile() {
           max={200}
           step={5}
           onChange={setGoal}
+          tip={PROTEIN_TIP}
         />
         <View className="mt-3">
           <GoalSliderCard
@@ -231,6 +234,7 @@ export default function Profile() {
             max={3500}
             step={50}
             onChange={setCalories}
+            tip={CALORIE_TIP}
           />
         </View>
 

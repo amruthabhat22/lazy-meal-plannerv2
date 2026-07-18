@@ -18,7 +18,6 @@ import {
   Drumstick,
   Egg,
   Leaf,
-  Lightbulb,
   Moon,
   Phone,
   Soup,
@@ -40,7 +39,9 @@ import { Button } from "@/components/ui/Button";
 import { SelectableCard } from "@/components/SelectableCard";
 import { AllergenChips } from "@/components/AllergenChips";
 import {
+  CALORIE_TIP,
   GoalSliderCard,
+  PROTEIN_TIP,
   calorieLevelLabel,
   proteinLevelLabel,
 } from "@/components/GoalSliderCard";
@@ -317,6 +318,7 @@ export default function Onboarding() {
               max={200}
               step={5}
               onChange={setGoal}
+              tip={PROTEIN_TIP}
             />
             <View className="mt-4">
               <GoalSliderCard
@@ -328,32 +330,8 @@ export default function Onboarding() {
                 max={3500}
                 step={50}
                 onChange={setCalories}
+                tip={CALORIE_TIP}
               />
-            </View>
-            <View className="flex-row items-center gap-2.5 rounded-full bg-accent/60 border border-accent px-4 py-3 mt-4">
-              <Icon
-                icon={Lightbulb}
-                size="sm"
-                color={ICON_COLORS.accentForeground}
-              />
-              <Text className="flex-1 text-sm leading-snug text-accent-foreground">
-                <Text className="font-semibold" style={FONT_CLIP_FIX}>Protein:</Text> aim for ~1g
-                per kg of body weight.
-              </Text>
-            </View>
-            <View className="flex-row items-start gap-2.5 rounded-2xl bg-accent/60 border border-accent px-4 py-3 mt-2.5">
-              <View className="mt-0.5">
-                <Icon
-                  icon={Lightbulb}
-                  size="sm"
-                  color={ICON_COLORS.accentForeground}
-                />
-              </View>
-              <Text className="flex-1 text-sm leading-snug text-accent-foreground">
-                <Text className="font-semibold" style={FONT_CLIP_FIX}>Calories:</Text> your weight
-                (kg) × 30 roughly maintains your weight — e.g. 65 kg ≈ 1,950
-                kcal. Take ~400 less to lose, ~400 more to gain.
-              </Text>
             </View>
           </>
         )}
@@ -373,7 +351,7 @@ export default function Onboarding() {
                     className={`rounded-2xl border bg-card pl-3.5 pr-3 py-3 flex-row items-center gap-2.5 ${
                       selected ? "border-primary/70" : "border-border"
                     }`}
-                    style={{ width: "48%" }}
+                    style={{ width: "100%" }}
                   >
                     <View
                       className={`h-9 w-9 rounded-xl items-center justify-center ${

@@ -1,11 +1,14 @@
 import React from "react";
 import { Text, View } from "react-native";
+import { Lightbulb } from "lucide-react-native";
 import { Slider } from "@/components/ui/Slider";
+import { Icon, ICON_COLORS } from "@/components/ui/Icon";
 import { FONT_CLIP_FIX } from "@/utils/androidText";
 
 /** Big goal card with a slider (design's StepProtein): label row with a
- * level tag, 5xl number, slider, min/max legend. Used by onboarding step 2
- * and the profile goals section. */
+ * level tag, 5xl number, slider, min/max legend, and an optional
+ * rule-of-thumb strip attached to the card bottom. Used by onboarding
+ * step 2 and the profile goals section. */
 export function GoalSliderCard({
   label,
   levelLabel,
@@ -15,6 +18,7 @@ export function GoalSliderCard({
   max,
   step,
   onChange,
+  tip,
 }: {
   label: string;
   levelLabel: string;
@@ -24,9 +28,12 @@ export function GoalSliderCard({
   max: number;
   step: number;
   onChange: (v: number) => void;
+  /** Rule-of-thumb copy rendered as a strip attached under the slider. */
+  tip?: string;
 }) {
   return (
-    <View className="rounded-3xl bg-card border border-border p-5">
+    <View className="rounded-3xl bg-card border border-border overflow-hidden">
+      <View className="p-5">
       <View className="flex-row items-baseline justify-between">
         <Text className="text-xs font-semibold uppercase tracking-widest text-muted-foreground" style={FONT_CLIP_FIX}>
           {label}
@@ -60,9 +67,29 @@ export function GoalSliderCard({
           {unitLabel === "g / day" ? "g" : ""}
         </Text>
       </View>
+      </View>
+      {tip ? (
+        <View className="flex-row items-start gap-2 bg-accent/60 border-t border-accent px-4 py-2.5">
+          <View className="mt-px">
+            <Icon
+              icon={Lightbulb}
+              size={14}
+              color={ICON_COLORS.accentForeground}
+            />
+          </View>
+          <Text className="flex-1 text-xs leading-snug text-accent-foreground">
+            {tip}
+          </Text>
+        </View>
+      ) : null}
     </View>
   );
 }
+
+/** Rule-of-thumb copy shared by onboarding and Profile. */
+export const PROTEIN_TIP = "Aim for ~1g protein per kg of body weight.";
+export const CALORIE_TIP =
+  "Your weight (kg) × 30 roughly maintains your weight — e.g. 65 kg ≈ 1,950 kcal. Take ~400 less to lose, ~400 more to gain.";
 
 /** Protein level tag per design. */
 export function proteinLevelLabel(goal: number): string {

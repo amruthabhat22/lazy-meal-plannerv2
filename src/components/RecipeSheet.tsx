@@ -1,6 +1,11 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef, useCallback } from "react";
 import { Pressable, Text, View } from "react-native";
-import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import {
+  BottomSheetFooter,
+  BottomSheetModal,
+  BottomSheetScrollView,
+  type BottomSheetFooterProps,
+} from "@gorhom/bottom-sheet";
 import {
   ChefHat,
   Clock,
@@ -81,6 +86,45 @@ export const RecipeSheet = forwardRef<
     (ref as React.RefObject<BottomSheetModal | null>)?.current?.dismiss();
   };
 
+  // Sticky footer: the hide/close CTAs stay pinned while the recipe scrolls.
+  const renderFooter = useCallback(
+    (props: BottomSheetFooterProps) => (
+      <BottomSheetFooter {...props}>
+        <View
+          className="px-5 pt-3 bg-card border-t border-border"
+          style={{ paddingBottom: footerPadding, gap: 8 }}
+        >
+          {meal && onBlockDish ? (
+            <Pressable
+              onPress={() => onBlockDish(meal)}
+              accessibilityRole="button"
+              className="h-11 rounded-full border border-destructive/30 bg-destructive/5 flex-row items-center justify-center gap-2"
+            >
+              <Icon icon={EyeOff} size="sm" color={ICON_COLORS.destructive} />
+              <Text className="text-sm font-semibold text-destructive" style={FONT_CLIP_FIX}>
+                Don't show this dish again
+              </Text>
+            </Pressable>
+          ) : null}
+          <Pressable
+            onPress={dismiss}
+            className="h-11 rounded-full bg-secondary flex-row items-center justify-center gap-2"
+          >
+            <Icon icon={X} size="sm" color={ICON_COLORS.foreground} />
+            <Text className="text-sm font-semibold text-foreground" style={FONT_CLIP_FIX}>
+              Close
+            </Text>
+          </Pressable>
+        </View>
+      </BottomSheetFooter>
+    ),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [meal, onBlockDish, footerPadding],
+  );
+
+  const footerSpace =
+    footerPadding + 12 + 44 + (onBlockDish ? 52 : 0) + 8;
+
   return (
     <BottomSheetModal
       ref={ref}
@@ -88,10 +132,11 @@ export const RecipeSheet = forwardRef<
       backdropComponent={renderSheetBackdrop}
       backgroundStyle={sheetBackgroundStyle}
       handleIndicatorStyle={sheetHandleStyle}
+      footerComponent={meal ? renderFooter : undefined}
     >
       {meal ? (
         <BottomSheetScrollView
-          contentContainerStyle={{ paddingBottom: footerPadding }}
+          contentContainerStyle={{ paddingBottom: footerSpace }}
         >
           {/* Header */}
           <View className="px-5 pt-1 pb-4 border-b border-border">
@@ -220,30 +265,6 @@ export const RecipeSheet = forwardRef<
             )}
           </View>
 
-          {/* Footer — flush with the safe area, no dead space below */}
-          <View className="px-5 pt-1" style={{ gap: 8 }}>
-            {onBlockDish ? (
-              <Pressable
-                onPress={() => onBlockDish(meal)}
-                accessibilityRole="button"
-                className="h-11 rounded-full border border-destructive/30 bg-destructive/5 flex-row items-center justify-center gap-2"
-              >
-                <Icon icon={EyeOff} size="sm" color={ICON_COLORS.destructive} />
-                <Text className="text-sm font-semibold text-destructive" style={FONT_CLIP_FIX}>
-                  Don't show this dish again
-                </Text>
-              </Pressable>
-            ) : null}
-            <Pressable
-              onPress={dismiss}
-              className="h-11 rounded-full bg-secondary flex-row items-center justify-center gap-2"
-            >
-              <Icon icon={X} size="sm" color={ICON_COLORS.foreground} />
-              <Text className="text-sm font-semibold text-foreground" style={FONT_CLIP_FIX}>
-                Close
-              </Text>
-            </Pressable>
-          </View>
         </BottomSheetScrollView>
       ) : null}
     </BottomSheetModal>

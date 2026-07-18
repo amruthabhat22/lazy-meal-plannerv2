@@ -17,6 +17,7 @@ import * as Haptics from "expo-haptics";
 import { ArrowLeft, Mail, Phone, ShieldCheck } from "lucide-react-native";
 import { Icon, ICON_COLORS } from "@/components/ui/Icon";
 import { Button } from "@/components/ui/Button";
+import { GoogleLogo } from "@/components/ui/GoogleLogo";
 import { useSessionStore } from "@/state/useSessionStore";
 import { normalizePhone } from "@/utils/contacts";
 import { DEMO_OTP, type SignInMethod } from "@/utils/session";
@@ -120,7 +121,7 @@ export default function Login() {
               EezyMeals
             </Text>
             <Text className="text-base text-muted-foreground mt-1 text-center">
-              A week of protein-first meals, planned in minutes.
+              A week of healthy meals, planned in minutes.
             </Text>
           </View>
 
@@ -136,9 +137,7 @@ export default function Login() {
                 accessibilityRole="button"
                 className="h-14 rounded-full border border-border bg-card flex-row items-center justify-center gap-2.5"
               >
-                <Text className="text-lg font-bold text-primary" style={FONT_CLIP_FIX_BOLD}>
-                  G
-                </Text>
+                <GoogleLogo size={20} />
                 <Text className="text-base font-semibold text-foreground" style={FONT_CLIP_FIX}>
                   Continue with Google
                 </Text>
