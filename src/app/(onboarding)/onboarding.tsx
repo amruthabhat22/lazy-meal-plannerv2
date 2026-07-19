@@ -55,6 +55,7 @@ import {
 } from "@/utils/contacts";
 import { FONT_CLIP_FIX } from "@/utils/androidText";
 import { PLACEHOLDER_COLOR } from "@/utils/colors";
+import { Wordmark } from "@/components/Wordmark";
 
 const TOTAL_STEPS = 6;
 
@@ -273,9 +274,10 @@ export default function Onboarding() {
               style={{ width: 22, height: 22 }}
               accessibilityIgnoresInvertColors
             />
-            <Text className="text-sm font-semibold tracking-tight text-foreground" style={FONT_CLIP_FIX}>
-              EezyMeals
-            </Text>
+            <Wordmark
+              className="text-sm font-semibold tracking-tight text-foreground"
+              style={FONT_CLIP_FIX}
+            />
           </View>
           <View className="h-10 w-10" />
         </View>
@@ -438,7 +440,7 @@ export default function Onboarding() {
               </Text>
               <TextInput
                 className={inputStyle}
-                placeholder="e.g. Amma"
+                placeholder="e.g. Cook"
                 placeholderTextColor={PLACEHOLDER_COLOR}
                 value={contactName}
                 onChangeText={setContactName}
@@ -495,7 +497,7 @@ export default function Onboarding() {
                 />
                 <Row label="Protein" value={`${goal}g / day`} />
                 <Row label="Calories" value={`${calories} kcal / day`} />
-                <Row label="Meals" value={`${meals} per day`} />
+                <Row label="Meals" value={`${meals} per day`} divider={false} />
               </View>
             ) : null}
             {busy ? (
@@ -567,9 +569,21 @@ export default function Onboarding() {
   );
 }
 
-function Row({ label, value }: { label: string; value: string }) {
+function Row({
+  label,
+  value,
+  divider = true,
+}: {
+  label: string;
+  value: string;
+  divider?: boolean;
+}) {
   return (
-    <View className="flex-row items-center justify-between py-2.5 border-b border-border/70">
+    <View
+      className={`flex-row items-center justify-between py-2.5 ${
+        divider ? "border-b border-border/70" : ""
+      }`}
+    >
       <Text className="text-sm text-muted-foreground">{label}</Text>
       <Text className="text-sm font-semibold text-foreground tabular-nums" style={FONT_CLIP_FIX}>
         {value}

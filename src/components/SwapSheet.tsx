@@ -279,7 +279,7 @@ export const SwapSheet = forwardRef<
                     Can't find it? Type a dish
                   </Text>
                   <BottomSheetTextInput
-                    placeholder="e.g. Chicken shawarma bowl"
+                    placeholder="e.g. Avocado toast"
                     placeholderTextColor={PLACEHOLDER_COLOR}
                     value={customName}
                     onChangeText={setCustomName}

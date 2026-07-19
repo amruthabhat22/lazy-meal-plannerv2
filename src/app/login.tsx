@@ -18,6 +18,7 @@ import { ArrowLeft, Mail, Phone, ShieldCheck } from "lucide-react-native";
 import { Icon, ICON_COLORS } from "@/components/ui/Icon";
 import { Button } from "@/components/ui/Button";
 import { GoogleLogo } from "@/components/ui/GoogleLogo";
+import { Wordmark } from "@/components/Wordmark";
 import { useSessionStore } from "@/state/useSessionStore";
 import { normalizePhone } from "@/utils/contacts";
 import { DEMO_OTP, type SignInMethod } from "@/utils/session";
@@ -114,12 +115,10 @@ export default function Login() {
               style={{ width: 96, height: 98 }}
               accessibilityIgnoresInvertColors
             />
-            <Text
+            <Wordmark
               className="text-3xl font-bold tracking-tight text-foreground mt-4"
               style={FONT_CLIP_FIX_BOLD}
-            >
-              EezyMeals
-            </Text>
+            />
             <Text className="text-base text-muted-foreground mt-1 text-center">
               A week of healthy meals, planned in minutes.
             </Text>

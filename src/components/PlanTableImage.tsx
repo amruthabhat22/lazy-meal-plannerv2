@@ -174,7 +174,9 @@ export const PlanTableImage = forwardRef<
           textAlign: "center",
         }}
       >
-        💬 Ask for any meal's recipe · Sent via EezyMeals
+        💬 Ask for any meal's recipe · Sent via{" "}
+        <Text style={{ color: "#291f18", fontWeight: "600" }}>Eezy</Text>
+        <Text style={{ color: "#d96d27", fontWeight: "600" }}>Meals</Text>
       </Text>
     </View>
   );
