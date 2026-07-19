@@ -580,8 +580,12 @@ function Row({
 }) {
   return (
     <View
-      className={`flex-row items-center justify-between py-2.5 ${
-        divider ? "border-b border-border/70" : ""
+      className={`flex-row items-center justify-between ${
+        divider
+          ? "py-2.5 border-b border-border/70"
+          : // Last row: the card's own bottom padding provides the space
+            // below, keeping it equal to the card's top padding.
+            "pt-2.5"
       }`}
     >
       <Text className="text-sm text-muted-foreground">{label}</Text>
