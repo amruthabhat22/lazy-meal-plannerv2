@@ -1,5 +1,5 @@
-import React, { useCallback, useMemo, useState } from "react";
-import { Alert, Linking, Pressable, ScrollView, Text, View } from "react-native";
+import React, { useCallback, useMemo, useRef, useState } from "react";
+import { Linking, Pressable, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSQLiteContext } from "expo-sqlite";
 import * as Haptics from "expo-haptics";
@@ -19,11 +19,10 @@ import { getRecipesByMealIds } from "@/db/repos/mealsRepo";
 import { aggregateGroceries, CATEGORY_ORDER } from "@/utils/grocery";
 import { formatIngredientQty } from "@/utils/format";
 import { FONT_CLIP_FIX } from "@/utils/androidText";
+import { SwiggyHandoffSheet } from "@/components/SwiggyHandoffSheet";
+import type { BottomSheetModal } from "@gorhom/bottom-sheet";
 
 const SWIGGY_INSTAMART_URL = "https://www.swiggy.com/instamart";
-
-const itemKey = (i: { name: string; unit: string }) =>
-  `${i.name.toLowerCase()}|${i.unit}`;
 
 export default function GroceryScreen() {
   const db = useSQLiteContext();
@@ -32,27 +31,19 @@ export default function GroceryScreen() {
   const catalog = usePlanStore((s) => s.catalog);
   const [items, setItems] = useState<GroceryItem[]>([]);
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
+  const [copiedCount, setCopiedCount] = useState(0);
+  const handoffRef = useRef<BottomSheetModal>(null);
 
   /** Re-aggregate from the current week on every visit — no manual
-   * Rebuild. Checked state carries over by (name, unit). */
+   * Rebuild. Everything starts unchecked: ticks are a fresh selection
+   * each visit, never carried over from earlier sessions. */
   const refresh = useCallback(async () => {
     if (!plan) return;
-    const existing = await getItems(db, plan.id);
-    const checkedKeys = new Set(
-      existing.filter((i) => i.isChecked).map(itemKey),
-    );
     const mealIds = [...new Set(planMeals.map((pm) => pm.mealId))];
     const recipes = await getRecipesByMealIds(db, mealIds);
     const aggregated = aggregateGroceries(planMeals, catalog, recipes);
     await replaceItems(db, plan.id, aggregated);
-    const fresh = await getItems(db, plan.id);
-    for (const item of fresh) {
-      if (checkedKeys.has(itemKey(item))) {
-        await setChecked(db, item.id, true);
-        item.isChecked = true;
-      }
-    }
-    setItems(fresh);
+    setItems(await getItems(db, plan.id));
   }, [db, plan, planMeals, catalog]);
 
   useFocusEffect(
@@ -97,8 +88,9 @@ export default function GroceryScreen() {
     );
   }, [items]);
 
-  /** Copy the selected items as a paste-ready list, then open Swiggy
-   * Instamart where the Shopping List feature builds the cart from it. */
+  /** Copy the selected items as a paste-ready list, then walk the user
+   * through Swiggy Instamart's paste-a-list feature via the hand-off
+   * sheet (Swiggy has no deep link that can prefill a cart). */
   const orderItems = async () => {
     const list = items.filter((i) => i.isChecked);
     if (list.length === 0) return;
@@ -106,17 +98,8 @@ export default function GroceryScreen() {
       .map((i) => `${i.name} — ${formatIngredientQty(i.amount, i.unit)}`)
       .join("\n");
     await Clipboard.setStringAsync(text);
-    Alert.alert(
-      "List copied",
-      `${list.length} items copied. In Swiggy Instamart, open "Shopping list" and paste to build your cart.`,
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Open Swiggy",
-          onPress: () => void Linking.openURL(SWIGGY_INSTAMART_URL),
-        },
-      ],
-    );
+    setCopiedCount(list.length);
+    handoffRef.current?.present();
   };
 
   return (
@@ -312,6 +295,16 @@ export default function GroceryScreen() {
           </>
         )}
       </ScrollView>
+
+      <SwiggyHandoffSheet
+        ref={handoffRef}
+        itemCount={copiedCount}
+        onOpenSwiggy={() => {
+          handoffRef.current?.dismiss();
+          void Linking.openURL(SWIGGY_INSTAMART_URL);
+        }}
+        onClose={() => handoffRef.current?.dismiss()}
+      />
 
       {/* Sticky order CTA */}
       {total > 0 ? (
