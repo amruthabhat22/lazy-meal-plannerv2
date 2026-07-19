@@ -242,8 +242,17 @@ export default function WeekPlanScreen() {
       <View className="flex-row items-start justify-between px-5 pt-4 pb-2 gap-3">
         <View className="flex-1 min-w-0">
           <View className="flex-row items-center gap-2">
-            <Text className="text-2xl font-bold tracking-tight text-foreground" style={FONT_CLIP_FIX_BOLD}>
-              {session.name ? `${firstName(session)}'s week` : "Your week"}
+            {/* OEM fonts render bold wider than RN measures, clipping the
+                trailing word. The trailing no-break space pads the measured
+                box past the rendered glyphs, and flexShrink lets long names
+                wrap instead of overflowing — "week" can never be cut. */}
+            <Text
+              className="text-2xl font-bold tracking-tight text-foreground"
+              style={[FONT_CLIP_FIX_BOLD, { flexShrink: 1 }]}
+            >
+              {`${
+                session.name ? `${firstName(session)}'s week` : "Your week"
+              }  `}
             </Text>
             <Icon icon={CookingPot} size="lg" color={ICON_COLORS.primary} />
           </View>

@@ -56,6 +56,7 @@ import {
 import { FONT_CLIP_FIX } from "@/utils/androidText";
 import { PLACEHOLDER_COLOR } from "@/utils/colors";
 import { Wordmark } from "@/components/Wordmark";
+import { FieldError } from "@/components/ui/FieldError";
 
 const TOTAL_STEPS = 6;
 
@@ -108,7 +109,7 @@ const CUISINE_ICONS: Record<string, LucideIcon> = {
 };
 
 const inputStyle =
-  "rounded-xl bg-muted px-3.5 py-2.5 text-[15px] text-foreground";
+  "rounded-xl bg-muted border border-transparent px-3.5 py-2.5 text-[15px] text-foreground";
 
 /** "Step N of 5 · NN%" header + segmented progress (current segment wide). */
 function StepProgress({
@@ -200,6 +201,10 @@ export default function Onboarding() {
 
   const canAddContact =
     contactName.trim().length > 0 && normalizePhone(contactPhone).length >= 8;
+  const contactPhoneError =
+    contactPhone.length > 0 && normalizePhone(contactPhone).length < 8
+      ? "Enter a valid number with country code (at least 8 digits)."
+      : null;
 
   const handleAddContact = async () => {
     if (!canAddContact) return;
@@ -449,13 +454,16 @@ export default function Onboarding() {
                 WhatsApp number (with country code)
               </Text>
               <TextInput
-                className={inputStyle}
+                className={`${inputStyle} ${
+                  contactPhoneError ? "border-destructive" : ""
+                }`}
                 placeholder="+91 98765 43210"
                 placeholderTextColor={PLACEHOLDER_COLOR}
                 keyboardType="phone-pad"
                 value={contactPhone}
                 onChangeText={setContactPhone}
               />
+              <FieldError message={contactPhoneError} />
               <View className="mt-3">
                 <Button
                   label="Save contact"

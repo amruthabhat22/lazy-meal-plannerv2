@@ -23,6 +23,7 @@ import type { MealPick } from "@/state/usePlanStore";
 import { formatProtein, formatQty } from "@/utils/format";
 import { FONT_CLIP_FIX } from "@/utils/androidText";
 import { PLACEHOLDER_COLOR } from "@/utils/colors";
+import { FieldError, INPUT_ERROR_STYLE } from "@/components/ui/FieldError";
 
 const inputStyle = {
   backgroundColor: "#f3ede6",
@@ -88,6 +89,20 @@ export const SwapSheet = forwardRef<
 
   const proteinNum = Number(customProtein);
   const kcalNum = Number(customKcal);
+  // Inline errors once a field has content.
+  const customNameError =
+    customName.length > 0 && customName.trim().length < 2
+      ? "Give the dish a name (at least 2 characters)."
+      : null;
+  const customProteinError =
+    customProtein !== "" &&
+    (!Number.isFinite(proteinNum) || proteinNum <= 0 || proteinNum > 150)
+      ? "Enter protein between 1 and 150 g per serving."
+      : null;
+  const customKcalError =
+    customKcal !== "" && (!Number.isFinite(kcalNum) || kcalNum <= 0)
+      ? "Enter a valid calorie count (or leave it empty)."
+      : null;
   const customValid =
     customName.trim().length > 1 &&
     Number.isFinite(proteinNum) &&
@@ -283,8 +298,9 @@ export const SwapSheet = forwardRef<
                     placeholderTextColor={PLACEHOLDER_COLOR}
                     value={customName}
                     onChangeText={setCustomName}
-                    style={inputStyle}
+                    style={[inputStyle, customNameError ? INPUT_ERROR_STYLE : null]}
                   />
+                  <FieldError message={customNameError} />
                   <View className="flex-row gap-2 mt-3">
                     <View className="flex-1">
                       <Text className="text-xs font-medium text-muted-foreground mb-1.5">
@@ -296,7 +312,7 @@ export const SwapSheet = forwardRef<
                         keyboardType="numeric"
                         value={customProtein}
                         onChangeText={setCustomProtein}
-                        style={inputStyle}
+                        style={[inputStyle, customProteinError ? INPUT_ERROR_STYLE : null]}
                       />
                     </View>
                     <View className="flex-1">
@@ -309,10 +325,11 @@ export const SwapSheet = forwardRef<
                         keyboardType="numeric"
                         value={customKcal}
                         onChangeText={setCustomKcal}
-                        style={inputStyle}
+                        style={[inputStyle, customKcalError ? INPUT_ERROR_STYLE : null]}
                       />
                     </View>
                   </View>
+                  <FieldError message={customProteinError ?? customKcalError} />
                   <View className="flex-row items-center gap-2 mt-3">
                     <Pressable
                       onPress={() => setCustomOpen(false)}

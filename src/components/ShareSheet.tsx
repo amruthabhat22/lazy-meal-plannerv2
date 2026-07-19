@@ -41,6 +41,7 @@ import {
 } from "@/components/sheetChrome";
 import { FONT_CLIP_FIX } from "@/utils/androidText";
 import { PLACEHOLDER_COLOR } from "@/utils/colors";
+import { FieldError, INPUT_ERROR_STYLE } from "@/components/ui/FieldError";
 
 const inputStyle = {
   backgroundColor: "#f3ede6",
@@ -166,6 +167,10 @@ export const ShareSheet = forwardRef<
   };
 
   const canAdd = name.trim().length > 0 && normalizePhone(phone).length >= 8;
+  const phoneError =
+    phone.length > 0 && normalizePhone(phone).length < 8
+      ? "Enter a valid number with country code (at least 8 digits)."
+      : null;
 
   const handleAdd = async () => {
     if (!canAdd) return;
@@ -456,8 +461,9 @@ export const ShareSheet = forwardRef<
                   keyboardType="phone-pad"
                   value={phone}
                   onChangeText={setPhone}
-                  style={inputStyle}
+                  style={[inputStyle, phoneError ? INPUT_ERROR_STYLE : null]}
                 />
+                <FieldError message={phoneError} />
               </View>
               <View className="flex-row items-center gap-2 mt-3">
                 <Pressable

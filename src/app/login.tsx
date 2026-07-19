@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  Alert,
   Image,
   KeyboardAvoidingView,
   Platform,
@@ -18,6 +17,7 @@ import { ArrowLeft, Mail, Phone, ShieldCheck } from "lucide-react-native";
 import { Icon, ICON_COLORS } from "@/components/ui/Icon";
 import { Button } from "@/components/ui/Button";
 import { GoogleLogo } from "@/components/ui/GoogleLogo";
+import { FieldError } from "@/components/ui/FieldError";
 import { Wordmark } from "@/components/Wordmark";
 import { useSessionStore } from "@/state/useSessionStore";
 import { normalizePhone } from "@/utils/contacts";
@@ -33,7 +33,11 @@ type Step =
   | { kind: "name"; method: SignInMethod; phone?: string; email?: string };
 
 const inputStyle =
-  "rounded-xl bg-muted px-3.5 py-3 text-[15px] text-foreground";
+  "rounded-xl bg-muted border px-3.5 py-3 text-[15px] text-foreground";
+
+/** Input classes with the error border applied when a message is present. */
+const field = (error?: string | null) =>
+  `${inputStyle} ${error ? "border-destructive" : "border-transparent"}`;
 
 function FieldLabel({ children }: { children: string }) {
   return (
@@ -56,10 +60,28 @@ export default function Login() {
   const [step, setStep] = useState<Step>({ kind: "landing" });
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
+  const [otpError, setOtpError] = useState<string | null>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [busy, setBusy] = useState(false);
+
+  // Inline validation: errors appear once the field has content.
+  const phoneDigitsLive = normalizePhone(phone);
+  const phoneError =
+    phone.length > 0 && phoneDigitsLive.length < 8
+      ? "Enter a valid number with country code (at least 8 digits)."
+      : null;
+  const emailError =
+    email.length > 0 && !/^\S+@\S+\.\S+$/.test(email)
+      ? "Enter a valid email address."
+      : null;
+  const passwordError =
+    password.length > 0 && password.length < 6
+      ? "Password must be at least 6 characters."
+      : null;
+  const nameError =
+    name.length > 0 && !name.trim() ? "Please enter your name." : null;
 
   const finish = async (
     method: SignInMethod,
@@ -165,7 +187,7 @@ export default function Login() {
               </Text>
               <FieldLabel>Phone number (with country code)</FieldLabel>
               <TextInput
-                className={inputStyle}
+                className={field(phoneError)}
                 placeholder="+91 98765 43210"
                 placeholderTextColor={PLACEHOLDER_COLOR}
                 keyboardType="phone-pad"
@@ -173,6 +195,7 @@ export default function Login() {
                 onChangeText={setPhone}
                 autoFocus
               />
+              <FieldError message={phoneError} />
               <View className="mt-4">
                 <Button
                   label="Send OTP"
@@ -198,15 +221,19 @@ export default function Login() {
               </Text>
               <FieldLabel>6-digit code</FieldLabel>
               <TextInput
-                className={`${inputStyle} tracking-[8px] text-center text-xl`}
+                className={`${field(otpError)} tracking-[8px] text-center text-xl`}
                 placeholder="••••••"
                 placeholderTextColor={PLACEHOLDER_COLOR}
                 keyboardType="number-pad"
                 maxLength={6}
                 value={otp}
-                onChangeText={setOtp}
+                onChangeText={(v) => {
+                  setOtp(v);
+                  setOtpError(null);
+                }}
                 autoFocus
               />
+              <FieldError message={otpError} />
               <View className="flex-row items-center gap-2 rounded-xl bg-accent/60 border border-accent px-3 py-2.5 mt-3">
                 <Icon
                   icon={ShieldCheck}
@@ -225,15 +252,15 @@ export default function Login() {
                   disabled={otp.length !== 6}
                   onPress={() => {
                     if (otp === DEMO_OTP) {
+                      setOtpError(null);
                       setStep({
                         kind: "name",
                         method: "phone",
                         phone: step.phone,
                       });
                     } else {
-                      Alert.alert(
-                        "Wrong code",
-                        `This demo accepts only ${DEMO_OTP}.`,
+                      setOtpError(
+                        `Incorrect code. This demo accepts ${DEMO_OTP}.`,
                       );
                     }
                   }}
@@ -249,7 +276,7 @@ export default function Login() {
               </Text>
               <FieldLabel>Email</FieldLabel>
               <TextInput
-                className={inputStyle}
+                className={field(emailError)}
                 placeholder="you@example.com"
                 placeholderTextColor={PLACEHOLDER_COLOR}
                 keyboardType="email-address"
@@ -259,15 +286,17 @@ export default function Login() {
                 onChangeText={setEmail}
                 autoFocus
               />
+              <FieldError message={emailError} />
               <FieldLabel>Password</FieldLabel>
               <TextInput
-                className={inputStyle}
+                className={field(passwordError)}
                 placeholder="At least 6 characters"
                 placeholderTextColor={PLACEHOLDER_COLOR}
                 secureTextEntry
                 value={password}
                 onChangeText={setPassword}
               />
+              <FieldError message={passwordError} />
               <View className="mt-4">
                 <Button
                   label="Continue"
@@ -295,13 +324,14 @@ export default function Login() {
               ) : null}
               <FieldLabel>Your name</FieldLabel>
               <TextInput
-                className={inputStyle}
+                className={field(nameError)}
                 placeholder="e.g. Amrutha"
                 placeholderTextColor={PLACEHOLDER_COLOR}
                 value={name}
                 onChangeText={setName}
                 autoFocus
               />
+              <FieldError message={nameError} />
               <View className="mt-4">
                 <Button
                   label={busy ? "Signing in…" : "Let's plan my week"}
