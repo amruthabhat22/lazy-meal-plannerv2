@@ -27,6 +27,11 @@ import { usePrefsStore, slotsForPrefs } from "@/state/usePrefsStore";
 import { usePlanStore, type MealPick } from "@/state/usePlanStore";
 import { useSessionStore } from "@/state/useSessionStore";
 import { firstName } from "@/utils/session";
+import {
+  ensureTrialStart,
+  getSubscription,
+  getTrialInfo,
+} from "@/utils/subscription";
 import { DaySelector } from "@/components/DaySelector";
 import { StatCard } from "@/components/StatCard";
 import { FoodCard } from "@/components/FoodCard";
@@ -86,6 +91,7 @@ export default function WeekPlanScreen() {
   const [blockedIds, setBlockedIds] = useState<string[]>([]);
   const [hideTarget, setHideTarget] = useState<Meal | null>(null);
   const [scrolled, setScrolled] = useState(false);
+  const [paywalled, setPaywalled] = useState(false);
   const swapSheetRef = useRef<BottomSheetModal>(null);
   const shareSheetRef = useRef<BottomSheetModal>(null);
   const recipeSheetRef = useRef<BottomSheetModal>(null);
@@ -95,6 +101,15 @@ export default function WeekPlanScreen() {
   useFocusEffect(
     useCallback(() => {
       void getBlockedMealIds(db).then(setBlockedIds);
+      // 3 free weeks, then the paywall takes over until a plan is chosen.
+      void (async () => {
+        await ensureTrialStart(db);
+        const [trial, sub] = await Promise.all([
+          getTrialInfo(db),
+          getSubscription(db),
+        ]);
+        setPaywalled(trial.expired && sub === null);
+      })();
     }, [db]),
   );
 
@@ -148,6 +163,7 @@ export default function WeekPlanScreen() {
 
   if (!session) return <Redirect href="/login" />;
   if (!prefs) return <Redirect href="/onboarding" />;
+  if (paywalled) return <Redirect href="/paywall" />;
 
   const slots = orderedSlots(slotsForPrefs(prefs));
   const dayRows = planMeals.filter((pm) => pm.day === selectedDay);

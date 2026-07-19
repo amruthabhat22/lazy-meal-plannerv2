@@ -8,6 +8,8 @@ import * as Haptics from "expo-haptics";
 import {
   ArrowLeft,
   Check,
+  ChevronRight,
+  Crown,
   EyeOff,
   LogOut,
   UserRound,
@@ -27,6 +29,13 @@ import { usePrefsStore } from "@/state/usePrefsStore";
 import { usePlanStore } from "@/state/usePlanStore";
 import { useSessionStore } from "@/state/useSessionStore";
 import { formatPhone } from "@/utils/contacts";
+import {
+  getSubscription,
+  getTrialInfo,
+  PLANS,
+  type Subscription,
+  type TrialInfo,
+} from "@/utils/subscription";
 import { CUISINES } from "@/utils/cuisines";
 import { Icon, ICON_COLORS } from "@/components/ui/Icon";
 import { Button } from "@/components/ui/Button";
@@ -99,6 +108,8 @@ export default function Profile() {
   const [blockedIds, setBlockedIds] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
   const [catalogVersion, setCatalogVersion] = useState("–");
+  const [trial, setTrial] = useState<TrialInfo | null>(null);
+  const [sub, setSub] = useState<Subscription | null>(null);
   const confirmLogoutRef = useRef<BottomSheetModal>(null);
 
   useEffect(() => {
@@ -106,6 +117,8 @@ export default function Profile() {
       setCatalogVersion(v ?? "0"),
     );
     void getBlockedMealIds(db).then(setBlockedIds);
+    void getTrialInfo(db).then(setTrial);
+    void getSubscription(db).then(setSub);
   }, [db]);
 
   const cuisinesEqual =
@@ -351,6 +364,32 @@ export default function Profile() {
             </View>
           </View>
         ) : null}
+        <Pressable
+          onPress={() => router.push("/paywall")}
+          accessibilityRole="button"
+          className="flex-row items-center gap-3 rounded-xl border border-border bg-card p-3 mb-3"
+        >
+          <View className="h-10 w-10 rounded-full bg-primary/10 items-center justify-center">
+            <Icon icon={Crown} size="sm" color={ICON_COLORS.primary} />
+          </View>
+          <View className="flex-1 min-w-0">
+            <Text className="text-sm font-semibold text-foreground" style={FONT_CLIP_FIX}>
+              Subscription
+            </Text>
+            <Text className="text-xs text-muted-foreground mt-0.5">
+              {sub
+                ? `${PLANS[sub.plan].label} plan · ₹${PLANS[sub.plan].price}/${PLANS[sub.plan].per}`
+                : trial
+                  ? trial.expired
+                    ? "Free trial ended — pick a plan"
+                    : `Free trial · ${trial.daysLeft} ${
+                        trial.daysLeft === 1 ? "day" : "days"
+                      } left`
+                  : "View plans"}
+            </Text>
+          </View>
+          <Icon icon={ChevronRight} size="sm" color={ICON_COLORS.muted} />
+        </Pressable>
         <Pressable
           onPress={() => confirmLogoutRef.current?.present()}
           accessibilityRole="button"
