@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Alert, Pressable, ScrollView, Text, View } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { router } from "expo-router";
@@ -32,6 +32,8 @@ import { Icon, ICON_COLORS } from "@/components/ui/Icon";
 import { Button } from "@/components/ui/Button";
 import { SelectableCard } from "@/components/SelectableCard";
 import { AllergenChips } from "@/components/AllergenChips";
+import { ConfirmLogoutSheet } from "@/components/ConfirmLogoutSheet";
+import type { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { getBlockedMealIds, unblockMeal } from "@/utils/blockedMeals";
 import {
   CALORIE_TIP,
@@ -97,6 +99,7 @@ export default function Profile() {
   const [blockedIds, setBlockedIds] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
   const [catalogVersion, setCatalogVersion] = useState("–");
+  const confirmLogoutRef = useRef<BottomSheetModal>(null);
 
   useEffect(() => {
     void getMeta(db, "catalog_version").then((v) =>
@@ -349,18 +352,7 @@ export default function Profile() {
           </View>
         ) : null}
         <Pressable
-          onPress={() => {
-            Alert.alert("Log out?", "Your meal plan and settings stay on this phone.", [
-              { text: "Cancel", style: "cancel" },
-              {
-                text: "Log out",
-                style: "destructive",
-                onPress: () => {
-                  void signOut(db).then(() => router.replace("/login"));
-                },
-              },
-            ]);
-          }}
+          onPress={() => confirmLogoutRef.current?.present()}
           accessibilityRole="button"
           className="h-12 rounded-full border border-destructive/30 bg-destructive/5 flex-row items-center justify-center gap-2"
         >
@@ -375,6 +367,15 @@ export default function Profile() {
           version {catalogVersion}
         </Text>
       </ScrollView>
+
+      <ConfirmLogoutSheet
+        ref={confirmLogoutRef}
+        onConfirm={() => {
+          confirmLogoutRef.current?.dismiss();
+          void signOut(db).then(() => router.replace("/login"));
+        }}
+        onCancel={() => confirmLogoutRef.current?.dismiss()}
+      />
 
       {/* Sticky save CTA — disabled until something changes */}
       <View
