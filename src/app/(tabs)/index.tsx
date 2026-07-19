@@ -252,7 +252,7 @@ export default function WeekPlanScreen() {
               style={[FONT_CLIP_FIX_BOLD, { flexShrink: 1 }]}
             >
               {`${
-                session.name ? `${firstName(session)}'s week` : "Your week"
+                session.name ? `${firstName(session)}'s Week` : "Your Week"
               }  `}
             </Text>
           </View>
