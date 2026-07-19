@@ -242,6 +242,7 @@ export default function WeekPlanScreen() {
       <View className="flex-row items-start justify-between px-5 pt-4 pb-2 gap-3">
         <View className="flex-1 min-w-0">
           <View className="flex-row items-center gap-2">
+            <Icon icon={CookingPot} size="lg" color={ICON_COLORS.primary} />
             {/* OEM fonts render bold wider than RN measures, clipping the
                 trailing word. The trailing no-break space pads the measured
                 box past the rendered glyphs, and flexShrink lets long names
@@ -254,7 +255,6 @@ export default function WeekPlanScreen() {
                 session.name ? `${firstName(session)}'s week` : "Your week"
               }  `}
             </Text>
-            <Icon icon={CookingPot} size="lg" color={ICON_COLORS.primary} />
           </View>
           <Text className="mt-1 text-sm text-muted-foreground">
             {`${DIET_LABEL[prefs.diet]} · ${prefs.proteinGoal}g protein/day · ${prefs.mealsPerDay} meals`}
